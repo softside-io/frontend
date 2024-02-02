@@ -1,5 +1,3 @@
-import { User } from '@angular/fire/auth';
-
 export type IUser = {
 	uid: string;
 	email?: string;
@@ -9,4 +7,3 @@ export type IUser = {
 	address?: string;
 	photoURL?: string;
 };
-export type AuthUser = User | null;

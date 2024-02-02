@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
-import { Subscription, Observable, switchMap } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserCredential } from '@angular/fire/auth';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
@@ -39,14 +38,15 @@ export class RegisterComponent implements OnDestroy {
 			email,
 			confirmPasswordGroup: { password },
 		} = this.form.getRawValue();
+		console.log(email, password);
 
-		this.register$ = this.registerFollowUp(
-			this.authService.registerNewAccount(email, password).pipe(
-				switchMap((creds: UserCredential) => {
-					return this.authService.sendVerificationEmail(creds.user);
-				}),
-			),
-		);
+		// this.register$ = this.registerFollowUp(
+		// 	this.authService.registerNewAccount(email, password).pipe(
+		// 		switchMap((creds: UserCredential) => {
+		// 			return this.authService.sendVerificationEmail(creds.user);
+		// 		}),
+		// 	),
+		// );
 	}
 
 	registerFollowUp(register: Observable<void>): Subscription | null {

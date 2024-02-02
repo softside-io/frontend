@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Observable, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserCredential } from '@angular/fire/auth';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { AuthService } from '../../services/auth.service';
+import { UserCredential } from '../auth.module';
 
 @Component({
 	selector: 'app-login',
@@ -39,12 +39,13 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	submitRecord(): void {
 		const { email, password } = this.form.getRawValue();
+		console.log(email, password);
 
-		this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
+		// this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
 	}
 
 	loginWithGoogle(): void {
-		this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
+		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
 	}
 
 	loginFollowUp(login: Observable<UserCredential>): Subscription | null {

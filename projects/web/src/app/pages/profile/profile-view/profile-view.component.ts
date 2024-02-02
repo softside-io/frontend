@@ -1,17 +1,15 @@
 import { Component, ViewChild, inject, ChangeDetectionStrategy, OnDestroy, ElementRef, signal } from '@angular/core';
-import { take, switchMap, tap } from 'rxjs/operators';
-import { Auth, User, UserCredential } from '@angular/fire/auth';
+import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Observable, Subscription, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ToggleCustomEvent } from '@ionic/core';
 import { IonModal } from '@ionic/angular/standalone';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 
-import { AuthUser, IUser } from 'projects/web/src/app/shared/models/IUser.model';
+import { IUser } from 'projects/web/src/app/shared/models/IUser.model';
 import { AuthService } from 'projects/web/src/app/core/services/auth.service';
-import { environment } from 'projects/web/src/environments/environment';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
@@ -31,7 +29,6 @@ export class ProfileViewComponent implements OnDestroy {
 	@ViewChild('inputField') inputField!: ElementRef<HTMLInputElement>;
 
 	authService = inject(AuthService);
-	auth = inject(Auth);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
 	theme = inject(ThemeService);
@@ -101,32 +98,31 @@ export class ProfileViewComponent implements OnDestroy {
 		});
 	}
 
-	uploadFile(user: IUser): void {
-		this.uploadingImage$ = this.imageUploadService
-			.uploadImage(this.imageCropped?.blob as File, `${environment.profileCDNPath}${user.uid}`)
-			.pipe(
-				take(1),
-				switchMap((photoURL: string) => {
-					user.photoURL = photoURL;
-
-					return this.authService.updateUser(user);
-				}),
-			)
-			.subscribe({
-				next: () => {
-					this.modalImageCrop.dismiss();
-					this._appToast.createToast('Your profile image has been updated successfully', 0, {
-						color: 'success',
-						size: 'medium',
-					});
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Check file size. Limit: 2mb. Try resizing or choose another image', 5000, {
-						color: 'danger',
-						size: 'medium',
-					});
-				},
-			});
+	uploadFile(_user: IUser): void {
+		// this.uploadingImage$ = this.imageUploadService
+		// 	.uploadImage(this.imageCropped?.blob as File, `${environment.profileCDNPath}${user.uid}`)
+		// 	.pipe(
+		// 		take(1),
+		// 		switchMap((photoURL: string) => {
+		// 			user.photoURL = photoURL;
+		// 			return this.authService.updateUser(user);
+		// 		}),
+		// 	)
+		// 	.subscribe({
+		// 		next: () => {
+		// 			this.modalImageCrop.dismiss();
+		// 			this._appToast.createToast('Your profile image has been updated successfully', 0, {
+		// 				color: 'success',
+		// 				size: 'medium',
+		// 			});
+		// 		},
+		// 		error: (_error: Error) => {
+		// 			this._appToast.createToast('Check file size. Limit: 2mb. Try resizing or choose another image', 5000, {
+		// 				color: 'danger',
+		// 				size: 'medium',
+		// 			});
+		// 		},
+		// 	});
 	}
 
 	submitRecord(user: IUser): void {
@@ -136,40 +132,39 @@ export class ProfileViewComponent implements OnDestroy {
 
 		const { firstName, lastName, phone, address } = this.profileForm.getRawValue();
 		const updatedUser = { ...user, firstName, lastName, phone, address };
-
-		this.saveProfile$ = this.authService
-			.updateUser(updatedUser)
-			.pipe(take(1))
-			.subscribe({
-				next: () => {
-					this._appToast.createToast('Your profile has been successfully saved', 0, {
-						color: 'success',
-						size: 'small',
-					});
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-				},
-			});
+		console.log(updatedUser);
+		// this.saveProfile$ = this.authService
+		// 	.updateUser(updatedUser)
+		// 	.pipe(take(1))
+		// 	.subscribe({
+		// 		next: () => {
+		// 			this._appToast.createToast('Your profile has been successfully saved', 0, {
+		// 				color: 'success',
+		// 				size: 'small',
+		// 			});
+		// 		},
+		// 		error: (_error: Error) => {
+		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
+		// 		},
+		// 	});
 	}
 
 	deleteUser(): void {
-		this.deleteUser$ = this.authService
-			.userProvider((user: AuthUser): Observable<void> => {
-				if (!user) {
-					return of(undefined);
-				}
-
-				return this.authService.deleteUser(user);
-			})
-			.subscribe({
-				next: () => {
-					this.router.navigateByUrl('auth/login', { replaceUrl: true });
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-				},
-			});
+		// this.deleteUser$ = this.authService
+		// 	.userProvider((user: AuthUser): Observable<void> => {
+		// 		if (!user) {
+		// 			return of(undefined);
+		// 		}
+		// 		return this.authService.deleteUser(user);
+		// 	})
+		// 	.subscribe({
+		// 		next: () => {
+		// 			this.router.navigateByUrl('auth/login', { replaceUrl: true });
+		// 		},
+		// 		error: (_error: Error) => {
+		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
+		// 		},
+		// 	});
 	}
 
 	setResult(event: Event): void {
@@ -202,70 +197,67 @@ export class ProfileViewComponent implements OnDestroy {
 		}
 
 		const { password } = this.formValidatePassword.getRawValue();
+		console.log(password);
 
-		this.validatePassword$ = this.authService
-			.userProvider((user: AuthUser) => {
-				if (!user) {
-					return of(undefined);
-				}
+		// this.validatePassword$ = this.authService
+		// 	.userProvider((user: AuthUser) => {
+		// 		if (!user) {
+		// 			return of(undefined);
+		// 		}
 
-				return this.authService.validatePassword(user, password);
-			})
-			.subscribe({
-				next: () => {
-					this.modalValidatePassword.dismiss();
-					this.modalChangePassword.present();
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Opps! Incorrect password.', 2000, { color: 'danger', size: 'small' });
-				},
-			});
+		// 		return this.authService.validatePassword(user, password);
+		// 	})
+		// 	.subscribe({
+		// 		next: () => {
+		// 			this.modalValidatePassword.dismiss();
+		// 			this.modalChangePassword.present();
+		// 		},
+		// 		error: (_error: Error) => {
+		// 			this._appToast.createToast('Opps! Incorrect password.', 2000, { color: 'danger', size: 'small' });
+		// 		},
+		// 	});
 	}
 
-	private updatePassword(currentPassword: string): void {
-		this.modifyPassword$ = this.authService
-			.userProvider((user: AuthUser) => {
-				if (!user) {
-					return of(undefined);
-				}
-
-				return this.authService.updatePassword(user, currentPassword);
-			})
-			.subscribe({
-				next: () => {
-					this._appToast.createToast('Your password has been successfully updated!', 2000, {
-						color: 'success',
-						size: 'medium',
-					});
-
-					this.modalChangePassword.dismiss();
-
-					this.authService.logout().subscribe((): void => {
-						this.router.navigateByUrl('auth/login', { replaceUrl: true });
-					});
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-				},
-			});
+	private updatePassword(_currentPassword: string): void {
+		// this.modifyPassword$ = this.authService
+		// 	.userProvider((user: AuthUser) => {
+		// 		if (!user) {
+		// 			return of(undefined);
+		// 		}
+		// 		return this.authService.updatePassword(user, currentPassword);
+		// 	})
+		// 	.subscribe({
+		// 		next: () => {
+		// 			this._appToast.createToast('Your password has been successfully updated!', 2000, {
+		// 				color: 'success',
+		// 				size: 'medium',
+		// 			});
+		// 			this.modalChangePassword.dismiss();
+		// 			// this.authService.logout().subscribe((): void => {
+		// 			// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
+		// 			// });
+		// 		},
+		// 		error: (_error: Error) => {
+		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
+		// 		},
+		// 	});
 	}
 
-	private linkAccount(password: string): void {
-		this.modifyPassword$ = this.authService
-			.userProvider((user: User | null) => {
-				if (!user) {
-					return of(null);
-				}
-
-				return this.authService.linkUser(user, password);
-			})
-			.subscribe({
-				next: (_creds: UserCredential | null) => {
-					this.authService.loggedInWithPassword.set(true);
-					this.modalChangePassword.dismiss();
-				},
-				error: () => null,
-			});
+	private linkAccount(_password: string): void {
+		// this.modifyPassword$ = this.authService
+		// 	.userProvider((user: unknown | null) => {
+		// 		if (!user) {
+		// 			return of(null);
+		// 		}
+		// 		return this.authService.linkUser(user, password);
+		// 	})
+		// 	.subscribe({
+		// 		next: (_creds: UserCredential | null) => {
+		// 			this.authService.loggedInWithPassword.set(true);
+		// 			this.modalChangePassword.dismiss();
+		// 		},
+		// 		error: () => null,
+		// 	});
 	}
 
 	public fileChangeEvent(event: Event): void {

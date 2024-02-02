@@ -30,11 +30,12 @@ export class ForgetPasswordComponent implements OnDestroy {
 		}
 
 		const { email } = this.form.getRawValue();
+		console.log(email);
 
-		this.forget$ = this.authService.forgetPassword(email).subscribe({
-			next: () => this.onPasswordReset(`An email has been sent to ${email}`),
-			error: (error: Error) => this.onPasswordReset(error.message, true),
-		});
+		// this.forget$ = this.authService.forgetPassword(email).subscribe({
+		// 	next: () => this.onPasswordReset(`An email has been sent to ${email}`),
+		// 	error: (error: Error) => this.onPasswordReset(error.message, true),
+		// });
 	}
 
 	onPasswordReset(message: string, error: boolean = false): void {

@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
-import { AuthUser } from '../../../shared/models/IUser.model';
 
 @Component({
 	selector: 'app-verify-email',
@@ -21,17 +20,17 @@ export class VerifyEmailComponent implements OnDestroy {
 	user$ = this.authService.currentUserProfile$;
 
 	verifyEmail(): void {
-		this.verifyEmail$ = this.authService
-			.userProvider((user: AuthUser) => {
-				return this.authService.sendVerificationEmail(user!);
-			})
-			.subscribe();
+		// this.verifyEmail$ = this.authService
+		// 	.userProvider((user: AuthUser) => {
+		// 		return this.authService.sendVerificationEmail(user!);
+		// 	})
+		// 	.subscribe();
 	}
 
 	logout(): void {
-		this.signOut$ = this.authService.logout().subscribe(() => {
-			this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		});
+		// this.signOut$ = this.authService.logout().subscribe(() => {
+		// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
+		// });
 	}
 
 	ngOnDestroy(): void {

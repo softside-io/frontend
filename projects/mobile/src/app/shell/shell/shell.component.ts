@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { take } from 'rxjs';
 
-import { IUser } from 'projects/mobile/src/app/shared/models/IUser.model';
-import { StorageAccessorService } from 'projects/mobile/src/app/shared/services/storage-accessor.service';
+import { IUser } from 'projects/web/src/app/shared/models/IUser.model';
+import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
 
 import { AuthService } from '../../core/services/auth.service';
 import { IMenuItem, appPages } from '../side-navbar/side-navbar';

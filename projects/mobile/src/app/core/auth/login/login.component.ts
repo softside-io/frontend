@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Observable, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserCredential } from '@angular/fire/auth';
 
-import { AppToastService } from 'projects/mobile/src/app/shared/services/app-toast.service';
+import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
+import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { AuthService } from '../../services/auth.service';
+import { UserCredential } from '../auth.module';
 
 @Component({
 	selector: 'app-login',
@@ -19,20 +19,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 	route = inject(ActivatedRoute);
 	authService = inject(AuthService);
 	_appToast = inject(AppToastService);
-	fb = inject(NonNullableFormBuilder);
+	cdr = inject(ChangeDetectorRef);
 
-	form: FormGroup = this.fb.group({
-		email: new FormControl<string>('', [Validators.email, Validators.required]),
-		password: new FormControl<string>('', [Validators.required]),
+	form: LoginForm = FB.group({
+		email: FB.string(),
+		password: FB.string(),
 	});
-
-	get getEmailError(): string {
-		return this.authService.getError(this.form.get('email') as FormControl<string>, 'Email');
-	}
-
-	get getPasswordError(): string {
-		return this.authService.getError(this.form.get('password') as FormControl<string>, 'Password');
-	}
 
 	login$: Subscription | null = null;
 	loginWithGoogle$: Subscription | null = null;
@@ -46,19 +38,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 	}
 
 	submitRecord(): void {
-		if (this.form.invalid) {
-			this.form.markAllAsTouched();
+		const { email, password } = this.form.getRawValue();
+		console.log(email, password);
 
-			return;
-		}
-
-		const { email, password } = this.form.value;
-
-		this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
+		// this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
 	}
 
 	loginWithGoogle(): void {
-		this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
+		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
 	}
 
 	loginFollowUp(login: Observable<UserCredential>): Subscription | null {
@@ -92,3 +79,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.loginWithGoogle$?.unsubscribe();
 	}
 }
+
+type Login = {
+	email: string;
+	password: string;
+};
+type LoginForm = ConvertToForm<Login>;

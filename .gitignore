@@ -69,10 +69,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-# Firebase
-.firebase
-/emulators.backup
-/firebase-export-*
-*-debug.log
-.runtimeconfig.json

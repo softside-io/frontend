@@ -64,7 +64,7 @@
 // 			firstName: this.bankFilterCtrl.value ?? '',
 // 			lastName: 'test',
 // 		};
-// 		const component = import('projects/mobile/src/app/features/customers/feature/customer-add/customer-add.component').then(
+// 		const component = import('projects/web/src/app/features/customers/feature/customer-add/customer-add.component').then(
 // 			(m) => m.CustomerAddComponent,
 // 		);
 
@@ -80,10 +80,10 @@
 // 			firstName: this.bankFilterCtrl.value ?? '',
 // 			lastName: 'test',
 // 		};
-// 		// const component = import('projects/mobile/src/app/features/customers/customer-form/customer-form.component').then(
+// 		// const component = import('projects/web/src/app/features/customers/customer-form/customer-form.component').then(
 // 		// 	(m) => m.CustomerFormComponent
 // 		// );
-// 		const component = import('projects/mobile/src/app/features/orders/order-form/order-form.component').then((m) => m.OrderFormComponent);
+// 		const component = import('projects/web/src/app/features/orders/order-form/order-form.component').then((m) => m.OrderFormComponent);
 
 // 		this.appFormSharingService.openComponentInDialog(component, 'add', customer);
 // 	}

@@ -4,13 +4,14 @@
 		{
 			"label": "Focus on Terminal on Startup",
 			"type": "shell",
-			"command": "echo '❤️❤️❤️❤️❤️  Welcome to Firebase Starter project by SoftSide ❤️❤️❤️❤️❤️'",
+			"command": "echo '❤️❤️❤️❤️❤️ Welcome to Softside frontend application ❤️❤️❤️❤️❤️'",
 			"presentation": {
 				"focus": true,
 				"panel": "shared",
 				"showReuseMessage": false,
 				"clear": true
 			},
+			"hide": true,
 			"problemMatcher": [],
 			"runOptions": {
 				"runOn": "folderOpen"
@@ -21,6 +22,7 @@
 			"type": "shell",
 			"command": "node",
 			"args": ["init-task.mjs"],
+			"hide": true,
 			"problemMatcher": {
 				"owner": "custom",
 				"pattern": {
@@ -50,7 +52,6 @@
 			"type": "shell",
 			"command": "npm",
 			"args": ["run", "start:lib"],
-			"group": "none",
 			"isBackground": true,
 			"problemMatcher": {
 				"owner": "typescript",
@@ -76,41 +77,10 @@
 			"dependsOn": ["Initialize development mode"]
 		},
 		{
-			"label": "Start Backend",
-			"type": "shell",
-			"command": "npm",
-			"args": ["run", "start:backend"],
-			"group": "none",
-			"isBackground": true,
-			"problemMatcher": {
-				"owner": "firebase",
-				"pattern": {
-					"regexp": "^\\s+(.*)$",
-					"file": 1,
-					"location": 2,
-					"message": 3
-				},
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "^i  emulators: Starting emulators.*$",
-					"endsPattern": "^│ ✔  All emulators ready! It is now safe to connect your app.*$"
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated"
-			},
-			"runOptions": {
-				"runOn": "folderOpen"
-			},
-			"dependsOn": ["Start Library"]
-		},
-		{
 			"label": "Start Web Application",
 			"type": "shell",
 			"command": "npm",
 			"args": ["run", "start:web"],
-			"group": "none",
 			"isBackground": true,
 			"problemMatcher": {
 				"owner": "typescript",

@@ -36,9 +36,9 @@ export class HeaderComponent {
 	}
 
 	logout(): void {
-		this.authService.logout().subscribe(() => {
-			this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		});
+		// this.authService.logout().subscribe(() => {
+		// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
+		// });
 	}
 
 	getUserDisplay(user: IUser): string {
