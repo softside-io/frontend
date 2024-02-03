@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Observable, Subscription, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
-
-import { AuthService } from '../../services/auth.service';
-import { UserCredential } from '../auth.module';
+import { AuthEmailLoginDto, AuthService } from 'projects/api';
 
 @Component({
 	selector: 'app-login',
@@ -17,6 +15,7 @@ import { UserCredential } from '../auth.module';
 export class LoginComponent implements OnInit, OnDestroy {
 	router = inject(Router);
 	route = inject(ActivatedRoute);
+	// authService = inject(AuthService);
 	authService = inject(AuthService);
 	_appToast = inject(AppToastService);
 	cdr = inject(ChangeDetectorRef);
@@ -42,24 +41,32 @@ export class LoginComponent implements OnInit, OnDestroy {
 		console.log(email, password);
 
 		// this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
+		const body: AuthEmailLoginDto = {
+			email: email,
+			password: password,
+		};
+
+		this.login$ = this.authService.login(body).subscribe((x) => {
+			console.log(x);
+		});
 	}
 
 	loginWithGoogle(): void {
 		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
 	}
 
-	loginFollowUp(login: Observable<UserCredential>): Subscription | null {
-		return login
-			.pipe(
-				switchMap(() => {
-					return this.authService.currentUserProfile$;
-				}),
-			)
-			.subscribe({
-				next: () => this.onSuccess(),
-				error: (error: Error) => this.onFailure(error.message),
-			});
-	}
+	// loginFollowUp(login: Observable<UserCredential>): Subscription | null {
+	// 	return login
+	// 		.pipe(
+	// 			switchMap(() => {
+	// 				return this.authService.currentUserProfile$;
+	// 			}),
+	// 		)
+	// 		.subscribe({
+	// 			next: () => this.onSuccess(),
+	// 			error: (error: Error) => this.onFailure(error.message),
+	// 		});
+	// }
 
 	onSuccess(): void {
 		const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';

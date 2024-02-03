@@ -4,9 +4,12 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { IonicRouteStrategy, createAnimation, provideIonicAngular } from '@ionic/angular/standalone';
 import { take } from 'rxjs';
 
+import { BASE_PATH } from 'projects/api';
+
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/http.interceptor';
 import { modules } from './app.modules';
+import { environment } from '../environments/environment';
 
 const animationDuration = 150;
 
@@ -36,6 +39,10 @@ export const appConfig: ApplicationConfig = {
 		{
 			provide: RouteReuseStrategy,
 			useClass: IonicRouteStrategy,
+		},
+		{
+			provide: BASE_PATH,
+			useValue: environment.apiBasePath,
 		},
 		provideRouter(routes, withComponentInputBinding()),
 		{
