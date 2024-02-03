@@ -64,7 +64,7 @@ function startPrompt(jiraTicketId) {
 		{
 			type: 'input',
 			name: 'jiraNumber',
-			message: 'JIRA Ticket Number: (FS-{number})',
+			message: 'JIRA Ticket Number: (SSA-{number})',
 			default: jiraTicketId,
 			validate: (input) => {
 				if (!!input && input.match(/.+-\d+$/)) {
