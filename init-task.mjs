@@ -4,19 +4,19 @@ import { existsSync } from 'fs';
 let dependencies;
 let inquirer;
 
-initRepo();
+await initRepo();
 
 async function initRepo() {
 	if (modulesInstalled()) {
 		console.log('\nStarting...\n');
 		inquirer = await import('inquirer');
-		startPrompt();
+		await startPrompt();
 	} else {
 		console.log(
 			'\nFailed to find dependencies. Installing dependencies...\n',
 		);
 		if (installDependencies()) {
-			initRepo();
+			await initRepo();
 		} else {
 			console.error(
 				'\nFor this tool to work, you have to install the following: \n\nhttps://www.npmjs.com/package/check-dependencies\nhttps://www.npmjs.com/package/inquirer\n',
