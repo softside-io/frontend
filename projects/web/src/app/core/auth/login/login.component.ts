@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 		this.login$ = this.authService.login(body).subscribe((x) => {
 			console.log(x);
+			localStorage.setItem('token', x.token);
 		});
 	}
 
