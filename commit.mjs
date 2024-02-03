@@ -51,12 +51,16 @@ function startPrompt(jiraTicketId) {
 		{
 			type: 'input',
 			name: 'message',
-			message: 'Commit message:',
+			message: 'Commit message',
+			transformer: (input) => {
+				const messageLength = input.trim().length;
+				return `(${messageLength}): ${input}`;
+			},
 			validate: (input) => {
-				if (!!input) {
-					return true;
+				if (input == '' || input.length > 50) {
+					return 'Please enter a valid commit message.\n - Message not allowed to be empty \n - Maximum characters allowed is 50 characters';
 				} else {
-					return 'Please enter a commit message';
+					return true;
 				}
 			},
 			filter: (input) => input.charAt(0).toLowerCase() + input.slice(1),

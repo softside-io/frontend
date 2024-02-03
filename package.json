@@ -92,6 +92,7 @@
 		"@typescript-eslint/eslint-plugin": "6.19.1",
 		"@typescript-eslint/parser": "6.19.1",
 		"autoprefixer": "^10.4.17",
+		"check-dependencies": "^2.0.0",
 		"commitlint-plugin-jira-rules": "^1.6.4",
 		"concurrently": "^8.2.2",
 		"env-cmd": "^10.1.0",

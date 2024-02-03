@@ -4,7 +4,7 @@
 		{
 			"label": "Focus on Terminal on Startup",
 			"type": "shell",
-			"command": "echo '❤️❤️❤️❤️❤️ Welcome to Softside frontend application ❤️❤️❤️❤️❤️'",
+			"command": "echo '❤️❤️❤️❤️❤️    Welcome to Softside frontend application ❤️❤️❤️❤️❤️'",
 			"presentation": {
 				"focus": true,
 				"panel": "shared",
