@@ -14,13 +14,13 @@ import { User } from '../../shared/models/IUser.model';
 	styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-	authService = inject(SessionService);
+	sessionService = inject(SessionService);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
 
 	@Output() toggleDrawer = new EventEmitter();
 
-	user$ = this.authService.currentUserProfile$;
+	user$ = this.sessionService.currentUserProfile$;
 
 	constructor() {
 		addIcons({
@@ -36,9 +36,7 @@ export class HeaderComponent {
 	}
 
 	logout(): void {
-		// this.authService.logout().subscribe(() => {
-		// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		// });
+		this.sessionService.logout().subscribe();
 	}
 
 	getUserDisplay(user: User): string {
@@ -46,6 +44,6 @@ export class HeaderComponent {
 			return '';
 		}
 
-		return this.authService.getUserDisplay(user);
+		return this.sessionService.getUserDisplay(user);
 	}
 }

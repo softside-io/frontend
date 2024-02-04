@@ -5,6 +5,7 @@ import { ProfileModule } from './pages/profile/profile.module';
 import { ShellComponent } from './shell/shell/shell.component';
 import { AuthModule } from './core/auth/auth.module';
 import { ContactsModule } from './pages/contacts/contacts.module';
+import { authenticationGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 	{
@@ -15,7 +16,7 @@ export const routes: Routes = [
 	{
 		path: '',
 		component: ShellComponent,
-		// auth guard
+		canActivate: [authenticationGuard],
 		children: [
 			{
 				path: 'home',

@@ -2,22 +2,22 @@ import { inject } from '@angular/core';
 import { HttpRequest, HttpEvent, HttpInterceptorFn, HttpHandlerFn, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { catchError, concatMap, filter, finalize, take } from 'rxjs/operators';
-import { ToastController } from '@ionic/angular';
 
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { SessionService } from '../services/session.service';
+import { AppToastService } from '../../shared/services/app-toast.service';
 
 const requestQueue: Array<HttpRequest<unknown>> = [];
 
 let isTokenRefreshInProgress = false;
 let sessionService: SessionService;
-let toastController: ToastController;
+let appToast: AppToastService;
 let appSettingsService: AppSettingsService;
 const refreshTokenSubject$ = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
 	appSettingsService = inject(AppSettingsService);
-	toastController = inject(ToastController);
+	appToast = inject(AppToastService);
 	sessionService = inject(SessionService);
 
 	if (requestQueue.length === 0) {
@@ -62,8 +62,7 @@ const removeRequestsFromQueue = (req: HttpRequest<unknown>): void => {
 const handle401Error = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
 	if (request.url.includes('/api/v1/auth/refresh')) {
 		clearRequestQueue();
-		console.warn('log out');
-		// this._broadcastService.sendMessage({ action: 'logout', data: { includeReturnUrl: true } });
+		sessionService.logout().subscribe();
 
 		return EMPTY;
 	}
@@ -83,15 +82,12 @@ const clearRequestQueue = (): void => {
 	}
 };
 const toast = (error: HttpErrorResponse): void => {
-	toastController
-		.create({
-			message: error.message,
-			duration: 1500,
-			position: 'top',
-		})
-		.then((toast) => {
-			toast.present();
-		}); // 	throw new Error(error.message);
+	const message = getErrors(error.error.errors);
+
+	appToast.createToast(message, 0, {
+		color: 'danger',
+		size: 'small',
+	});
 };
 const refreshTheToken = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
 	return sessionService.refreshToken().pipe(
@@ -118,4 +114,13 @@ const cloneAndUpdateToken = (request: HttpRequest<unknown>, token: string): Http
 	return request.clone({
 		headers: request.headers.set('Authorization', `Bearer ${token}`),
 	});
+};
+const getErrors = <T extends object>(errors: T): string => {
+	let concatinatedString = '';
+
+	(Object.keys(errors) as Array<keyof T>).forEach((key) => {
+		concatinatedString += `\n${errors[key]}`;
+	});
+
+	return concatinatedString;
 };

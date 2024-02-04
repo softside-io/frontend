@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	submitRecord(): void {
 		const { email, password } = this.form.getRawValue();
-		console.log(email, password);
+
 		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
 	}
 

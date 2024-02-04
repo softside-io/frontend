@@ -3,6 +3,8 @@ import { IonInput, IonItem, IonIcon } from '@ionic/angular/standalone';
 import { takeUntil } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 
 import { FormProviderBaseComponent } from '@softside/ui-sdk/lib/_utils';
 
@@ -63,6 +65,14 @@ export class SSInputComponent extends FormProviderBaseComponent implements After
 	showPassword = signal(false);
 	show = signal(false);
 	@ViewChild(IonInput) input!: IonInput;
+
+	constructor() {
+		super();
+		addIcons({
+			eyeOutline,
+			eyeOffOutline,
+		});
+	}
 
 	ngAfterViewInit(): void {
 		if (this.input.clearInput) {

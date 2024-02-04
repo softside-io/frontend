@@ -11,13 +11,13 @@ import { SessionService } from '../../services/session.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifyEmailComponent implements OnDestroy {
-	private authService = inject(SessionService);
+	private sessionService = inject(SessionService);
 	private router = inject(Router);
 
 	signOut$: Subscription | null = null;
 	verifyEmail$: Subscription | null = null;
 
-	user$ = this.authService.currentUserProfile$;
+	user$ = this.sessionService.currentUserProfile$;
 
 	verifyEmail(): void {
 		// this.verifyEmail$ = this.authService
@@ -28,13 +28,10 @@ export class VerifyEmailComponent implements OnDestroy {
 	}
 
 	logout(): void {
-		// this.signOut$ = this.authService.logout().subscribe(() => {
-		// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		// });
+		this.signOut$ = this.sessionService.logout().subscribe();
 	}
 
 	ngOnDestroy(): void {
-		this.signOut$?.unsubscribe();
 		this.verifyEmail$?.unsubscribe();
 	}
 }

@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	submitRecord(): void {
 		const { email, password } = this.form.getRawValue();
-		console.log(email, password);
 		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
 	}
 
@@ -50,7 +49,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 	loginFollowUp(login: Observable<LoginResponseType>): Subscription | null {
 		return login.subscribe({
 			next: () => this.onSuccess(),
-			error: (error: Error) => this.onFailure(error.message),
 		});
 	}
 
@@ -58,13 +56,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
 		this.router.navigateByUrl(returnUrl, { replaceUrl: true });
 		this._appToast.dismissSnackBar();
-	}
-
-	onFailure(message: string): void {
-		this._appToast.createToast(message, 0, {
-			color: 'danger',
-			size: 'small',
-		});
 	}
 
 	ngOnDestroy(): void {

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { home, people, settings, person, star, archive } from 'ionicons/icons';
+import { home, people, settings, person, star, archive, chevronForwardOutline, chevronDownOutline } from 'ionicons/icons';
 
 import { IMenuItem, appPages } from './side-navbar';
 
@@ -24,6 +24,8 @@ export class SideNavbarComponent {
 			person,
 			star,
 			archive,
+			chevronForwardOutline,
+			chevronDownOutline,
 		});
 	}
 

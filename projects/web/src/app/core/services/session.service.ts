@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { of, Observable, Subject, tap } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { of, Observable, Subject, tap, take, finalize } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
 import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
@@ -17,6 +17,7 @@ export class SessionService {
 	authService = inject(AuthService);
 	appSettings = inject(AppSettingsService);
 	route = inject(ActivatedRoute);
+	router = inject(Router);
 	imageService = inject(ImageUploadService);
 	userIsGettingDeleted$ = new Subject<boolean>();
 	loggedInWithGoogle = signal(false);
@@ -114,6 +115,12 @@ export class SessionService {
 		);
 	}
 
+	isLoggedIn(): boolean {
+		console.log(this.storage.getLocalStorage<LoginResponseType>('session', true));
+
+		return this.storage.getLocalStorage<LoginResponseType>('session', true) !== null;
+	}
+
 	// forgetPassword(email: string): Observable<evoid> {
 	// 	return from(
 	// 		sendPasswordResetEmail(this.auth, email, {
@@ -122,9 +129,15 @@ export class SessionService {
 	// 	);
 	// }
 
-	// logout(): Observable<void> {
-	// 	return from(signOut(this.auth));
-	// }
+	logout(): Observable<void> {
+		return this.authService.logout().pipe(
+			take(1),
+			finalize(() => {
+				this.storage.removeLocalStorageKey('session');
+				this.router.navigate(['/auth']);
+			}),
+		);
+	}
 
 	// updateUser(user: IUser): Observable<void> {
 	// 	const ref = doc(this.db, 'users', user.uid);
