@@ -32,7 +32,7 @@
 														width="300"
 														height="300"
 														class="margin-top mat-elevation-z1"
-														[src]="user?.photoURL ? user?.photoURL :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+														[src]="'https://ionicframework.com/docs/img/demos/avatar.svg'" />
 												</ion-avatar>
 												<ion-fab
 													slot="fixed"
@@ -161,7 +161,7 @@
 									<ion-col
 										size="12"
 										start="true">
-										<ion-text class="block">{{authService.loggedInWithPassword()?'Change':'Set'}} your password</ion-text>
+										<ion-text class="block">{{sessionService.loggedInWithPassword()?'Change':'Set'}} your password</ion-text>
 
 										<ion-button
 											class="ion-margin-vertical flex-initial"
@@ -169,7 +169,7 @@
 											color="primary"
 											(click)="modifyPassword()"
 											type="button">
-											{{authService.loggedInWithPassword()?'Change':'Set'}} Password
+											{{sessionService.loggedInWithPassword()?'Change':'Set'}} Password
 										</ion-button>
 										<ion-modal
 											#modalChangePassword

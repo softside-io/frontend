@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
-import { AuthService } from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
 	selector: 'app-register',
@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent implements OnDestroy {
-	authService = inject(AuthService);
+	authService = inject(SessionService);
 	route = inject(ActivatedRoute);
 	router = inject(Router);
 	_appToast = inject(AppToastService);

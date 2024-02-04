@@ -1,9 +1,24 @@
-export type IUser = {
-	uid: string;
-	email?: string;
+export type LoginResponseType = {
+	refreshToken: string;
+	token: string;
+	tokenExpires: number;
+	user: User;
+};
+export type User = {
+	id: string;
+	email: string;
+	provider: string;
+	socialId: string;
 	firstName: string;
 	lastName: string;
-	phone?: string;
-	address?: string;
-	photoURL?: string;
+	role: Role;
+	status: Status;
+	createdAt: string;
+	updatedAt: string;
+};
+export type Role = {
+	id: number;
+};
+export type Status = {
+	id: number;
 };

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthService } from 'projects/web/src/app/core/services/auth.service';
+import { SessionService } from 'projects/web/src/app/core/services/session.service';
 
 @Component({
 	selector: 'app-home-view',
@@ -11,5 +11,5 @@ import { AuthService } from 'projects/web/src/app/core/services/auth.service';
 })
 export class HomeViewComponent {
 	router = inject(Router);
-	authService = inject(AuthService);
+	authService = inject(SessionService);
 }

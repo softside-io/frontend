@@ -1,13 +1,30 @@
-import { ApiModule, Configuration } from "projects/api";
+import { inject } from '@angular/core';
 
-import { environment } from "../environments/environment";
+import { ApiModule, Configuration } from 'projects/api';
 
-export const modules = [
-    ApiModule.forRoot(apiConfigFactory),
-];
+import { environment } from '../environments/environment';
+import { StorageAccessorService } from './shared/services/storage-accessor.service';
+import { LoginResponseType } from './shared/models/IUser.model';
+
+export const modules = [ApiModule.forRoot(apiConfigFactory)];
 export function apiConfigFactory(): Configuration {
-    return new Configuration({
-        basePath: environment.apiBasePath,
-        accessToken: () => localStorage.getItem('token')!,
-    });
+	const storage = inject(StorageAccessorService);
+
+	return new Configuration({
+		basePath: environment.apiBasePath,
+		accessToken: (): string => {
+			const session = storage.getLocalStorage<LoginResponseType>('session', true);
+			const checkSession = !!session && typeof session !== 'string';
+
+			if (!checkSession) {
+				return '';
+			}
+
+			if (new Date(session.tokenExpires).getTime() < Date.now()) {
+				return session.refreshToken;
+			} else {
+				return session.token;
+			}
+		},
+	});
 }

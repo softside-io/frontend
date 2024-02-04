@@ -22,11 +22,6 @@
 				<ion-chip>
 					<ion-avatar>
 						<img
-							*ngIf="user?.photoURL"
-							alt="Profile pic"
-							[src]="user?.photoURL" />
-						<img
-							*ngIf="!user?.photoURL"
 							alt="Profile pic"
 							src="assets/icon/pp.jpg" />
 					</ion-avatar>
@@ -51,9 +46,7 @@
 								name="person-circle-outline"></ion-icon>
 							<ion-label>My profile</ion-label>
 						</ion-item>
-						<ion-item
-							button
-							(click)="revealId(user?.uid!)">
+						<ion-item button>
 							<ion-icon
 								class="ion-padding-horizontal"
 								name="id-card-outline"></ion-icon>

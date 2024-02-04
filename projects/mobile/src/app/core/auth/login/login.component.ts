@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Observable, Subscription, switchMap } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
-import { AuthService } from '../../services/auth.service';
-import { UserCredential } from '../auth.module';
+import { SessionService } from '../../services/session.service';
+import { LoginResponseType } from '../../../shared/models/IUser.model';
 
 @Component({
 	selector: 'app-login',
@@ -17,7 +17,7 @@ import { UserCredential } from '../auth.module';
 export class LoginComponent implements OnInit, OnDestroy {
 	router = inject(Router);
 	route = inject(ActivatedRoute);
-	authService = inject(AuthService);
+	sessionService = inject(SessionService);
 	_appToast = inject(AppToastService);
 	cdr = inject(ChangeDetectorRef);
 
@@ -40,25 +40,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 	submitRecord(): void {
 		const { email, password } = this.form.getRawValue();
 		console.log(email, password);
-
-		// this.login$ = this.loginFollowUp(this.authService.loginWithEmailAndPassword(email, password));
+		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
 	}
 
 	loginWithGoogle(): void {
 		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
 	}
 
-	loginFollowUp(login: Observable<UserCredential>): Subscription | null {
-		return login
-			.pipe(
-				switchMap(() => {
-					return this.authService.currentUserProfile$;
-				}),
-			)
-			.subscribe({
-				next: () => this.onSuccess(),
-				error: (error: Error) => this.onFailure(error.message),
-			});
+	loginFollowUp(login: Observable<LoginResponseType>): Subscription | null {
+		return login.subscribe({
+			next: () => this.onSuccess(),
+			error: (error: Error) => this.onFailure(error.message),
+		});
 	}
 
 	onSuccess(): void {

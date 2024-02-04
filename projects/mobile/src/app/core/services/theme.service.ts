@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ToggleCustomEvent } from '@ionic/angular/standalone';
 
-import { AuthService } from './auth.service';
+import { SessionService } from './session.service';
 import { StorageAccessorService } from '../../shared/services/storage-accessor.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ThemeService {
 	storage = inject(StorageAccessorService);
 	themeStorage = this.storage.getLocalStorage('theme');
 	isDarkMode: boolean = this.themeStorage === 'true';
-	authService = inject(AuthService);
+	authService = inject(SessionService);
 
 	constructor() {
 		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');

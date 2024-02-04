@@ -43,9 +43,9 @@ export class StorageAccessorService {
 	 * @returns json|value
 	 */
 
-	getLocalStorage<T>(key: string, parseAsJSON = false): T | string | void {
+	getLocalStorage<T = string>(key: string, parseAsJSON = false): T | string | null {
 		if (!this.isBrowser) {
-			return;
+			return null;
 		}
 
 		if (this.hasLocalStorage) {

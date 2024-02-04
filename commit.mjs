@@ -57,8 +57,8 @@ function startPrompt(jiraTicketId) {
 				return `(${messageLength}): ${input}`;
 			},
 			validate: (input) => {
-				if (input == '' || input.length > 50) {
-					return 'Please enter a valid commit message.\n - Message not allowed to be empty \n - Maximum characters allowed is 50 characters';
+				if (input == '' || input.length > 50 || input.length < 10) {
+					return 'Please enter a valid commit message.\n - Message not allowed to be empty \n - Maximum characters allowed is 50 characters \n - Minimum characters allowed is 10 characters';
 				} else {
 					return true;
 				}

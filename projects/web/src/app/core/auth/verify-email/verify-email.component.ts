@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
 	selector: 'app-verify-email',
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifyEmailComponent implements OnDestroy {
-	private authService = inject(AuthService);
+	private authService = inject(SessionService);
 	private router = inject(Router);
 
 	signOut$: Subscription | null = null;

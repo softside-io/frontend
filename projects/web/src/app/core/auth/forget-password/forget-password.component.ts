@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
-import { AuthService } from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 import { AppToastService, ToastClass } from '../../../shared/services/app-toast.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { AppToastService, ToastClass } from '../../../shared/services/app-toast.
 })
 export class ForgetPasswordComponent implements OnDestroy {
 	router = inject(Router);
-	authService = inject(AuthService);
+	authService = inject(SessionService);
 	_appToast = inject(AppToastService);
 
 	form: ConvertToForm<{ email: string }> = FB.group({

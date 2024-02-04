@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicons/icons';
 
-import { IUser } from 'projects/web/src/app/shared/models/IUser.model';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 
-import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { User } from '../../shared/models/IUser.model';
 
 @Component({
 	selector: 'app-header',
@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
 	styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-	authService = inject(AuthService);
+	authService = inject(SessionService);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
 
@@ -41,7 +41,7 @@ export class HeaderComponent {
 		// });
 	}
 
-	getUserDisplay(user: IUser): string {
+	getUserDisplay(user: User): string {
 		if (!user) {
 			return '';
 		}

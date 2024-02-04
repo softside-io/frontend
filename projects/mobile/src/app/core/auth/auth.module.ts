@@ -55,7 +55,7 @@ import { AuthShellComponent } from './auth-shell/auth-shell.component';
 	],
 	providers: [],
 })
-export class AuthModule {}
+export class AuthModule { }
 export type UserCredential = {
 	user: unknown;
 };

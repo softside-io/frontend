@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, ChangeDetectionStrategy, OnDestroy, ElementRef, signal } from '@angular/core';
+import { Component, ViewChild, inject, ChangeDetectionStrategy, OnDestroy, ElementRef, signal, OnInit } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,13 +8,14 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 
-import { IUser } from 'projects/web/src/app/shared/models/IUser.model';
-import { AuthService } from 'projects/web/src/app/core/services/auth.service';
+import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
+import { AuthService } from 'projects/api';
 
 import { ImageUploadService } from '../../../shared/services/image-upload.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { User } from '../../../shared/models/IUser.model';
 
 @Component({
 	selector: 'app-profile-view',
@@ -22,13 +23,14 @@ import { ThemeService } from '../../../core/services/theme.service';
 	styleUrls: ['./profile-view.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileViewComponent implements OnDestroy {
+export class ProfileViewComponent implements OnDestroy, OnInit {
 	@ViewChild('modalChangePassword') modalChangePassword!: IonModal;
 	@ViewChild('modalVerifyEmail') modalValidatePassword!: IonModal;
 	@ViewChild('modalImageCrop') modalImageCrop!: IonModal;
 	@ViewChild('inputField') inputField!: ElementRef<HTMLInputElement>;
 
 	authService = inject(AuthService);
+	sessionService = inject(SessionService);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
 	theme = inject(ThemeService);
@@ -80,14 +82,12 @@ export class ProfileViewComponent implements OnDestroy {
 		password: FB.string(),
 	});
 
-	$user = this.authService.currentUserProfile$.pipe(
-		tap((user: IUser | null) => {
+	$user = this.sessionService.currentUserProfile$.pipe(
+		tap((user: User | null) => {
 			this.profileForm.patchValue({
 				firstName: user?.firstName,
 				lastName: user?.lastName,
 				email: user?.email,
-				phone: user?.phone,
-				address: user?.address,
 			});
 		}),
 	);
@@ -98,14 +98,22 @@ export class ProfileViewComponent implements OnDestroy {
 		});
 	}
 
-	uploadFile(_user: IUser): void {
+	ngOnInit(): void {
+		this.authService.me().subscribe({
+			next: (user: User) => {
+				console.log(user);
+			},
+		});
+	}
+
+	uploadFile(_user: User): void {
 		// this.uploadingImage$ = this.imageUploadService
 		// 	.uploadImage(this.imageCropped?.blob as File, `${environment.profileCDNPath}${user.uid}`)
 		// 	.pipe(
 		// 		take(1),
 		// 		switchMap((photoURL: string) => {
 		// 			user.photoURL = photoURL;
-		// 			return this.authService.updateUser(user);
+		// 			return this.sessionService.updateUser(user);
 		// 		}),
 		// 	)
 		// 	.subscribe({
@@ -125,7 +133,7 @@ export class ProfileViewComponent implements OnDestroy {
 		// 	});
 	}
 
-	submitRecord(user: IUser): void {
+	submitRecord(user: User): void {
 		if (this.profileForm.invalid) {
 			return;
 		}
@@ -133,7 +141,7 @@ export class ProfileViewComponent implements OnDestroy {
 		const { firstName, lastName, phone, address } = this.profileForm.getRawValue();
 		const updatedUser = { ...user, firstName, lastName, phone, address };
 		console.log(updatedUser);
-		// this.saveProfile$ = this.authService
+		// this.saveProfile$ = this.sessionService
 		// 	.updateUser(updatedUser)
 		// 	.pipe(take(1))
 		// 	.subscribe({
@@ -150,12 +158,12 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	deleteUser(): void {
-		// this.deleteUser$ = this.authService
+		// this.deleteUser$ = this.sessionService
 		// 	.userProvider((user: AuthUser): Observable<void> => {
 		// 		if (!user) {
 		// 			return of(undefined);
 		// 		}
-		// 		return this.authService.deleteUser(user);
+		// 		return this.sessionService.deleteUser(user);
 		// 	})
 		// 	.subscribe({
 		// 		next: () => {
@@ -180,7 +188,7 @@ export class ProfileViewComponent implements OnDestroy {
 			confirmPasswordGroup: { password },
 		} = this.formChangePassword.getRawValue();
 
-		if (this.authService.loggedInWithGoogle() && !this.authService.loggedInWithPassword()) {
+		if (this.sessionService.loggedInWithGoogle() && !this.sessionService.loggedInWithPassword()) {
 			this.linkAccount(password);
 		} else {
 			this.updatePassword(password);
@@ -188,7 +196,7 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	modifyPassword(): void {
-		this.authService.loggedInWithPassword() ? this.modalValidatePassword.present() : this.modalChangePassword.present();
+		this.sessionService.loggedInWithPassword() ? this.modalValidatePassword.present() : this.modalChangePassword.present();
 	}
 
 	confirmValidatePassword(): void {
@@ -199,13 +207,13 @@ export class ProfileViewComponent implements OnDestroy {
 		const { password } = this.formValidatePassword.getRawValue();
 		console.log(password);
 
-		// this.validatePassword$ = this.authService
+		// this.validatePassword$ = this.sessionService
 		// 	.userProvider((user: AuthUser) => {
 		// 		if (!user) {
 		// 			return of(undefined);
 		// 		}
 
-		// 		return this.authService.validatePassword(user, password);
+		// 		return this.sessionService.validatePassword(user, password);
 		// 	})
 		// 	.subscribe({
 		// 		next: () => {
@@ -219,12 +227,12 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	private updatePassword(_currentPassword: string): void {
-		// this.modifyPassword$ = this.authService
+		// this.modifyPassword$ = this.sessionService
 		// 	.userProvider((user: AuthUser) => {
 		// 		if (!user) {
 		// 			return of(undefined);
 		// 		}
-		// 		return this.authService.updatePassword(user, currentPassword);
+		// 		return this.sessionService.updatePassword(user, currentPassword);
 		// 	})
 		// 	.subscribe({
 		// 		next: () => {
@@ -233,7 +241,7 @@ export class ProfileViewComponent implements OnDestroy {
 		// 				size: 'medium',
 		// 			});
 		// 			this.modalChangePassword.dismiss();
-		// 			// this.authService.logout().subscribe((): void => {
+		// 			// this.sessionService.logout().subscribe((): void => {
 		// 			// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
 		// 			// });
 		// 		},
@@ -244,16 +252,16 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	private linkAccount(_password: string): void {
-		// this.modifyPassword$ = this.authService
+		// this.modifyPassword$ = this.sessionService
 		// 	.userProvider((user: unknown | null) => {
 		// 		if (!user) {
 		// 			return of(null);
 		// 		}
-		// 		return this.authService.linkUser(user, password);
+		// 		return this.sessionService.linkUser(user, password);
 		// 	})
 		// 	.subscribe({
 		// 		next: (_creds: UserCredential | null) => {
-		// 			this.authService.loggedInWithPassword.set(true);
+		// 			this.sessionService.loggedInWithPassword.set(true);
 		// 			this.modalChangePassword.dismiss();
 		// 		},
 		// 		error: () => null,
