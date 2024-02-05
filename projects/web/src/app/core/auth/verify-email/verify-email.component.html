@@ -1,4 +1,4 @@
-<ion-content *ngLet="user$ | async as user">
+<ion-content *ngLet="user">
 	<div class="flex items-center justify-center h-full">
 		<ion-card class="w-full max-w-lg">
 			<ion-card-header class="ion-text-center ion-padding ion-margin-bottom">
@@ -11,7 +11,7 @@
 						class="ion-no-padding ion-padding-vertical">
 						<ion-text class="ion-text-center">
 							<p>
-								An email has been sent to {{ user?.email }}.
+								An email has been sent to {{ user.email }}.
 								<br />
 								You can now close this window
 							</p>

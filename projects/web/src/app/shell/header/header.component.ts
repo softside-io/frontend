@@ -6,7 +6,7 @@ import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicon
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 
 import { SessionService } from '../../core/services/session.service';
-import { User } from '../../shared/models/IUser.model';
+import { User } from '../../shared/models/user.model';
 
 @Component({
 	selector: 'app-header',
@@ -20,7 +20,7 @@ export class HeaderComponent {
 
 	@Output() toggleDrawer = new EventEmitter();
 
-	user$ = this.sessionService.currentUserProfile$;
+	user = this.sessionService.currentUser;
 
 	constructor() {
 		addIcons({

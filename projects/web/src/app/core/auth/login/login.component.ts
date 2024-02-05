@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
-import { LoginResponseType } from '../../../shared/models/IUser.model';
+import { LoginResponseType } from '../../../shared/models/user.model';
 
 @Component({
 	selector: 'app-login',
@@ -15,11 +16,11 @@ import { LoginResponseType } from '../../../shared/models/IUser.model';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit, OnDestroy {
-	router = inject(Router);
-	route = inject(ActivatedRoute);
-	sessionService = inject(SessionService);
-	_appToast = inject(AppToastService);
-	cdr = inject(ChangeDetectorRef);
+	private router = inject(Router);
+	private activatedRoute = inject(ActivatedRoute);
+	private sessionService = inject(SessionService);
+	private _appToast = inject(AppToastService);
+	private destroyRef = inject(DestroyRef);
 
 	form: LoginForm = FB.group({
 		email: FB.string(),
@@ -30,14 +31,37 @@ export class LoginComponent implements OnInit, OnDestroy {
 	loginWithGoogle$: Subscription | null = null;
 
 	ngOnInit(): void {
-		const success = this.route.snapshot.queryParams['passwordChanged'];
+		const registered = this.router.getCurrentNavigation()?.extras.state?.['registered'];
+		const verified = this.router.getCurrentNavigation()?.extras.state?.['verified'];
+		const resetted = this.router.getCurrentNavigation()?.extras.state?.['resetted'];
 
-		if (success) {
-			this._appToast.createToast('You have successfully changed your password', 0);
+		if (registered) {
+			this._appToast.createToast(`Verification email sent! Please check your inbox to complete the registration process.`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+
+		if (verified) {
+			this._appToast.createToast(`Your email has been successfully verified!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+
+		if (resetted) {
+			this._appToast.createToast(`Your password has been successfully changed!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
 		}
 	}
 
 	submitRecord(): void {
+		if (this.form.invalid) {
+			return;
+		}
+
 		const { email, password } = this.form.getRawValue();
 		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
 	}
@@ -47,15 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	}
 
 	loginFollowUp(login: Observable<LoginResponseType>): Subscription | null {
-		return login.subscribe({
-			next: () => this.onSuccess(),
-		});
-	}
-
-	onSuccess(): void {
-		const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
-		this.router.navigateByUrl(returnUrl, { replaceUrl: true });
-		this._appToast.dismissSnackBar();
+		return login.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
 	}
 
 	ngOnDestroy(): void {

@@ -1,13 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { of, Observable, Subject, tap, take, finalize } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
 import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
 import { ImageUploadService } from 'projects/web/src/app/shared/services/image-upload.service';
-import { AuthService } from 'projects/api';
+import { AuthConfirmEmailDto, AuthForgotPasswordDto, AuthRegisterLoginDto, AuthResetPasswordDto, AuthService } from 'projects/api';
 
-import { LoginResponseType, User } from '../../shared/models/IUser.model';
+import { LoginResponseType, StatusEnum, User } from '../../shared/models/user.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -16,23 +16,15 @@ export class SessionService {
 	storage = inject(StorageAccessorService);
 	authService = inject(AuthService);
 	appSettings = inject(AppSettingsService);
-	route = inject(ActivatedRoute);
+	activatedRoute = inject(ActivatedRoute);
 	router = inject(Router);
 	imageService = inject(ImageUploadService);
 	userIsGettingDeleted$ = new Subject<boolean>();
 	loggedInWithGoogle = signal(false);
 	loggedInWithPassword = signal(false);
 
-	get currentUserProfile$(): Observable<User | null> {
-		return of({
-			firstName: 'Hisham',
-			lastName: 'Buteen',
-			email: 'hisham.buteen@gmail.com',
-		} as User);
-	}
-
-	userProvider<T = unknown>(_callback: (user: unknown) => Observable<T>): Observable<T> {
-		return of({} as T);
+	get currentUser(): User | null {
+		return this.getSession().user;
 	}
 
 	// populateUser(): IUser {
@@ -79,18 +71,50 @@ export class SessionService {
 		return name;
 	}
 
-	// registerNewAccount(_email: string, _password: string): Observable<UserCredential> {
-	// 	// return from(createUserWithEmailAndPassword(this.auth, email, password));
-	// 	return of({} as UserCredential);
-	// }
+	registerNewAccount(email: string, password: string): Observable<void> {
+		const newUser: AuthRegisterLoginDto = {
+			email,
+			password,
+			firstName: 'test',
+			lastName: 'test',
+		};
 
-	// sendVerificationEmail(user: User): Observable<void> {
-	// 	return from(
-	// 		sendEmailVerification(user, {
-	// 			url: this.appSettings.getUrlOrigin() + (this.route.snapshot.queryParams['returnUrl'] || '/home'),
-	// 		}),
-	// 	);
-	// }
+		return this.authService.register(newUser).pipe(
+			tap({
+				next: () => this.router.navigateByUrl(`/auth/login`, { replaceUrl: true, state: { registered: true } }),
+			}),
+		);
+	}
+
+	verifyEmail(hash: string): Observable<void> {
+		const dto: AuthConfirmEmailDto = {
+			hash,
+		};
+
+		return this.authService.confirmEmail(dto).pipe(
+			tap({
+				next: () => {
+					if (this.isLoggedIn()) {
+						const currentUser = this.getSession();
+
+						this.updateUser({
+							...currentUser,
+							user: {
+								...currentUser.user,
+								status: {
+									id: 1,
+								},
+							},
+						});
+
+						this.router.navigateByUrl('/', { replaceUrl: true, state: { verified: true } });
+					}
+
+					this.router.navigateByUrl('/auth/login', { replaceUrl: true, state: { verified: true } });
+				},
+			}),
+		);
+	}
 
 	// loginWithGoogle(): Observable<UserCredential> {
 	// 	return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
@@ -99,7 +123,11 @@ export class SessionService {
 	loginWithEmailAndPassword(email: string, password: string): Observable<LoginResponseType> {
 		return this.authService.login({ email, password }).pipe(
 			tap({
-				next: (session) => this.storage.setLocalStorage('session', session, true),
+				next: (session) => {
+					this.updateUser(session);
+					const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/home';
+					this.router.navigateByUrl(returnUrl, { replaceUrl: true });
+				},
 			}),
 		);
 	}
@@ -115,26 +143,47 @@ export class SessionService {
 		);
 	}
 
-	isLoggedIn(): boolean {
-		console.log(this.storage.getLocalStorage<LoginResponseType>('session', true));
-
-		return this.storage.getLocalStorage<LoginResponseType>('session', true) !== null;
+	updateUser(session: LoginResponseType): void {
+		this.storage.setLocalStorage('session', session, true);
 	}
 
-	// forgetPassword(email: string): Observable<evoid> {
-	// 	return from(
-	// 		sendPasswordResetEmail(this.auth, email, {
-	// 			url: this.appSettings.getUrlOrigin() + '/auth/login?passwordChanged=true',
-	// 		}),
-	// 	);
-	// }
+	isLoggedIn(): boolean {
+		const session = this.getSession();
+
+		return session !== null;
+	}
+
+	getSession(): LoginResponseType {
+		return this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+	}
+
+	isVerified(): boolean {
+		const session = this.getSession();
+
+		return session.user.status.id == StatusEnum.active;
+	}
+
+	forgetPassword(dto: AuthForgotPasswordDto): Observable<void> {
+		return this.authService.forgotPassword(dto);
+	}
+
+	resetPassword(dto: AuthResetPasswordDto): Observable<void> {
+		return this.authService.resetPassword(dto).pipe(
+			tap({
+				next: () => {
+					this.router.navigateByUrl('/auth/login', { replaceUrl: true, state: { resetted: true } });
+				},
+			}),
+		);
+	}
 
 	logout(): Observable<void> {
 		return this.authService.logout().pipe(
-			take(1),
-			finalize(() => {
-				this.storage.removeLocalStorageKey('session');
-				this.router.navigate(['/auth']);
+			tap({
+				next: () => {
+					this.storage.removeLocalStorageKey('session');
+					this.router.navigate(['/auth']);
+				},
 			}),
 		);
 	}
@@ -180,5 +229,11 @@ export class SessionService {
 	// 			this.userIsGettingDeleted$.next(false);
 	// 		}),
 	// 	);
+	// }
+	// TODO: Refactor components
+	// followup<T>(forget: Observable<T>, next: ((value: T) => void) | undefined, destroy: DestroyRef): Subscription | null {
+	// 	return forget.pipe(takeUntilDestroyed(destroy)).subscribe({
+	// 		next,
+	// 	});
 	// }
 }

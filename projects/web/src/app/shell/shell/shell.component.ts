@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
-
-import { SessionService } from '../../core/services/session.service';
 import { IMenuItem, appPages } from '../side-navbar/side-navbar';
 import { AppToastService } from '../../shared/services/app-toast.service';
 
@@ -14,21 +12,16 @@ import { AppToastService } from '../../shared/services/app-toast.service';
 export class ShellComponent {
 	appPages: Array<IMenuItem> = appPages;
 	_appToast = inject(AppToastService);
-	authService = inject(SessionService);
-	storage = inject(StorageAccessorService);
+	router = inject(Router);
 
-	user$ = this.authService.currentUserProfile$;
+	ngOnInit(): void {
+		const verified = this.router.getCurrentNavigation()?.extras.state?.['verified'];
 
-	// 	ngOnInit(): void {
-	// 		this.user$.pipe(take(1)).subscribe((user: User | null) => {
-	// 			if (this.storage.checkExistance(user!.uid)) {
-	// 				this.storage.removeLocalStorageKey(user!.uid);
-
-	// 				this._appToast.createToast(`Welcome ${this.authService.getUserDisplay(user!)}`, 3000, {
-	// 					color: 'secondary',
-	// 					size: 'medium',
-	// 				});
-	// 			}
-	// 		});
-	// 	}
+		if (verified) {
+			this._appToast.createToast(`Your email has been successfully verified!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+	}
 }

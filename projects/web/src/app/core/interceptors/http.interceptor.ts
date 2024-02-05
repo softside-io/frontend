@@ -82,7 +82,7 @@ const clearRequestQueue = (): void => {
 	}
 };
 const toast = (error: HttpErrorResponse): void => {
-	const message = getErrors(error.error.errors);
+	const message = getErrors(error.error);
 
 	appToast.createToast(message, 0, {
 		color: 'danger',
@@ -115,12 +115,28 @@ const cloneAndUpdateToken = (request: HttpRequest<unknown>, token: string): Http
 		headers: request.headers.set('Authorization', `Bearer ${token}`),
 	});
 };
-const getErrors = <T extends object>(errors: T): string => {
-	let concatinatedString = '';
+const getErrors = (error: GlobalError): string => {
+	if ('message' in error) {
+		return error.message;
+	}
 
-	(Object.keys(errors) as Array<keyof T>).forEach((key) => {
-		concatinatedString += `\n${errors[key]}`;
-	});
+	let concatenatedString = '';
 
-	return concatinatedString;
+	if ('errors' in error) {
+		Object.keys(error.errors).forEach((key) => {
+			concatenatedString += `\n${error.errors[key]}`;
+		});
+	}
+
+	return concatenatedString;
 };
+
+type GlobalError =
+	| {
+			message: string;
+	  }
+	| {
+			errors: {
+				[T: string]: string;
+			};
+	  };

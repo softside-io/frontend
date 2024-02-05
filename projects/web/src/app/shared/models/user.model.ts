@@ -17,8 +17,16 @@ export type User = {
 	updatedAt: string;
 };
 export type Role = {
-	id: number;
+	id: RoleEnum;
 };
 export type Status = {
-	id: number;
+	id: StatusEnum;
 };
+export enum StatusEnum {
+	'active' = 1,
+	'inactive' = 2,
+}
+export enum RoleEnum {
+	'admin' = 1,
+	'user' = 2,
+}

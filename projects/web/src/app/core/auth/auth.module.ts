@@ -23,8 +23,9 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ConfirmEmailComponent } from './verify-email/verify-email.component';
 import { AuthShellComponent } from './auth-shell/auth-shell.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
 	declarations: [
@@ -32,7 +33,8 @@ import { AuthShellComponent } from './auth-shell/auth-shell.component';
 		LoginComponent,
 		RegisterComponent,
 		ForgetPasswordComponent,
-		VerifyEmailComponent,
+		ResetPasswordComponent,
+		ConfirmEmailComponent,
 	],
 	imports: [
 		SharedModule,
@@ -55,7 +57,7 @@ import { AuthShellComponent } from './auth-shell/auth-shell.component';
 	],
 	providers: [],
 })
-export class AuthModule { }
+export class AuthModule {}
 export type UserCredential = {
 	user: unknown;
 };

@@ -16,7 +16,7 @@
 	</ion-buttons>
 	<ion-searchbar class="m-auto max-w-[400px] hidden md:block custom"></ion-searchbar>
 	<ion-buttons slot="end">
-		<ng-container *ngLet="user$ | async as user">
+		<ng-container *ngLet="user">
 			<ion-button
 				shape="round"
 				id="profile-menu">
@@ -30,10 +30,11 @@
 				</ion-chip>
 			</ion-button>
 			<ion-popover
+				[ngStyle]="{'--max-width': '170px'}"
 				trigger="profile-menu"
 				triggerAction="click"
 				dismissOnSelect="true"
-				size="cover"
+				size="auto"
 				side="bottom"
 				alignment="end">
 				<ng-template>

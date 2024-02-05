@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
@@ -13,11 +13,10 @@ import { SessionService } from '../../services/session.service';
 	styleUrls: ['./register.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent implements OnDestroy {
-	authService = inject(SessionService);
-	route = inject(ActivatedRoute);
-	router = inject(Router);
-	_appToast = inject(AppToastService);
+export class RegisterComponent {
+	protected sessionService = inject(SessionService);
+	protected _appToast = inject(AppToastService);
+	protected destroyRef = inject(DestroyRef);
 
 	form: RegisterForm = FB.group({
 		email: FB.string(''),
@@ -38,35 +37,12 @@ export class RegisterComponent implements OnDestroy {
 			email,
 			confirmPasswordGroup: { password },
 		} = this.form.getRawValue();
-		console.log(email, password);
 
-		// this.register$ = this.registerFollowUp(
-		// 	this.authService.registerNewAccount(email, password).pipe(
-		// 		switchMap((creds: UserCredential) => {
-		// 			return this.authService.sendVerificationEmail(creds.user);
-		// 		}),
-		// 	),
-		// );
+		this.register$ = this.registerFollowUp(this.sessionService.registerNewAccount(email, password));
 	}
 
 	registerFollowUp(register: Observable<void>): Subscription | null {
-		return register.subscribe({
-			next: () => this.onSuccess(),
-			error: (error: Error) => this.onFailure(error.message),
-		});
-	}
-
-	onSuccess(): void {
-		const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
-		this.router.navigateByUrl(returnUrl, { replaceUrl: true });
-	}
-
-	onFailure(message: string): void {
-		this._appToast.createToast(message, 0, { color: 'danger', size: 'medium' });
-	}
-
-	ngOnDestroy(): void {
-		this.register$?.unsubscribe();
+		return register.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
 	}
 }
 

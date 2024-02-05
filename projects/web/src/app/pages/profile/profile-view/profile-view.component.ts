@@ -1,5 +1,4 @@
 import { Component, ViewChild, inject, ChangeDetectionStrategy, OnDestroy, ElementRef, signal, OnInit } from '@angular/core';
-import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToggleCustomEvent } from '@ionic/core';
@@ -15,7 +14,7 @@ import { AuthService } from 'projects/api';
 
 import { ImageUploadService } from '../../../shared/services/image-upload.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { User } from '../../../shared/models/IUser.model';
+import { User } from '../../../shared/models/user.model';
 
 @Component({
 	selector: 'app-profile-view',
@@ -82,15 +81,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		password: FB.string(),
 	});
 
-	$user = this.sessionService.currentUserProfile$.pipe(
-		tap((user: User | null) => {
-			this.profileForm.patchValue({
-				firstName: user?.firstName,
-				lastName: user?.lastName,
-				email: user?.email,
-			});
-		}),
-	);
+	user = this.sessionService.currentUser!;
 
 	constructor() {
 		addIcons({
@@ -99,6 +90,12 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	}
 
 	ngOnInit(): void {
+		this.profileForm.patchValue({
+			firstName: this.user.firstName,
+			lastName: this.user.lastName,
+			email: this.user.email,
+		});
+
 		this.authService.me().subscribe({
 			next: (user: User) => {
 				console.log(user);
