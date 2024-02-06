@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { addIcons } from 'ionicons';
+import { mailOutline } from 'ionicons/icons';
 
 import { SessionService } from '../../services/session.service';
+import { AppToastService } from '../../../shared/services/app-toast.service';
 
 @Component({
 	selector: 'app-verify-email',
@@ -11,43 +13,57 @@ import { SessionService } from '../../services/session.service';
 	styleUrls: ['./verify-email.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfirmEmailComponent implements OnDestroy, OnInit {
+export class ConfirmEmailComponent implements OnInit {
 	protected sessionService = inject(SessionService);
 	protected activatedRoute = inject(ActivatedRoute);
 	protected router = inject(Router);
 	protected destroyRef = inject(DestroyRef);
+	protected _appToast = inject(AppToastService);
 
 	signOut$: Subscription | null = null;
-	verifyEmail$: Subscription | null = null;
+	confirmEmail$: Subscription | null = null;
+	resendEmail$: Subscription | null = null;
 
 	user = this.sessionService.currentUser;
+
+	constructor() {
+		addIcons({
+			mailOutline,
+		});
+	}
 
 	ngOnInit(): void {
 		const hash = this.activatedRoute.snapshot.queryParams['hash'];
 
 		if (hash) {
-			this.verifyEmail$ = this.verifyFollowUp(this.sessionService.verifyEmail(hash));
+			this.confirmEmail$ = this.sessionService.followup(
+				this.sessionService.confirmEmail(hash),
+				undefined,
+				this.destroyRef,
+			);
 		}
 	}
 
-	verifyFollowUp(verify: Observable<void>): Subscription | null {
-		return verify.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+	resendEmail(): void {
+		this.resendEmail$ = this.sessionService.followup(
+			this.sessionService.resendEmail(),
+			this.onSuccess,
+			this.destroyRef,
+		);
 	}
 
-	verifyEmail(): void {
-		// this.verifyEmail$ = this.authService
-		// 	.userProvider((user: AuthUser) => {
-		// 		return this.authService.sendVerificationEmail(user!);
-		// 	})
-		// 	.subscribe();
-		// TODO: Create API endpoint to resend verification email.
-	}
+	onSuccess = (): void => {
+		this._appToast.createToast(
+			`Verification email sent! Please check your inbox to complete the registration process.`,
+			5000,
+			{
+				color: 'success',
+				size: 'medium',
+			},
+		);
+	};
 
 	logout(): void {
-		this.signOut$ = this.sessionService.logout().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-	}
-
-	ngOnDestroy(): void {
-		this.verifyEmail$?.unsubscribe();
+		this.signOut$ = this.sessionService.followup(this.sessionService.logout(), undefined, this.destroyRef);
 	}
 }

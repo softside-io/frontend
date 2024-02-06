@@ -11,7 +11,7 @@
 				"parser": "typescript",
 				"bracketSpacing": true,
 				"trailingComma": "all",
-				"printWidth": 170,
+				"printWidth": 120,
 				"singleAttributePerLine": true
 			}
 		},
@@ -21,7 +21,7 @@
 				"parser": "typescript",
 				"bracketSpacing": true,
 				"trailingComma": "all",
-				"printWidth": 170,
+				"printWidth": 120,
 				"singleAttributePerLine": true
 			}
 		},
@@ -42,7 +42,7 @@
 				"parser": "typescript",
 				"bracketSpacing": true,
 				"trailingComma": "all",
-				"printWidth": 110,
+				"printWidth": 120,
 				"singleAttributePerLine": true
 			}
 		},
@@ -57,7 +57,7 @@
 				"singleQuote": true,
 				"trailingComma": "none",
 				"singleAttributePerLine": true,
-				"printWidth": 170
+				"printWidth": 120
 			}
 		},
 		{
@@ -68,10 +68,9 @@
 			}
 		},
 		{
-			"files": "*.js",
+			"files": "*.mjs",
 			"options": {
-				"parser": "flow",
-				"printWidth": 170
+				"printWidth": 100
 			}
 		}
 	]

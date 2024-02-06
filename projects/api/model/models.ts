@@ -5,6 +5,7 @@ export * from './authFacebookLoginDto';
 export * from './authForgotPasswordDto';
 export * from './authGoogleLoginDto';
 export * from './authRegisterLoginDto';
+export * from './authResendEmailDto';
 export * from './authResetPasswordDto';
 export * from './authTwitterLoginDto';
 export * from './authUpdateDto';

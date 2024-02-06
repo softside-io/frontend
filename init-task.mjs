@@ -12,9 +12,7 @@ async function initRepo() {
 		inquirer = await import('inquirer');
 		await startPrompt();
 	} else {
-		console.log(
-			'\nFailed to find dependencies. Installing dependencies...\n',
-		);
+		console.log('\nFailed to find dependencies. Installing dependencies...\n');
 		if (installDependencies()) {
 			await initRepo();
 		} else {

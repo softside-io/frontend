@@ -1,11 +1,12 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, Subject, tap } from 'rxjs';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
+import { Observable, Subject, Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
 import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
 import { ImageUploadService } from 'projects/web/src/app/shared/services/image-upload.service';
-import { AuthConfirmEmailDto, AuthForgotPasswordDto, AuthRegisterLoginDto, AuthResetPasswordDto, AuthService } from 'projects/api';
+import { AuthConfirmEmailDto, AuthForgotPasswordDto, AuthRegisterLoginDto, AuthResendEmailDto, AuthResetPasswordDto, AuthService } from 'projects/api';
 
 import { LoginResponseType, StatusEnum, User } from '../../shared/models/user.model';
 
@@ -88,7 +89,25 @@ export class SessionService {
 		);
 	}
 
-	verifyEmail(hash: string): Observable<void> {
+	resendEmail(): Observable<void> {
+		if (!this.currentUser) {
+			throw new Error('User is not logged in');
+		}
+
+		const dto: AuthResendEmailDto = {
+			email: this.currentUser.email,
+		};
+
+		return this.authService.sendVerificationEmail(dto).pipe(
+			tap({
+				next: () => {
+					// do i need it?
+				},
+			}),
+		);
+	}
+
+	confirmEmail(hash: string): Observable<void> {
 		const dto: AuthConfirmEmailDto = {
 			hash,
 		};
@@ -233,9 +252,9 @@ export class SessionService {
 	// 	);
 	// }
 	// TODO: Refactor components
-	// followup<T>(forget: Observable<T>, next: ((value: T) => void) | undefined, destroy: DestroyRef): Subscription | null {
-	// 	return forget.pipe(takeUntilDestroyed(destroy)).subscribe({
-	// 		next,
-	// 	});
-	// }
+	followup<T>(observable: Observable<T>, next: ((value: T) => void) | undefined, destroy: DestroyRef): Subscription | null {
+		return observable.pipe(takeUntilDestroyed(destroy)).subscribe({
+			next,
+		});
+	}
 }
