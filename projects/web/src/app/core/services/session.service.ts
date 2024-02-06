@@ -24,7 +24,9 @@ export class SessionService {
 	loggedInWithPassword = signal(false);
 
 	get currentUser(): User | null {
-		return this.getSession().user;
+		const session = this.getSession();
+
+		return session ? session.user : null;
 	}
 
 	// populateUser(): IUser {

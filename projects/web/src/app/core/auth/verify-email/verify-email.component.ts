@@ -20,7 +20,7 @@ export class ConfirmEmailComponent implements OnDestroy, OnInit {
 	signOut$: Subscription | null = null;
 	verifyEmail$: Subscription | null = null;
 
-	user = this.sessionService.currentUser!;
+	user = this.sessionService.currentUser;
 
 	ngOnInit(): void {
 		const hash = this.activatedRoute.snapshot.queryParams['hash'];
