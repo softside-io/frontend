@@ -1,26 +1,102 @@
-import { Component, ViewChild, inject, ChangeDetectionStrategy, OnDestroy, ElementRef, signal, OnInit } from '@angular/core';
+import {
+	Component,
+	ViewChild,
+	inject,
+	ChangeDetectionStrategy,
+	OnDestroy,
+	ElementRef,
+	signal,
+	OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToggleCustomEvent } from '@ionic/core';
-import { IonModal } from '@ionic/angular/standalone';
-import { ImageCroppedEvent } from 'ngx-image-cropper';
+import {
+	IonModal,
+	IonContent,
+	IonCard,
+	IonCardContent,
+	IonList,
+	IonItem,
+	IonGrid,
+	IonRow,
+	IonCol,
+	IonText,
+	IonAvatar,
+	IonFab,
+	IonFabButton,
+	IonIcon,
+	IonHeader,
+	IonToolbar,
+	IonButtons,
+	IonButton,
+	IonTitle,
+	IonToggle,
+	IonAlert,
+} from '@ionic/angular/standalone';
+import { ImageCroppedEvent, ImageCropperModule } from 'ngx-image-cropper';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgLetModule } from 'ng-let';
 
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 import { AuthService } from 'projects/api';
+import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
 
-import { ImageUploadService } from '../../../shared/services/image-upload.service';
-import { ThemeService } from '../../../core/services/theme.service';
-import { User } from '../../../shared/models/user.model';
+import { ImageUploadService } from '../../shared/services/image-upload.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { User } from '../../shared/models/user.model';
+import { SSPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
+import { SSSubmitButtonComponent } from '../../../../../softside/ui-sdk/lib/components/buttons/submit/submit.component';
+import { SSConfirmPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/composed/confirm-password/confirm-password.component';
+import { SSTextareaComponent } from '../../../../../softside/ui-sdk/lib/elements/keyin/textarea/textarea.component';
+import { SSEmailComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
+import { SSTextComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/text/text.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
 	selector: 'app-profile-view',
 	templateUrl: './profile-view.component.html',
 	styleUrls: ['./profile-view.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		ImageCropperModule,
+		SSTextComponent,
+		SSEmailComponent,
+		SSTextareaComponent,
+		SSPasswordComponent,
+		SSConfirmPasswordComponent,
+		SSSubmitButtonComponent,
+		IonContent,
+		IonCard,
+		IonCardContent,
+		IonList,
+		IonItem,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonText,
+		IonAvatar,
+		IonFab,
+		IonFabButton,
+		IonIcon,
+		IonModal,
+		IonHeader,
+		IonToolbar,
+		IonButtons,
+		IonButton,
+		IonTitle,
+		IonToggle,
+		IonAlert,
+		AsyncRefDirective,
+		ReactiveFormsModule,
+		PageHeaderComponent,
+		NgLetModule,
+	],
 })
 export class ProfileViewComponent implements OnDestroy, OnInit {
 	@ViewChild('modalChangePassword') modalChangePassword!: IonModal;
@@ -96,11 +172,11 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 			email: this.user.email,
 		});
 
-		this.authService.me().subscribe({
-			next: (user: User) => {
-				console.log(user);
-			},
-		});
+		// this.authService.me().subscribe({
+		// 	next: (user: User) => {
+		// 		console.log(user);
+		// 	},
+		// });
 	}
 
 	uploadFile(_user: User): void {
@@ -193,7 +269,9 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	}
 
 	modifyPassword(): void {
-		this.sessionService.loggedInWithPassword() ? this.modalValidatePassword.present() : this.modalChangePassword.present();
+		this.sessionService.loggedInWithPassword()
+			? this.modalValidatePassword.present()
+			: this.modalChangePassword.present();
 	}
 
 	confirmValidatePassword(): void {
@@ -298,7 +376,10 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	onLoadImageFailed(): void {
 		this.modalImageCrop.dismiss();
 
-		this._appToast.createToast('Opps! Incorrect image format or size too large', 2000, { color: 'danger', size: 'small' });
+		this._appToast.createToast('Opps! Incorrect image format or size too large', 2000, {
+			color: 'danger',
+			size: 'small',
+		});
 	}
 
 	clearImageData(): void {

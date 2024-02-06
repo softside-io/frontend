@@ -19,7 +19,6 @@ import { SSPasswordComponent } from '@softside/ui-sdk/lib/components/inputs/pass
 import { SSConfirmPasswordComponent } from '@softside/ui-sdk/lib/components/composed/confirm-password';
 import { SSButtonComponent } from '@softside/ui-sdk/lib/elements';
 
-import { SharedModule } from '../../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -29,16 +28,7 @@ import { AuthShellComponent } from './auth-shell/auth-shell.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
-	declarations: [
-		AuthShellComponent,
-		LoginComponent,
-		RegisterComponent,
-		ForgetPasswordComponent,
-		ResetPasswordComponent,
-		ConfirmEmailComponent,
-	],
 	imports: [
-		SharedModule,
 		AuthRoutingModule,
 		SSEmailComponent,
 		SSPasswordComponent,
@@ -56,6 +46,12 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 		IonButton,
 		IonButtons,
 		IonText,
+		AuthShellComponent,
+		LoginComponent,
+		RegisterComponent,
+		ForgetPasswordComponent,
+		ResetPasswordComponent,
+		ConfirmEmailComponent,
 	],
 	providers: [],
 })

@@ -1,18 +1,50 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardContent,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+	IonText,
+} from '@ionic/angular/standalone';
 
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
+import { SSConfirmPasswordComponent } from '../../../../../../softside/ui-sdk/lib/components/composed/confirm-password/confirm-password.component';
 
 @Component({
 	selector: 'app-reset-password',
 	templateUrl: './reset-password.component.html',
 	styleUrls: ['./reset-password.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonRow,
+		IonCol,
+		ReactiveFormsModule,
+		SSConfirmPasswordComponent,
+		IonButton,
+		AsyncRefDirective,
+		IonButtons,
+		IonText,
+		RouterLink,
+	],
 })
 export class ResetPasswordComponent implements OnInit {
 	protected router = inject(Router);

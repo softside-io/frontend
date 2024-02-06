@@ -8,8 +8,8 @@ describe('ProfileViewComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			declarations: [ProfileViewComponent],
-		});
+    imports: [ProfileViewComponent],
+});
 
 		fixture = TestBed.createComponent(ProfileViewComponent);
 		component = fixture.componentInstance;

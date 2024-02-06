@@ -2,7 +2,8 @@ import { Directive, Input, OnInit, ElementRef, Renderer2, SimpleChanges } from '
 import { Subscription } from 'rxjs';
 
 @Directive({
-	selector: '[appAsyncRef]',
+    selector: '[appAsyncRef]',
+    standalone: true,
 })
 export class AsyncRefDirective implements OnInit {
 	@Input() appAsyncRef: Subscription | null = null;

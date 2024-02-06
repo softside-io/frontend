@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
+import { IonItem, IonTextarea } from '@ionic/angular/standalone';
 
 import { FormProviderBaseComponent } from '@softside/ui-sdk/lib/_utils';
 
@@ -23,7 +23,7 @@ import { FormProviderBaseComponent } from '@softside/ui-sdk/lib/_utils';
 			</ion-item>
 		</ng-container>
 	`,
-	imports: [IonicModule, ReactiveFormsModule],
+	imports: [IonTextarea, IonItem, ReactiveFormsModule],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -6,6 +6,7 @@ import { ActionButton } from '../../models/actionButton';
 	selector: 'app-form-action-bar',
 	templateUrl: './form-action-bar.component.html',
 	styleUrls: ['./form-action-bar.component.scss'],
+	standalone: true,
 })
 export class FormActionBarComponent<T> {
 	@Input() startButtons: ActionButton<T>[] = [];

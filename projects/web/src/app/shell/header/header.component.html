@@ -48,7 +48,9 @@
 								name="person-circle-outline"></ion-icon>
 							<ion-label>My profile</ion-label>
 						</ion-item>
-						<ion-item button>
+						<ion-item
+							button
+							(click)="revealId(user.id)">
 							<ion-icon
 								class="ion-padding-horizontal"
 								name="id-card-outline"></ion-icon>

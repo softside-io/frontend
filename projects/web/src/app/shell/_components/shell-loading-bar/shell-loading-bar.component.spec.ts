@@ -8,8 +8,8 @@ describe('ShellLoadingBarComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [ShellLoadingBarComponent],
-		}).compileComponents();
+    imports: [ShellLoadingBarComponent],
+}).compileComponents();
 
 		fixture = TestBed.createComponent(ShellLoadingBarComponent);
 		component = fixture.componentInstance;

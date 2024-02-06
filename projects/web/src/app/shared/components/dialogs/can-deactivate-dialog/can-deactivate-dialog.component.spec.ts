@@ -8,8 +8,8 @@ describe('CanDeactivateDialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [CanDeactivateDialogComponent],
-		}).compileComponents();
+    declarations: [CanDeactivateDialogComponent],
+}).compileComponents();
 
 		fixture = TestBed.createComponent(CanDeactivateDialogComponent);
 		component = fixture.componentInstance;

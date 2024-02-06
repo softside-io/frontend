@@ -1,17 +1,50 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardContent,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+	IonText,
+} from '@ionic/angular/standalone';
 
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
+import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
 
 @Component({
 	selector: 'app-forget-password',
 	templateUrl: './forget-password.component.html',
 	styleUrls: ['./forget-password.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonRow,
+		IonCol,
+		ReactiveFormsModule,
+		SSEmailComponent,
+		IonButton,
+		AsyncRefDirective,
+		IonButtons,
+		IonText,
+		RouterLink,
+	],
 })
 export class ForgetPasswordComponent {
 	private sessionService = inject(SessionService);
@@ -27,7 +60,10 @@ export class ForgetPasswordComponent {
 	forgetFollowUp(forget: Observable<void>): Subscription | null {
 		return forget.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: () => {
-				this._appToast.createToast(`An email has been sent to ${this.form.get('email')}`, 5000, { color: 'secondary', size: 'medium' });
+				this._appToast.createToast(`An email has been sent to ${this.form.get('email')}`, 5000, {
+					color: 'secondary',
+					size: 'medium',
+				});
 			},
 		});
 	}

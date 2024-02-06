@@ -1,19 +1,53 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardContent,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+} from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { LoginResponseType } from '../../../shared/models/user.model';
+import { SSButtonComponent } from '../../../../../../softside/ui-sdk/lib/elements/action/button/button.component';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
+import { SSPasswordComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
+import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonRow,
+		IonCol,
+		ReactiveFormsModule,
+		SSEmailComponent,
+		SSPasswordComponent,
+		IonButton,
+		AsyncRefDirective,
+		SSButtonComponent,
+		IonButtons,
+		RouterLink,
+	],
 })
 export class LoginComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
@@ -36,10 +70,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 		const resetted = this.router.getCurrentNavigation()?.extras.state?.['resetted'];
 
 		if (registered) {
-			this._appToast.createToast(`Verification email sent! Please check your inbox to complete the registration process.`, 5000, {
-				color: 'success',
-				size: 'medium',
-			});
+			this._appToast.createToast(
+				`Verification email sent! Please check your inbox to complete the registration process.`,
+				5000,
+				{
+					color: 'success',
+					size: 'medium',
+				},
+			);
 		}
 
 		if (verified) {

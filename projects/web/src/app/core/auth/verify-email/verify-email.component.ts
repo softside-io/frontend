@@ -3,15 +3,46 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { mailOutline } from 'ionicons/icons';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonIcon,
+	IonCardTitle,
+	IonCardContent,
+	IonText,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+} from '@ionic/angular/standalone';
+import { NgIf } from '@angular/common';
 
 import { SessionService } from '../../services/session.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
 
 @Component({
 	selector: 'app-verify-email',
 	templateUrl: './verify-email.component.html',
 	styleUrls: ['./verify-email.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		NgIf,
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonIcon,
+		IonCardTitle,
+		IonCardContent,
+		IonText,
+		IonRow,
+		IonCol,
+		IonButton,
+		AsyncRefDirective,
+		IonButtons,
+	],
 })
 export class ConfirmEmailComponent implements OnInit {
 	protected sessionService = inject(SessionService);

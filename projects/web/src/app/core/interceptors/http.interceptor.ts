@@ -15,7 +15,10 @@ let appToast: AppToastService;
 let appSettingsService: AppSettingsService;
 const refreshTokenSubject$ = new BehaviorSubject<string | null>(null);
 
-export const authInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+export const authInterceptor: HttpInterceptorFn = (
+	request: HttpRequest<unknown>,
+	next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> => {
 	appSettingsService = inject(AppSettingsService);
 	appToast = inject(AppToastService);
 	sessionService = inject(SessionService);

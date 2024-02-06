@@ -8,8 +8,8 @@ describe('ForgetPasswordComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			declarations: [ResetPasswordComponent],
-		});
+    imports: [ResetPasswordComponent],
+});
 
 		fixture = TestBed.createComponent(ResetPasswordComponent);
 		component = fixture.componentInstance;

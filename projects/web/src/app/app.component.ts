@@ -4,12 +4,11 @@ import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
 
 import { ThemeService } from './core/services/theme.service';
-import { ShellModule } from './shell/shell.module';
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [ShellModule, IonApp, IonRouterOutlet],
+	imports: [IonApp, IonRouterOutlet],
 	templateUrl: 'app.component.html',
 	styleUrls: ['app.component.scss'],
 })

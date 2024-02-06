@@ -8,8 +8,8 @@ describe('CustomersDropdownComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [CustomersDropdownComponent],
-		}).compileComponents();
+    imports: [CustomersDropdownComponent],
+}).compileComponents();
 
 		fixture = TestBed.createComponent(CustomersDropdownComponent);
 		component = fixture.componentInstance;
