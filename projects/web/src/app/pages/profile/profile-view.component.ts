@@ -7,6 +7,7 @@ import {
 	ElementRef,
 	signal,
 	OnInit,
+	DestroyRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -43,7 +44,7 @@ import { NgLetModule } from 'ng-let';
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
-import { AuthService } from 'projects/api';
+import { AuthService, AuthUpdateDto } from 'projects/api';
 import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
 
 import { ImageUploadService } from '../../shared/services/image-upload.service';
@@ -111,6 +112,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	theme = inject(ThemeService);
 	canSave = signal(false);
 	imageUploadService = inject(ImageUploadService);
+	private destroyRef = inject(DestroyRef);
 
 	saveProfile$: Subscription | null = null;
 	deleteUser$: Subscription | null = null;
@@ -153,7 +155,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		}),
 	});
 
-	formValidatePassword: ConvertToForm<{ password: string }> = FB.group({
+	formValidatePassword: ConvertToForm<{ password: string; }> = FB.group({
 		password: FB.string(),
 	});
 
@@ -166,17 +168,16 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	}
 
 	ngOnInit(): void {
-		this.profileForm.patchValue({
-			firstName: this.user.firstName,
-			lastName: this.user.lastName,
-			email: this.user.email,
-		});
+		this.saveProfile$ = this.sessionService.followup(this.authService.me(), (user) => {
+			this.profileForm.patchValue({
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+				phone: user.phone,
+				address: user.address,
+			});
+		}, this.destroyRef);
 
-		// this.authService.me().subscribe({
-		// 	next: (user: User) => {
-		// 		console.log(user);
-		// 	},
-		// });
 	}
 
 	uploadFile(_user: User): void {
@@ -212,8 +213,19 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		}
 
 		const { firstName, lastName, phone, address } = this.profileForm.getRawValue();
-		const updatedUser = { ...user, firstName, lastName, phone, address };
+		const updatedUser: AuthUpdateDto = { ...user, firstName, lastName, phone, address };
 		console.log(updatedUser);
+
+		this.saveProfile$ = this.sessionService.followup(
+			this.authService.update(updatedUser),
+			() => {
+				this._appToast.createToast('Your profile has been successfully saved', 0, {
+					color: 'success',
+					size: 'small',
+				});
+
+			},
+			this.destroyRef);
 		// this.saveProfile$ = this.sessionService
 		// 	.updateUser(updatedUser)
 		// 	.pipe(take(1))

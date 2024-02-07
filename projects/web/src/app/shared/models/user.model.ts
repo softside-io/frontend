@@ -11,6 +11,8 @@ export type User = {
 	socialId: string;
 	firstName: string;
 	lastName: string;
+	phone: string;
+	address: string;
 	role: Role;
 	status: Status;
 	createdAt: string;

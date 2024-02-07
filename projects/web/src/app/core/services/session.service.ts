@@ -51,7 +51,7 @@ export class SessionService {
 	// 	return {} as IUser;
 	// }
 
-	getUserNames(displayName: string): { firstName: string; lastName: string } {
+	getUserNames(displayName: string): { firstName: string; lastName: string; } {
 		const name = displayName?.split(' ');
 
 		let firstName = displayName || '',
