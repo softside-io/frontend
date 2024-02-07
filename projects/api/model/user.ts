@@ -9,14 +9,6 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { FileDto } from './fileDto';
 
-export interface AuthUpdateDto { 
-    photo?: FileDto;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    address?: string;
-    password?: string;
-    oldPassword?: string;
+export interface User { 
 }

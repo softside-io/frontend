@@ -14,11 +14,16 @@ import { RoleDto } from './roleDto';
 import { StatusDto } from './statusDto';
 
 export interface CreateUserDto { 
-    email: any;
-    password: string;
-    firstName: string;
-    lastName: string;
-    photo: FileDto;
-    role: RoleDto;
-    status: StatusDto;
+    email: string;
+    password?: string;
+    firstName?: string;
+    lastName?: string;
+    photo?: FileDto;
+    role?: RoleDto;
+    status?: StatusDto;
+    provider?: string;
+    socialId?: string;
+    hash?: string;
+    phone?: string;
+    address?: string;
 }

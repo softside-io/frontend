@@ -19,6 +19,7 @@ import { Observable }                                        from 'rxjs';
 
 import { CreateUserDto } from '../model/createUserDto';
 import { UpdateUserDto } from '../model/updateUserDto';
+import { User } from '../model/user';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -63,9 +64,9 @@ export class UsersService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public create(body: CreateUserDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public create(body: CreateUserDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public create(body: CreateUserDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public create(body: CreateUserDto, observe?: 'body', reportProgress?: boolean): Observable<User>;
+    public create(body: CreateUserDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
+    public create(body: CreateUserDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
     public create(body: CreateUserDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -83,6 +84,7 @@ export class UsersService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -98,7 +100,7 @@ export class UsersService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/users`,
+        return this.httpClient.request<User>('post',`${this.basePath}/api/v1/users`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -153,6 +155,7 @@ export class UsersService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -201,6 +204,7 @@ export class UsersService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -300,6 +304,7 @@ export class UsersService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {

@@ -15,3 +15,4 @@ export * from './filesUploadBody';
 export * from './roleDto';
 export * from './statusDto';
 export * from './updateUserDto';
+export * from './user';
