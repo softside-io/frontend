@@ -4,7 +4,6 @@ import {
 	Routes,
 } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { ConfirmEmailComponent } from './verify-email/verify-email.component';
@@ -15,6 +14,7 @@ import {
 	verifyGuard,
 } from '../guards/auth.guard';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
 	{

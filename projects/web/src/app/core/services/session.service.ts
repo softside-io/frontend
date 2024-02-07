@@ -6,7 +6,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
 import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
 import { ImageUploadService } from 'projects/web/src/app/shared/services/image-upload.service';
-import { AuthConfirmEmailDto, AuthForgotPasswordDto, AuthRegisterLoginDto, AuthResendEmailDto, AuthResetPasswordDto, AuthService } from 'projects/api';
+import {
+	AuthConfirmEmailDto,
+	AuthForgotPasswordDto,
+	AuthRegisterLoginDto,
+	AuthResendEmailDto,
+	AuthResetPasswordDto,
+	AuthService,
+} from 'projects/api';
 
 import { LoginResponseType, StatusEnum, User } from '../../shared/models/user.model';
 
@@ -78,8 +85,6 @@ export class SessionService {
 		const newUser: AuthRegisterLoginDto = {
 			email,
 			password,
-			firstName: 'test',
-			lastName: 'test',
 		};
 
 		return this.authService.register(newUser).pipe(
@@ -157,7 +162,10 @@ export class SessionService {
 		return this.authService.refresh().pipe(
 			tap({
 				next: (session) => {
-					const currentSession = this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+					const currentSession = this.storage.getLocalStorage<LoginResponseType>(
+						'session',
+						true,
+					) as LoginResponseType;
 					this.storage.setLocalStorage('session', { ...currentSession, ...session }, true);
 				},
 			}),
@@ -252,7 +260,11 @@ export class SessionService {
 	// 	);
 	// }
 	// TODO: Refactor components
-	followup<T>(observable: Observable<T>, next: ((value: T) => void) | undefined, destroy: DestroyRef): Subscription | null {
+	followup<T>(
+		observable: Observable<T>,
+		next: ((value: T) => void) | undefined,
+		destroy: DestroyRef,
+	): Subscription | null {
 		return observable.pipe(takeUntilDestroyed(destroy)).subscribe({
 			next,
 		});

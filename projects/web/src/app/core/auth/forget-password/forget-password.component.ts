@@ -75,15 +75,6 @@ export class ForgetPasswordComponent {
 
 		const { email } = this.form.getRawValue();
 
-		// TODO: Refactor later
-		// this.followup(
-		// 	this.sessionService.forgetPassword({ email }),
-		// 	() => {
-		// 		console.log('test');
-		// 	},
-		// 	this.destroyRef,
-		// );
-
-		this.forget$ = this.forgetFollowUp(this.sessionService.forgetPassword({ email }));
+		this.sessionService.followup(this.sessionService.forgetPassword({ email }), undefined, this.destroyRef);
 	}
 }

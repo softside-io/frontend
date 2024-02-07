@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -73,11 +72,11 @@ export class RegisterComponent {
 			confirmPasswordGroup: { password },
 		} = this.form.getRawValue();
 
-		this.register$ = this.registerFollowUp(this.sessionService.registerNewAccount(email, password));
-	}
-
-	registerFollowUp(register: Observable<void>): Subscription | null {
-		return register.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+		this.register$ = this.sessionService.followup(
+			this.sessionService.registerNewAccount(email, password),
+			undefined,
+			this.destroyRef,
+		);
 	}
 }
 

@@ -16,8 +16,8 @@ import { StatusDto } from './statusDto';
 export interface UpdateUserDto { 
     email?: any;
     password?: string;
-    firstName?: any;
-    lastName?: any;
+    firstName?: string;
+    lastName?: string;
     photo?: FileDto;
     role?: RoleDto;
     status?: StatusDto;

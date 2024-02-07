@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
 	IonContent,
@@ -19,7 +18,6 @@ import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
-import { LoginResponseType } from '../../../shared/models/user.model';
 import { SSButtonComponent } from '../../../../../../softside/ui-sdk/lib/elements/action/button/button.component';
 import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
 import { SSPasswordComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
@@ -49,9 +47,8 @@ import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/componen
 		RouterLink,
 	],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 	private router = inject(Router);
-	private activatedRoute = inject(ActivatedRoute);
 	private sessionService = inject(SessionService);
 	private _appToast = inject(AppToastService);
 	private destroyRef = inject(DestroyRef);
@@ -101,20 +98,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		const { email, password } = this.form.getRawValue();
-		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
+
+		this.login$ = this.sessionService.followup(
+			this.sessionService.loginWithEmailAndPassword(email, password),
+			undefined,
+			this.destroyRef,
+		);
 	}
 
 	loginWithGoogle(): void {
-		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
-	}
-
-	loginFollowUp(login: Observable<LoginResponseType>): Subscription | null {
-		return login.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-	}
-
-	ngOnDestroy(): void {
-		this.login$?.unsubscribe();
-		this.loginWithGoogle$?.unsubscribe();
+		// this.loginWithGoogle$ = this.sessionService.followup(
+		// 	this.sessionService.loginWithGoogle(),
+		// 	undefined,
+		// 	this.destroyRef,
+		// );
 	}
 }
 
