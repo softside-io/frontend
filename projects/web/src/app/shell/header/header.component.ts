@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Output, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicons/icons';
@@ -55,6 +55,7 @@ export class HeaderComponent {
 	sessionService = inject(SessionService);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
+	destroyRef = inject(DestroyRef);
 
 	@Output() toggleDrawer = new EventEmitter();
 
@@ -74,7 +75,7 @@ export class HeaderComponent {
 	}
 
 	logout(): void {
-		this.sessionService.logout().subscribe();
+		this.sessionService.followup(this.sessionService.logout(), undefined, this.destroyRef);
 	}
 
 	getUserDisplay(user: User): string {
