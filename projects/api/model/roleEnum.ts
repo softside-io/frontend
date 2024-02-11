@@ -9,8 +9,10 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { RoleEnum } from './roleEnum';
 
-export interface RoleDto { 
-    id: RoleEnum;
-}
+export type RoleEnum = 1 | 2;
+
+export const RoleEnum = {
+    Admin: 1 as RoleEnum,
+    User: 2 as RoleEnum
+};

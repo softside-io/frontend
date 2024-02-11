@@ -24,9 +24,7 @@ export const appConfig: ApplicationConfig = {
 					.addElement(opts.leavingEl)
 					.fromTo('opacity', 1, 0)
 					.duration(animationDuration);
-				const animation = createAnimation()
-					.addAnimation(enteringAnimation)
-					.addAnimation(leavingAnimation);
+				const animation = createAnimation().addAnimation(enteringAnimation).addAnimation(leavingAnimation);
 
 				return animation;
 			},

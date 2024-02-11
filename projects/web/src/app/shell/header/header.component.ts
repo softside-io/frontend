@@ -21,9 +21,9 @@ import {
 } from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
+import { User } from 'projects/api';
 
 import { SessionService } from '../../core/services/session.service';
-import { User } from '../../shared/models/user.model';
 import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell-loading-bar.component';
 
 @Component({
@@ -70,8 +70,8 @@ export class HeaderComponent {
 		});
 	}
 
-	revealId(id: string): void {
-		this._appToast.createToast(id, 0);
+	revealId(id: User['id']): void {
+		this._appToast.createToast(id.toString(), 0);
 	}
 
 	logout(): void {

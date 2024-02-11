@@ -28,6 +28,8 @@ import { AuthResendEmailDto } from '../model/authResendEmailDto';
 import { AuthResetPasswordDto } from '../model/authResetPasswordDto';
 import { AuthTwitterLoginDto } from '../model/authTwitterLoginDto';
 import { AuthUpdateDto } from '../model/authUpdateDto';
+import { LoginResponseType } from '../model/loginResponseType';
+import { User } from '../model/user';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -114,9 +116,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public confirmEmail(body: AuthConfirmEmailDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public confirmEmail(body: AuthConfirmEmailDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -127,6 +129,7 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -142,7 +145,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/email/confirm`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/email/confirm`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -160,9 +163,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public forgotPassword(body: AuthForgotPasswordDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public forgotPassword(body: AuthForgotPasswordDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -173,6 +176,7 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -188,7 +192,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/forgot/password`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/forgot/password`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -206,9 +210,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public login(body: AuthEmailLoginDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public login(body: AuthEmailLoginDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public login(body: AuthEmailLoginDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public login(body: AuthEmailLoginDto, observe?: 'body', reportProgress?: boolean): Observable<LoginResponseType>;
+    public login(body: AuthEmailLoginDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<LoginResponseType>>;
+    public login(body: AuthEmailLoginDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<LoginResponseType>>;
     public login(body: AuthEmailLoginDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -235,7 +239,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/email/login`,
+        return this.httpClient.request<LoginResponseType>('post',`${this.basePath}/api/v1/auth/email/login`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -266,7 +270,6 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -313,7 +316,6 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -360,7 +362,6 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -407,7 +408,6 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -440,9 +440,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public logout(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public logout(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public logout(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public logout(observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public logout(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public logout(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public logout(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -456,6 +456,7 @@ export class AuthService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -466,7 +467,7 @@ export class AuthService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/logout`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/logout`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -482,9 +483,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public me(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public me(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public me(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public me(observe?: 'body', reportProgress?: boolean): Observable<User>;
+    public me(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
+    public me(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
     public me(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -509,7 +510,7 @@ export class AuthService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/api/v1/auth/me`,
+        return this.httpClient.request<User>('get',`${this.basePath}/api/v1/auth/me`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -525,9 +526,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public refresh(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public refresh(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public refresh(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public refresh(observe?: 'body', reportProgress?: boolean): Observable<LoginResponseType>;
+    public refresh(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<LoginResponseType>>;
+    public refresh(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<LoginResponseType>>;
     public refresh(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -552,7 +553,7 @@ export class AuthService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/refresh`,
+        return this.httpClient.request<LoginResponseType>('post',`${this.basePath}/api/v1/auth/refresh`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -569,9 +570,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public register(body: AuthRegisterLoginDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public register(body: AuthRegisterLoginDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public register(body: AuthRegisterLoginDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public register(body: AuthRegisterLoginDto, observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public register(body: AuthRegisterLoginDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public register(body: AuthRegisterLoginDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public register(body: AuthRegisterLoginDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -582,6 +583,7 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -597,7 +599,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/email/register`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/email/register`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -615,9 +617,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public resetPassword(body: AuthResetPasswordDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public resetPassword(body: AuthResetPasswordDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public resetPassword(body: AuthResetPasswordDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public resetPassword(body: AuthResetPasswordDto, observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public resetPassword(body: AuthResetPasswordDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public resetPassword(body: AuthResetPasswordDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public resetPassword(body: AuthResetPasswordDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -628,6 +630,7 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -643,7 +646,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/reset/password`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/reset/password`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -661,9 +664,9 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'body', reportProgress?: boolean): Observable<void>;
+    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<void>>;
+    public sendVerificationEmail(body: AuthResendEmailDto, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<void>>;
     public sendVerificationEmail(body: AuthResendEmailDto, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
@@ -674,6 +677,7 @@ export class AuthService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -689,7 +693,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/api/v1/auth/email/resend`,
+        return this.httpClient.request<void>('post',`${this.basePath}/api/v1/auth/email/resend`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -727,7 +731,6 @@ export class AuthService {
         }
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {

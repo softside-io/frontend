@@ -63,9 +63,16 @@ const removeRequestsFromQueue = (req: HttpRequest<unknown>): void => {
 	}
 };
 const handle401Error = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+	if (request.url.includes('/api/v1/auth/logout')) {
+		clearRequestQueue();
+		sessionService.clearSession();
+
+		return EMPTY;
+	}
+
 	if (request.url.includes('/api/v1/auth/refresh')) {
 		clearRequestQueue();
-		sessionService.logout().subscribe();
+		sessionService.logout().pipe(take(1)).subscribe();
 
 		return EMPTY;
 	}

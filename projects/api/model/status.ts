@@ -9,8 +9,8 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { RoleEnum } from './roleEnum';
+import { StatusEnum } from './statusEnum';
 
-export interface RoleDto { 
-    id: RoleEnum;
+export interface Status { 
+    id: StatusEnum;
 }

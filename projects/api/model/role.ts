@@ -11,6 +11,6 @@
  */
 import { RoleEnum } from './roleEnum';
 
-export interface RoleDto { 
+export interface Role { 
     id: RoleEnum;
 }

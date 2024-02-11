@@ -44,12 +44,11 @@ import { NgLetModule } from 'ng-let';
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
-import { AuthService, AuthUpdateDto } from 'projects/api';
+import { AuthService, AuthUpdateDto, User } from 'projects/api';
 import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
 
 import { ImageUploadService } from '../../shared/services/image-upload.service';
 import { ThemeService } from '../../core/services/theme.service';
-import { User } from '../../shared/models/user.model';
 import { SSPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
 import { SSSubmitButtonComponent } from '../../../../../softside/ui-sdk/lib/components/buttons/submit/submit.component';
 import { SSConfirmPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/composed/confirm-password/confirm-password.component';
@@ -155,7 +154,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		}),
 	});
 
-	formValidatePassword: ConvertToForm<{ password: string; }> = FB.group({
+	formValidatePassword: ConvertToForm<{ password: string }> = FB.group({
 		password: FB.string(),
 	});
 
@@ -168,16 +167,19 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	}
 
 	ngOnInit(): void {
-		this.saveProfile$ = this.sessionService.followup(this.authService.me(), (user) => {
-			this.profileForm.patchValue({
-				firstName: user.firstName,
-				lastName: user.lastName,
-				email: user.email,
-				phone: user.phone,
-				address: user.address,
-			});
-		}, this.destroyRef);
-
+		this.saveProfile$ = this.sessionService.followup(
+			this.authService.me(),
+			(user) => {
+				this.profileForm.patchValue({
+					firstName: user.firstName,
+					lastName: user.lastName,
+					email: user.email,
+					phone: user.phone,
+					address: user.address,
+				});
+			},
+			this.destroyRef,
+		);
 	}
 
 	uploadFile(_user: User): void {
@@ -214,32 +216,17 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 
 		const { firstName, lastName, phone, address } = this.profileForm.getRawValue();
 		const updatedUser: AuthUpdateDto = { ...user, firstName, lastName, phone, address };
-		console.log(updatedUser);
 
 		this.saveProfile$ = this.sessionService.followup(
-			this.authService.update(updatedUser),
+			this.sessionService.updateUserProfile(updatedUser),
 			() => {
 				this._appToast.createToast('Your profile has been successfully saved', 0, {
 					color: 'success',
 					size: 'small',
 				});
-
 			},
-			this.destroyRef);
-		// this.saveProfile$ = this.sessionService
-		// 	.updateUser(updatedUser)
-		// 	.pipe(take(1))
-		// 	.subscribe({
-		// 		next: () => {
-		// 			this._appToast.createToast('Your profile has been successfully saved', 0, {
-		// 				color: 'success',
-		// 				size: 'small',
-		// 			});
-		// 		},
-		// 		error: (_error: Error) => {
-		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-		// 		},
-		// 	});
+			this.destroyRef,
+		);
 	}
 
 	deleteUser(): void {

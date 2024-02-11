@@ -1,10 +1,9 @@
 import { inject } from '@angular/core';
 
-import { ApiModule, Configuration } from 'projects/api';
+import { ApiModule, Configuration, LoginResponseType } from 'projects/api';
 
 import { environment } from '../environments/environment';
 import { StorageAccessorService } from './shared/services/storage-accessor.service';
-import { LoginResponseType } from './shared/models/user.model';
 
 export const modules = [ApiModule.forRoot(apiConfigFactory)];
 export function apiConfigFactory(): Configuration {

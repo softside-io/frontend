@@ -13,9 +13,11 @@ import {
 	AuthResendEmailDto,
 	AuthResetPasswordDto,
 	AuthService,
+	AuthUpdateDto,
+	LoginResponseType,
+	StatusEnum,
+	User,
 } from 'projects/api';
-
-import { LoginResponseType, StatusEnum, User } from '../../shared/models/user.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -51,7 +53,7 @@ export class SessionService {
 	// 	return {} as IUser;
 	// }
 
-	getUserNames(displayName: string): { firstName: string; lastName: string; } {
+	getUserNames(displayName: string): { firstName: string; lastName: string } {
 		const name = displayName?.split(' ');
 
 		let firstName = displayName || '',
@@ -176,6 +178,22 @@ export class SessionService {
 		this.storage.setLocalStorage('session', session, true);
 	}
 
+	updateUserProfile(user: AuthUpdateDto): Observable<void> {
+		return this.authService.update(user).pipe(
+			tap({
+				next: () => {
+					this.updateUser({
+						...this.getSession(),
+						user: {
+							...this.currentUser!,
+							...user,
+						},
+					});
+				},
+			}),
+		);
+	}
+
 	isLoggedIn(): boolean {
 		const session = this.getSession();
 
@@ -189,7 +207,11 @@ export class SessionService {
 	isVerified(): boolean {
 		const session = this.getSession();
 
-		return session.user.status.id == StatusEnum.active;
+		if (!session.user) {
+			return false;
+		}
+
+		return session.user.status.id == StatusEnum.Active;
 	}
 
 	forgetPassword(dto: AuthForgotPasswordDto): Observable<void> {
@@ -210,11 +232,15 @@ export class SessionService {
 		return this.authService.logout().pipe(
 			tap({
 				next: () => {
-					this.storage.removeLocalStorageKey('session');
-					this.router.navigate(['/auth']);
+					this.clearSession();
 				},
 			}),
 		);
+	}
+
+	clearSession(): void {
+		this.storage.removeLocalStorageKey('session');
+		this.router.navigate(['/auth']);
 	}
 
 	// updateUser(user: IUser): Observable<void> {

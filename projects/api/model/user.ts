@@ -9,6 +9,25 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { FileType } from './fileType';
+import { Role } from './role';
+import { Status } from './status';
 
 export interface User { 
+    id: string | number;
+    email: string;
+    password?: string;
+    previousPassword?: string;
+    provider: string;
+    socialId?: string;
+    firstName?: string;
+    lastName?: string;
+    photo?: FileType;
+    address?: string;
+    phone?: string;
+    role: Role;
+    status: Status;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt?: Date;
 }

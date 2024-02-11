@@ -9,8 +9,11 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { RoleEnum } from './roleEnum';
+import { User } from './user';
 
-export interface RoleDto { 
-    id: RoleEnum;
+export interface LoginResponseType { 
+    user: User;
+    refreshToken: string;
+    token: string;
+    tokenExpires: number;
 }
