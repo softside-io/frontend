@@ -36,7 +36,8 @@
 		"docs:web:storybook": "ng run web:storybook",
 		"docs:web:storybook-documentation": "npx compodoc -p projects/web/.storybook/tsconfig.json -e json -d projects/web",
 		"docs:web:build-storybook": "ng run web:build-storybook",
-		"docs:web:compodoc": "npx compodoc -p projects/web/tsconfig.doc.json -d docs/web -s --port 8087"
+		"docs:web:compodoc": "npx compodoc -p projects/web/tsconfig.doc.json -d docs/web -s --port 8087",
+		"api:gen": "shx rm -rf projects/api/* && openapi -i http://localhost:3000/docs-yaml -o projects/api -c angular && node .scripts/post-swagger.mjs"
 	},
 	"private": true,
 	"dependencies": {
@@ -113,6 +114,7 @@
 		"karma-jasmine-html-reporter": "~2.1.0",
 		"lint-staged": "^15.2.0",
 		"ng-packagr": "^17.1.2",
+		"openapi-typescript-codegen": "^0.25.0",
 		"postcss": "^8.4.33",
 		"prettier": "^3.2.4",
 		"react": "^18.2.0",
