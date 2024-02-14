@@ -5,7 +5,7 @@
 	"homepage": "https://ionicframework.com/",
 	"scripts": {
 		"gc": "node ./projects/softside/ui-sdk/.templates/generate-component.mjs",
-		"commit": "node commit.mjs",
+		"commit": "node .scripts/commit.mjs",
 		"ng": "ng",
 		"ionic": "ionic",
 		"start:lib": "concurrently \"tailwind --watch -c ./projects/softside/ui-sdk/tailwind.config.js -o ./projects/softside/ui-sdk/scss/tailwind.scss -p\" \"ng build @softside/ui-sdk --watch --configuration development\"",
@@ -93,6 +93,7 @@
 		"@typescript-eslint/eslint-plugin": "6.19.1",
 		"@typescript-eslint/parser": "6.19.1",
 		"autoprefixer": "^10.4.17",
+		"chalk": "^5.3.0",
 		"check-dependencies": "^2.0.0",
 		"commitlint-plugin-jira-rules": "^1.6.4",
 		"concurrently": "^8.2.2",

@@ -211,7 +211,7 @@ export class SessionService {
 			return false;
 		}
 
-		return session.user.status.id == StatusEnum.Active;
+		return session.user.status.id == StatusEnum.ACTIVE;
 	}
 
 	forgetPassword(dto: AuthForgotPasswordDto): Observable<void> {
