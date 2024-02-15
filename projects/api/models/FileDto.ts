@@ -5,4 +5,5 @@
 
 export type FileDto = {
     id: string;
+    path: string;
 };

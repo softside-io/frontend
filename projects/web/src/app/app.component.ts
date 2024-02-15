@@ -4,6 +4,7 @@ import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
 
 import { ThemeService } from './core/services/theme.service';
+import { SessionService } from './core/services/session.service';
 
 @Component({
 	selector: 'app-root',
@@ -13,6 +14,8 @@ import { ThemeService } from './core/services/theme.service';
 	styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+	sessionService = inject(SessionService);
+
 	constructor() {
 		addIcons({
 			informationCircleOutline,

@@ -16,7 +16,7 @@
 	</ion-buttons>
 	<ion-searchbar class="m-auto max-w-[400px] hidden md:block custom"></ion-searchbar>
 	<ion-buttons slot="end">
-		<ng-container *ngLet="user">
+		<ng-container *ngLet="(user$ | async) as user">
 			<ion-button
 				shape="round"
 				id="profile-menu">
@@ -24,7 +24,7 @@
 					<ion-avatar>
 						<img
 							alt="Profile pic"
-							src="assets/icon/pp.jpg" />
+							[src]="user?.photo ? user?.photo?.path :'assets/icon/pp.jpg'" />
 					</ion-avatar>
 					<ion-label class="ion-text-capitalize">{{getUserDisplay(user!)}}</ion-label>
 				</ion-chip>
@@ -50,7 +50,7 @@
 						</ion-item>
 						<ion-item
 							button
-							(click)="revealId(user.id)">
+							(click)="revealId(user?.id!)">
 							<ion-icon
 								class="ion-padding-horizontal"
 								name="id-card-outline"></ion-icon>

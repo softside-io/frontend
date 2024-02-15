@@ -8,7 +8,7 @@ import type { Role } from './Role';
 import type { Status } from './Status';
 
 export type User = {
-    id: (string | number);
+    id: string;
     email: string;
     password?: string;
     previousPassword?: string;

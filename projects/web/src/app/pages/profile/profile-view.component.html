@@ -19,7 +19,7 @@
 								class="ion-no-padding"
 								size-md="9">
 								<ion-row>
-									<ng-container *ngLet="user">
+									<ng-container *ngLet="(user$ | async) as user">
 										<ion-col
 											size="12"
 											size-md="6"
@@ -32,7 +32,7 @@
 														width="300"
 														height="300"
 														class="margin-top mat-elevation-z1"
-														[src]="'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+														[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
 												</ion-avatar>
 												<ion-fab
 													slot="fixed"
@@ -68,7 +68,7 @@
 															<ion-button
 																[appAsyncRef]="uploadingImage$"
 																[disabled]="!canSave()"
-																(click)="uploadFile(user!)"
+																(click)="uploadFile()"
 																[strong]="true">
 																Save
 															</ion-button>
@@ -161,7 +161,9 @@
 									<ion-col
 										size="12"
 										start="true">
-										<ion-text class="block">{{sessionService.loggedInWithPassword()?'Change':'Set'}} your password</ion-text>
+										<ion-text class="block">
+											{{sessionService.loggedInWithPassword()?'Change':'Set'}} your password
+										</ion-text>
 
 										<ion-button
 											class="ion-margin-vertical flex-initial"

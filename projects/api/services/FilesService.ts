@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 
+import type { FileType } from '../models/FileType';
+
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
@@ -18,14 +20,14 @@ export class FilesService {
 
     /**
      * @param formData 
-     * @returns any 
+     * @returns FileType 
      * @throws ApiError
      */
     public uploadFile(
 formData: {
 file?: Blob;
 },
-): Observable<any> {
+): Observable<FileType> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/files/upload',

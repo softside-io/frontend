@@ -2,7 +2,7 @@ import { Component, DestroyRef, EventEmitter, Output, inject } from '@angular/co
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicons/icons';
-import { NgStyle } from '@angular/common';
+import { AsyncPipe, NgStyle } from '@angular/common';
 import { NgLetModule } from 'ng-let';
 import {
 	IonToolbar,
@@ -49,6 +49,7 @@ import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell
 		NgStyle,
 		IonList,
 		IonItem,
+		AsyncPipe,
 	],
 })
 export class HeaderComponent {
@@ -59,7 +60,7 @@ export class HeaderComponent {
 
 	@Output() toggleDrawer = new EventEmitter();
 
-	user = this.sessionService.currentUser;
+	user$ = this.sessionService.loggedInUser$;
 
 	constructor() {
 		addIcons({

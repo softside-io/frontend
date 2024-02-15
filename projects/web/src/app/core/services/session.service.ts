@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, inject, signal } from '@angular/core';
-import { Observable, Subject, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -14,6 +14,7 @@ import {
 	AuthResetPasswordDto,
 	AuthService,
 	AuthUpdateDto,
+	FileType,
 	LoginResponseType,
 	StatusEnum,
 	User,
@@ -32,11 +33,15 @@ export class SessionService {
 	userIsGettingDeleted$ = new Subject<boolean>();
 	loggedInWithGoogle = signal(false);
 	loggedInWithPassword = signal(false);
+	private loggedInUserSubject = new BehaviorSubject<User | null>(null);
+	loggedInUser$ = this.loggedInUserSubject.asObservable();
 
 	get currentUser(): User | null {
-		const session = this.getSession();
+		return this.loggedInUserSubject.value;
+	}
 
-		return session ? session.user : null;
+	constructor() {
+		this.getSession();
 	}
 
 	// populateUser(): IUser {
@@ -53,7 +58,7 @@ export class SessionService {
 	// 	return {} as IUser;
 	// }
 
-	getUserNames(displayName: string): { firstName: string; lastName: string } {
+	getUserNames(displayName: string): { firstName: string; lastName: string; } {
 		const name = displayName?.split(' ');
 
 		let firstName = displayName || '',
@@ -125,7 +130,7 @@ export class SessionService {
 					if (this.isLoggedIn()) {
 						const currentUser = this.getSession();
 
-						this.updateUser({
+						this.setSession({
 							...currentUser,
 							user: {
 								...currentUser.user,
@@ -152,7 +157,7 @@ export class SessionService {
 		return this.authService.login({ email, password }).pipe(
 			tap({
 				next: (session) => {
-					this.updateUser(session);
+					this.setSession(session);
 					const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/home';
 					this.router.navigateByUrl(returnUrl, { replaceUrl: true });
 				},
@@ -174,15 +179,33 @@ export class SessionService {
 		);
 	}
 
-	updateUser(session: LoginResponseType): void {
+	setSession(session: LoginResponseType): void {
 		this.storage.setLocalStorage('session', session, true);
+
+		this.loggedInUserSubject.next(session.user);
+	}
+
+	updateUserProfileImage(photo: FileType): Observable<void> {
+		return this.authService.update({ photo }).pipe(
+			tap({
+				next: () => {
+					this.setSession({
+						...this.getSession(),
+						user: {
+							...this.currentUser!,
+							photo,
+						},
+					});
+				},
+			}),
+		);
 	}
 
 	updateUserProfile(user: AuthUpdateDto): Observable<void> {
 		return this.authService.update(user).pipe(
 			tap({
 				next: () => {
-					this.updateUser({
+					this.setSession({
 						...this.getSession(),
 						user: {
 							...this.currentUser!,
@@ -201,7 +224,14 @@ export class SessionService {
 	}
 
 	getSession(): LoginResponseType {
-		return this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+		const session = this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+
+		if (session) {
+			this.loggedInUserSubject.next(session.user);
+
+		}
+
+		return session;
 	}
 
 	isVerified(): boolean {

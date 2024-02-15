@@ -6,11 +6,10 @@ import {
 	OnDestroy,
 	ElementRef,
 	signal,
-	OnInit,
 	DestroyRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap, take, tap } from 'rxjs';
 import { ToggleCustomEvent } from '@ionic/core';
 import {
 	IonModal,
@@ -40,14 +39,14 @@ import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgLetModule } from 'ng-let';
+import { AsyncPipe } from '@angular/common';
 
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
-import { AuthService, AuthUpdateDto, User } from 'projects/api';
+import { AuthService, AuthUpdateDto, FileType, FilesService, User } from 'projects/api';
 import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
 
-import { ImageUploadService } from '../../shared/services/image-upload.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { SSPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
 import { SSSubmitButtonComponent } from '../../../../../softside/ui-sdk/lib/components/buttons/submit/submit.component';
@@ -96,9 +95,10 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 		ReactiveFormsModule,
 		PageHeaderComponent,
 		NgLetModule,
+		AsyncPipe,
 	],
 })
-export class ProfileViewComponent implements OnDestroy, OnInit {
+export class ProfileViewComponent implements OnDestroy {
 	@ViewChild('modalChangePassword') modalChangePassword!: IonModal;
 	@ViewChild('modalVerifyEmail') modalValidatePassword!: IonModal;
 	@ViewChild('modalImageCrop') modalImageCrop!: IonModal;
@@ -110,7 +110,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 	_appToast = inject(AppToastService);
 	theme = inject(ThemeService);
 	canSave = signal(false);
-	imageUploadService = inject(ImageUploadService);
+	fileService = inject(FilesService);
 	private destroyRef = inject(DestroyRef);
 
 	saveProfile$: Subscription | null = null;
@@ -121,6 +121,7 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 
 	imageChangedEvent: Event | null = null;
 	imageCropped: ImageCroppedEvent | null = null;
+	imageCroppedName = '';
 
 	alertButtons = [
 		{
@@ -154,11 +155,23 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		}),
 	});
 
-	formValidatePassword: ConvertToForm<{ password: string }> = FB.group({
+	formValidatePassword: ConvertToForm<{ password: string; }> = FB.group({
 		password: FB.string(),
 	});
 
-	user = this.sessionService.currentUser!;
+	user$ = this.sessionService.loggedInUser$.pipe(
+		tap({
+			next: (user: User | null) => {
+				this.profileForm.patchValue({
+					firstName: user?.firstName,
+					lastName: user?.lastName,
+					email: user?.email,
+					phone: user?.phone,
+					address: user?.address,
+				});
+			},
+		}),
+	);;
 
 	constructor() {
 		addIcons({
@@ -166,47 +179,35 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		});
 	}
 
-	ngOnInit(): void {
-		this.saveProfile$ = this.sessionService.followup(
-			this.authService.me(),
-			(user) => {
-				this.profileForm.patchValue({
-					firstName: user.firstName,
-					lastName: user.lastName,
-					email: user.email,
-					phone: user.phone,
-					address: user.address,
-				});
-			},
-			this.destroyRef,
-		);
-	}
+	uploadFile(): void {
 
-	uploadFile(_user: User): void {
-		// this.uploadingImage$ = this.imageUploadService
-		// 	.uploadImage(this.imageCropped?.blob as File, `${environment.profileCDNPath}${user.uid}`)
-		// 	.pipe(
-		// 		take(1),
-		// 		switchMap((photoURL: string) => {
-		// 			user.photoURL = photoURL;
-		// 			return this.sessionService.updateUser(user);
-		// 		}),
-		// 	)
-		// 	.subscribe({
-		// 		next: () => {
-		// 			this.modalImageCrop.dismiss();
-		// 			this._appToast.createToast('Your profile image has been updated successfully', 0, {
-		// 				color: 'success',
-		// 				size: 'medium',
-		// 			});
-		// 		},
-		// 		error: (_error: Error) => {
-		// 			this._appToast.createToast('Check file size. Limit: 2mb. Try resizing or choose another image', 5000, {
-		// 				color: 'danger',
-		// 				size: 'medium',
-		// 			});
-		// 		},
-		// 	});
+		// Now you have a File object with a custom name that you can use for uploads, etc.
+		this.uploadingImage$ = this.fileService
+			.uploadFile({
+				file: new File([this.imageCropped?.blob as Blob], this.imageCroppedName, { type: this.imageCropped?.blob?.type }),
+			})
+			.pipe(
+				take(1),
+				switchMap((file: FileType) => {
+
+					return this.sessionService.updateUserProfileImage(file);
+				}),
+			)
+			.subscribe({
+				next: () => {
+					this.modalImageCrop.dismiss();
+					this._appToast.createToast('Your profile image has been updated successfully', 0, {
+						color: 'success',
+						size: 'medium',
+					});
+				},
+				error: (_error: Error) => {
+					this._appToast.createToast('Check file size. Limit: 2mb. Try resizing or choose another image', 5000, {
+						color: 'danger',
+						size: 'medium',
+					});
+				},
+			});
 	}
 
 	submitRecord(user: User): void {
@@ -351,6 +352,8 @@ export class ProfileViewComponent implements OnDestroy, OnInit {
 		if (!path || !file) {
 			return;
 		}
+
+		this.imageCroppedName = file?.name;
 
 		const extension = path.match(/\.([^\.]+)$/)![1].toLowerCase();
 
