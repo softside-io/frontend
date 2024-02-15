@@ -1,12 +1,15 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { IonicRouteStrategy, createAnimation, provideIonicAngular } from '@ionic/angular/standalone';
-import { take } from 'rxjs';
+
+import { OpenAPI } from 'projects/api';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/http.interceptor';
 import { modules } from './app.modules';
+import { SessionService } from './core/services/session.service';
+import { environment } from '../environments/environment';
 
 const animationDuration = 150;
 
@@ -38,24 +41,34 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes, withComponentInputBinding()),
 		{
 			provide: APP_INITIALIZER,
-			useFactory: initializeWhiteLabeling,
-			deps: [HttpClient],
+			useFactory: initializeApplicationConfig,
+			deps: [SessionService],
 			multi: true,
 		},
 	],
 };
-// Initialize whitelabeling function (Get app config)
-export function initializeWhiteLabeling(httpClient: HttpClient) {
+// Initialize application configuration function
+export function initializeApplicationConfig(sessionService: SessionService) {
 	// returning promise so that getting this file is blocking to the UI
-	// TODO: For whitelabeling purposes (it can be a get request from a DB instead of a json file)
-	// Delay is added here to test that it is really blocking the UI
 	return (): Promise<void> =>
+
 		new Promise((resolve, _reject) => {
-			httpClient
-				.get('/assets/test.json')
-				.pipe(take(1) /*delay(5000)*/)
-				.subscribe((_res) => {
-					resolve();
-				});
+			OpenAPI.BASE = environment.openAPIBase;
+			OpenAPI.TOKEN = (): Promise<string> => {
+				const session = sessionService.getSession();
+				const checkSession = !!session && typeof session !== 'string';
+
+				if (!checkSession) {
+					return Promise.resolve('');
+				}
+
+				if (new Date(session.tokenExpires).getTime() < Date.now()) {
+					return Promise.resolve(session.refreshToken);
+				} else {
+					return Promise.resolve(session.token);
+				}
+			};
+
+			resolve();
 		});
 }
