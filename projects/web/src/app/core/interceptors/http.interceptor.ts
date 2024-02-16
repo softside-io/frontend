@@ -3,6 +3,8 @@ import { HttpRequest, HttpEvent, HttpInterceptorFn, HttpHandlerFn, HttpErrorResp
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { catchError, concatMap, filter, finalize, take } from 'rxjs/operators';
 
+import { BroadcastChannels, BroadcastEventEnum, BroadcastService } from '@softside/ui-sdk/lib/shared';
+
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { SessionService } from '../services/session.service';
 import { AppToastService } from '../../shared/services/app-toast.service';
@@ -13,6 +15,7 @@ let isTokenRefreshInProgress = false;
 let sessionService: SessionService;
 let appToast: AppToastService;
 let appSettingsService: AppSettingsService;
+let broadcastService: BroadcastService;
 const refreshTokenSubject$ = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (
@@ -22,6 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (
 	appSettingsService = inject(AppSettingsService);
 	appToast = inject(AppToastService);
 	sessionService = inject(SessionService);
+	broadcastService = inject(BroadcastService);
 
 	if (requestQueue.length === 0) {
 		appSettingsService.toggleIsLoading(true);
@@ -103,6 +107,11 @@ const refreshTheToken = (request: HttpRequest<unknown>, next: HttpHandlerFn): Ob
 	return sessionService.refreshToken().pipe(
 		concatMap((response) => {
 			refreshTokenSubject$.next(response.token);
+			broadcastService.sendMessage(
+				BroadcastChannels.AUTH_CHANNEL,
+				{ action: BroadcastEventEnum.SESSION, data: { session: sessionService.getSession() } },
+				true,
+			);
 
 			return next(cloneAndUpdateToken(request, response.token));
 		}),

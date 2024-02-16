@@ -19,6 +19,7 @@ import {
 	StatusEnum,
 	User,
 } from 'projects/api';
+import { BroadcastChannels, BroadcastEventEnum, BroadcastService } from '@softside/ui-sdk/lib/shared';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,6 +27,7 @@ import {
 export class SessionService {
 	storage = inject(StorageAccessorService);
 	authService = inject(AuthService);
+	broadcastService = inject(BroadcastService);
 	appSettings = inject(AppSettingsService);
 	activatedRoute = inject(ActivatedRoute);
 	router = inject(Router);
@@ -141,9 +143,10 @@ export class SessionService {
 		return this.authService.login(loginDto).pipe(
 			tap({
 				next: (session) => {
-					this.setSession(session);
-					const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/home';
-					this.router.navigateByUrl(returnUrl, { replaceUrl: true });
+					this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
+						action: BroadcastEventEnum.LOGIN,
+						data: { session },
+					});
 				},
 			}),
 		);
@@ -164,9 +167,14 @@ export class SessionService {
 	}
 
 	setSession(session: LoginResponseType): void {
-		this.storage.setLocalStorage('session', session, true);
+		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
+			action: BroadcastEventEnum.SESSION,
+			data: { session },
+		});
+	}
 
-		this.loggedInUserSubject.next(session.user);
+	updateLoggedInUser(user: User): void {
+		this.loggedInUserSubject.next(user);
 	}
 
 	updateUserProfileImage(photo: FileType): Observable<void> {
@@ -252,8 +260,7 @@ export class SessionService {
 	}
 
 	clearSession(): void {
-		this.storage.removeLocalStorageKey('session');
-		this.router.navigate(['/auth']);
+		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, { action: BroadcastEventEnum.LOGOUT });
 	}
 
 	// linkUser(user: User, newPassword: string): Observable<UserCredential> {
