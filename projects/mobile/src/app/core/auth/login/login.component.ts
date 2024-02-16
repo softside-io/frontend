@@ -1,25 +1,57 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Router, RouterLink } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardContent,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+} from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
-import { LoginResponseType } from '../../../shared/models/IUser.model';
+import { SSButtonComponent } from '../../../../../../softside/ui-sdk/lib/elements/action/button/button.component';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
+import { SSPasswordComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
+import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonRow,
+		IonCol,
+		ReactiveFormsModule,
+		SSEmailComponent,
+		SSPasswordComponent,
+		IonButton,
+		AsyncRefDirective,
+		SSButtonComponent,
+		IonButtons,
+		RouterLink,
+	],
 })
-export class LoginComponent implements OnInit, OnDestroy {
-	router = inject(Router);
-	route = inject(ActivatedRoute);
-	sessionService = inject(SessionService);
-	_appToast = inject(AppToastService);
-	cdr = inject(ChangeDetectorRef);
+export class LoginComponent implements OnInit {
+	private router = inject(Router);
+	private sessionService = inject(SessionService);
+	private _appToast = inject(AppToastService);
+	private destroyRef = inject(DestroyRef);
 
 	form: LoginForm = FB.group({
 		email: FB.string(),
@@ -30,46 +62,64 @@ export class LoginComponent implements OnInit, OnDestroy {
 	loginWithGoogle$: Subscription | null = null;
 
 	ngOnInit(): void {
-		const success = this.route.snapshot.queryParams['passwordChanged'];
+		const registered = this.router.getCurrentNavigation()?.extras.state?.['registered'];
+		const verified = this.router.getCurrentNavigation()?.extras.state?.['verified'];
+		const resetted = this.router.getCurrentNavigation()?.extras.state?.['resetted'];
+		const changedPassword = this.router.getCurrentNavigation()?.extras.state?.['changedPassword'];
 
-		if (success) {
-			this._appToast.createToast('You have successfully changed your password', 0);
+		if (registered) {
+			this._appToast.createToast(
+				`Verification email sent! Please check your inbox to complete the registration process.`,
+				5000,
+				{
+					color: 'success',
+					size: 'medium',
+				},
+			);
+		}
+
+		if (verified) {
+			this._appToast.createToast(`Your email has been successfully verified!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+
+		if (resetted) {
+			this._appToast.createToast(`Your password has been successfully changed!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+
+		if (changedPassword) {
+			this._appToast.createToast(`Your password has been successfully updated!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
 		}
 	}
 
 	submitRecord(): void {
+		if (this.form.invalid) {
+			return;
+		}
+
 		const { email, password } = this.form.getRawValue();
 
-		this.login$ = this.loginFollowUp(this.sessionService.loginWithEmailAndPassword(email, password));
+		this.login$ = this.sessionService.followup(
+			this.sessionService.loginWithEmailAndPassword({ email, password }),
+			undefined,
+			this.destroyRef,
+		);
 	}
 
 	loginWithGoogle(): void {
-		// this.loginWithGoogle$ = this.loginFollowUp(this.authService.loginWithGoogle());
-	}
-
-	loginFollowUp(login: Observable<LoginResponseType>): Subscription | null {
-		return login.subscribe({
-			next: () => this.onSuccess(),
-			error: (error: Error) => this.onFailure(error.message),
-		});
-	}
-
-	onSuccess(): void {
-		const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
-		this.router.navigateByUrl(returnUrl, { replaceUrl: true });
-		this._appToast.dismissSnackBar();
-	}
-
-	onFailure(message: string): void {
-		this._appToast.createToast(message, 0, {
-			color: 'danger',
-			size: 'small',
-		});
-	}
-
-	ngOnDestroy(): void {
-		this.login$?.unsubscribe();
-		this.loginWithGoogle$?.unsubscribe();
+		// this.loginWithGoogle$ = this.sessionService.followup(
+		// 	this.sessionService.loginWithGoogle(),
+		// 	undefined,
+		// 	this.destroyRef,
+		// );
 	}
 }
 

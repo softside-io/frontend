@@ -20,15 +20,10 @@ export class AppToastService {
 		this.toast
 			.create({
 				message,
-				duration,
+				duration: duration || 3000,
 				position: 'top',
 				cssClass: `${classObj.color} ${classObj.size}`,
 				icon: 'information-circle-outline',
-				buttons: [
-					{
-						text: 'Ok',
-					},
-				],
 			})
 			.then((toast) => {
 				toast.present();

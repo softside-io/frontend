@@ -8,6 +8,7 @@ import {
 	IonCardTitle,
 	IonCol,
 	IonContent,
+	IonIcon,
 	IonRouterOutlet,
 	IonRow,
 	IonText,
@@ -18,24 +19,16 @@ import { SSPasswordComponent } from '@softside/ui-sdk/lib/components/inputs/pass
 import { SSConfirmPasswordComponent } from '@softside/ui-sdk/lib/components/composed/confirm-password';
 import { SSButtonComponent } from '@softside/ui-sdk/lib/elements';
 
-import { SharedModule } from '../../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ConfirmEmailComponent } from './verify-email/verify-email.component';
 import { AuthShellComponent } from './auth-shell/auth-shell.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
-	declarations: [
-		AuthShellComponent,
-		LoginComponent,
-		RegisterComponent,
-		ForgetPasswordComponent,
-		VerifyEmailComponent,
-	],
 	imports: [
-		SharedModule,
 		AuthRoutingModule,
 		SSEmailComponent,
 		SSPasswordComponent,
@@ -49,13 +42,20 @@ import { AuthShellComponent } from './auth-shell/auth-shell.component';
 		IonCardContent,
 		IonRow,
 		IonCol,
+		IonIcon,
 		IonButton,
 		IonButtons,
 		IonText,
+		AuthShellComponent,
+		LoginComponent,
+		RegisterComponent,
+		ForgetPasswordComponent,
+		ResetPasswordComponent,
+		ConfirmEmailComponent,
 	],
 	providers: [],
 })
-export class AuthModule { }
+export class AuthModule {}
 export type UserCredential = {
 	user: unknown;
 };

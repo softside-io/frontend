@@ -1,8 +1,19 @@
 import { Component, inject } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLinkActive, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { home, people, settings, person, star, archive } from 'ionicons/icons';
+import {
+	home,
+	people,
+	settings,
+	person,
+	star,
+	archive,
+	chevronForwardOutline,
+	chevronDownOutline,
+} from 'ionicons/icons';
+import { IonMenuToggle, IonItem, IonIcon, IonLabel, IonList } from '@ionic/angular/standalone';
+import { NgFor, NgIf } from '@angular/common';
 
 import { IMenuItem, appPages } from './side-navbar';
 
@@ -10,6 +21,8 @@ import { IMenuItem, appPages } from './side-navbar';
 	selector: 'app-side-navbar',
 	templateUrl: './side-navbar.component.html',
 	styleUrls: ['./side-navbar.component.scss'],
+	standalone: true,
+	imports: [NgFor, NgIf, IonMenuToggle, IonItem, RouterLinkActive, RouterLink, IonIcon, IonLabel, IonList],
 })
 export class SideNavbarComponent {
 	appPages: Array<IMenuItem> = appPages;
@@ -24,6 +37,8 @@ export class SideNavbarComponent {
 			person,
 			star,
 			archive,
+			chevronForwardOutline,
+			chevronDownOutline,
 		});
 	}
 

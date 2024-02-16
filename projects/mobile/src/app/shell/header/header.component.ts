@@ -1,26 +1,66 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, DestroyRef, EventEmitter, Output, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicons/icons';
+import { AsyncPipe, NgStyle } from '@angular/common';
+import { NgLetModule } from 'ng-let';
+import {
+	IonToolbar,
+	IonButtons,
+	IonMenuButton,
+	IonTitle,
+	IonIcon,
+	IonSearchbar,
+	IonButton,
+	IonChip,
+	IonAvatar,
+	IonLabel,
+	IonPopover,
+	IonList,
+	IonItem,
+} from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
+import { User } from 'projects/api';
 
 import { SessionService } from '../../core/services/session.service';
-import { User } from '../../shared/models/IUser.model';
+import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell-loading-bar.component';
 
 @Component({
 	selector: 'app-header',
 	templateUrl: './header.component.html',
 	styleUrls: ['./header.component.scss'],
+	standalone: true,
+	imports: [
+		IonToolbar,
+		ShellLoadingBarComponent,
+		IonButtons,
+		IonMenuButton,
+		IonTitle,
+		RouterLink,
+		IonIcon,
+		IonSearchbar,
+		NgLetModule,
+		IonButton,
+		IonChip,
+		IonAvatar,
+		IonLabel,
+		IonPopover,
+		NgStyle,
+		IonList,
+		IonItem,
+		AsyncPipe,
+	],
 })
 export class HeaderComponent {
-	authService = inject(SessionService);
+	sessionService = inject(SessionService);
 	router = inject(Router);
 	_appToast = inject(AppToastService);
+	destroyRef = inject(DestroyRef);
 
 	@Output() toggleDrawer = new EventEmitter();
 
-	user$ = this.authService.currentUserProfile$;
+	user$ = this.sessionService.loggedInUser$;
 
 	constructor() {
 		addIcons({
@@ -31,14 +71,12 @@ export class HeaderComponent {
 		});
 	}
 
-	revealId(id: string): void {
-		this._appToast.createToast(id, 0);
+	revealId(id: User['id']): void {
+		this._appToast.createToast(id.toString(), 0);
 	}
 
 	logout(): void {
-		// this.authService.logout().subscribe(() => {
-		// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		// });
+		this.sessionService.followup(this.sessionService.logout(), undefined, this.destroyRef);
 	}
 
 	getUserDisplay(user: User): string {
@@ -46,6 +84,6 @@ export class HeaderComponent {
 			return '';
 		}
 
-		return this.authService.getUserDisplay(user);
+		return this.sessionService.getUserDisplay(user);
 	}
 }

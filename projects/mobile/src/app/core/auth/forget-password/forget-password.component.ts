@@ -1,22 +1,55 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+	IonContent,
+	IonCard,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardContent,
+	IonRow,
+	IonCol,
+	IonButton,
+	IonButtons,
+	IonText,
+} from '@ionic/angular/standalone';
 
 import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
-import { AppToastService, ToastClass } from '../../../shared/services/app-toast.service';
+import { AppToastService } from '../../../shared/services/app-toast.service';
+import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
+import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
 
 @Component({
 	selector: 'app-forget-password',
 	templateUrl: './forget-password.component.html',
 	styleUrls: ['./forget-password.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	standalone: true,
+	imports: [
+		IonContent,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonRow,
+		IonCol,
+		ReactiveFormsModule,
+		SSEmailComponent,
+		IonButton,
+		AsyncRefDirective,
+		IonButtons,
+		IonText,
+		RouterLink,
+	],
 })
-export class ForgetPasswordComponent implements OnDestroy {
-	router = inject(Router);
-	authService = inject(SessionService);
-	_appToast = inject(AppToastService);
+export class ForgetPasswordComponent {
+	private sessionService = inject(SessionService);
+	private _appToast = inject(AppToastService);
+	private destroyRef = inject(DestroyRef);
 
 	form: ConvertToForm<{ email: string }> = FB.group({
 		email: FB.string(),
@@ -24,35 +57,24 @@ export class ForgetPasswordComponent implements OnDestroy {
 
 	forget$: Subscription | null = null;
 
+	forgetFollowUp(forget: Observable<void>): Subscription | null {
+		return forget.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+			next: () => {
+				this._appToast.createToast(`An email has been sent to ${this.form.get('email')}`, 5000, {
+					color: 'secondary',
+					size: 'medium',
+				});
+			},
+		});
+	}
+
 	submitRecord(): void {
 		if (this.form.invalid) {
 			return;
 		}
 
 		const { email } = this.form.getRawValue();
-		console.log(email);
 
-		// this.forget$ = this.authService.forgetPassword(email).subscribe({
-		// 	next: () => this.onPasswordReset(`An email has been sent to ${email}`),
-		// 	error: (error: Error) => this.onPasswordReset(error.message, true),
-		// });
-	}
-
-	onPasswordReset(message: string, error: boolean = false): void {
-		const errorObj: ToastClass = {
-			color: 'secondary',
-			size: 'medium',
-		};
-
-		if (error) {
-			errorObj.color = 'danger';
-			errorObj.size = 'small';
-		}
-
-		this._appToast.createToast(message, 0, errorObj);
-	}
-
-	ngOnDestroy(): void {
-		this.forget$?.unsubscribe();
+		this.sessionService.followup(this.sessionService.forgetPassword({ email }), undefined, this.destroyRef);
 	}
 }

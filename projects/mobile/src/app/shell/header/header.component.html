@@ -1,4 +1,5 @@
 <ion-toolbar class="flex align-center">
+	<app-shell-loading-bar class="absolute bottom-0 start-0 end-0"></app-shell-loading-bar>
 	<ion-buttons slot="start">
 		<ion-menu-button></ion-menu-button>
 		<ion-title>
@@ -15,7 +16,7 @@
 	</ion-buttons>
 	<ion-searchbar class="m-auto max-w-[400px] hidden md:block custom"></ion-searchbar>
 	<ion-buttons slot="end">
-		<ng-container *ngLet="user$ | async as user">
+		<ng-container *ngLet="(user$ | async) as user">
 			<ion-button
 				shape="round"
 				id="profile-menu">
@@ -23,16 +24,17 @@
 					<ion-avatar>
 						<img
 							alt="Profile pic"
-							src="assets/icon/pp.jpg" />
+							[src]="user?.photo ? user?.photo?.path :'assets/icon/pp.jpg'" />
 					</ion-avatar>
 					<ion-label class="ion-text-capitalize">{{getUserDisplay(user!)}}</ion-label>
 				</ion-chip>
 			</ion-button>
 			<ion-popover
+				[ngStyle]="{'--max-width': '170px'}"
 				trigger="profile-menu"
 				triggerAction="click"
 				dismissOnSelect="true"
-				size="cover"
+				size="auto"
 				side="bottom"
 				alignment="end">
 				<ng-template>
@@ -46,7 +48,9 @@
 								name="person-circle-outline"></ion-icon>
 							<ion-label>My profile</ion-label>
 						</ion-item>
-						<ion-item button>
+						<ion-item
+							button
+							(click)="revealId(user?.id!)">
 							<ion-icon
 								class="ion-padding-horizontal"
 								name="id-card-outline"></ion-icon>

@@ -8,8 +8,8 @@ describe('FormActionBarComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [FormActionBarComponent],
-		}).compileComponents();
+    imports: [FormActionBarComponent],
+}).compileComponents();
 
 		fixture = TestBed.createComponent(FormActionBarComponent);
 		component = fixture.componentInstance;

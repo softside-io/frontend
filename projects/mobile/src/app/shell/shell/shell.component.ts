@@ -1,34 +1,34 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { IonHeader, IonSplitPane, IonMenu, IonContent, IonRouterOutlet } from '@ionic/angular/standalone';
 
-import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
-
-import { SessionService } from '../../core/services/session.service';
 import { IMenuItem, appPages } from '../side-navbar/side-navbar';
 import { AppToastService } from '../../shared/services/app-toast.service';
+import { SideNavbarComponent } from '../side-navbar/side-navbar.component';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
 	selector: 'app-shell',
 	templateUrl: './shell.component.html',
 	styleUrls: ['./shell.component.scss'],
+	standalone: true,
+	imports: [IonHeader, HeaderComponent, IonSplitPane, IonMenu, IonContent, SideNavbarComponent, IonRouterOutlet],
 })
 export class ShellComponent {
 	appPages: Array<IMenuItem> = appPages;
 	_appToast = inject(AppToastService);
-	authService = inject(SessionService);
-	storage = inject(StorageAccessorService);
+	router = inject(Router);
 
-	user$ = this.authService.currentUserProfile$;
+	ngOnInit(): void {
+		// TODO: handle undefined verified
 
-	// 	ngOnInit(): void {
-	// 		this.user$.pipe(take(1)).subscribe((user: User | null) => {
-	// 			if (this.storage.checkExistance(user!.uid)) {
-	// 				this.storage.removeLocalStorageKey(user!.uid);
+		const verified = this.router.getCurrentNavigation()?.extras.state?.['verified'];
 
-	// 				this._appToast.createToast(`Welcome ${this.authService.getUserDisplay(user!)}`, 3000, {
-	// 					color: 'secondary',
-	// 					size: 'medium',
-	// 				});
-	// 			}
-	// 		});
-	// 	}
+		if (verified) {
+			this._appToast.createToast(`Your email has been successfully verified!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
+	}
 }

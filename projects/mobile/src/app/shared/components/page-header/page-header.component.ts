@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IonSpinner } from '@ionic/angular/standalone';
+import { NgFor } from '@angular/common';
 
 import { ActionButton } from '../../models/actionButton';
 import { IBreadcrumbItem } from '../../models/IBreadcrumbItem';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 /**
  * Example how to use this shared Page Header
@@ -31,6 +34,8 @@ import { IBreadcrumbItem } from '../../models/IBreadcrumbItem';
 	selector: 'app-page-header',
 	templateUrl: './page-header.component.html',
 	styleUrls: ['./page-header.component.scss'],
+	standalone: true,
+	imports: [NgFor, BreadcrumbComponent, IonSpinner],
 })
 export class PageHeaderComponent<T> {
 	@Input() breadcrumbItems!: IBreadcrumbItem[];

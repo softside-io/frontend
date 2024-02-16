@@ -4,12 +4,17 @@ import {
 	Routes,
 } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ConfirmEmailComponent } from './verify-email/verify-email.component';
 import { AuthShellComponent } from './auth-shell/auth-shell.component';
 import { NotFoundComponent } from '../../pages/not-found/not-found.component';
+import {
+	publicGuard,
+	verifyGuard,
+} from '../guards/auth.guard';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
 	{
@@ -26,25 +31,41 @@ const routes: Routes = [
 				path: 'login',
 				component:
 					LoginComponent,
-				// anonymous guard
+				canActivate: [
+					publicGuard,
+				],
 			},
 			{
 				path: 'register',
 				component:
 					RegisterComponent,
-				// anonymous guard
+				canActivate: [
+					publicGuard,
+				],
 			},
 			{
 				path: 'forget-password',
 				component:
 					ForgetPasswordComponent,
-				// anonymous guard
+				canActivate: [
+					publicGuard,
+				],
 			},
 			{
-				path: 'verify-email',
+				path: 'reset-password',
 				component:
-					VerifyEmailComponent,
-				// verify guard
+					ResetPasswordComponent,
+				canActivate: [
+					publicGuard,
+				],
+			},
+			{
+				path: 'confirm-email',
+				component:
+					ConfirmEmailComponent,
+				canActivate: [
+					verifyGuard,
+				],
 			},
 			{
 				path: '404',

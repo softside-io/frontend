@@ -7,10 +7,9 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [AppComponent],
-			schemas: [CUSTOM_ELEMENTS_SCHEMA],
-			imports: [RouterTestingModule.withRoutes([])],
-		}).compileComponents();
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [RouterTestingModule.withRoutes([]), AppComponent],
+}).compileComponents();
 	});
 
 	it('should create the app', () => {

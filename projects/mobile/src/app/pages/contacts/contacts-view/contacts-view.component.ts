@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
-import { ColumnMode } from 'ngx-softside-table';
+import { ColumnMode, NgxDatatableModule } from 'ngx-softside-table';
+import { IonContent, IonCard, IonCardContent, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
+
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
 	selector: 'app-contacts-view',
 	templateUrl: './contacts-view.component.html',
 	styleUrls: ['./contacts-view.component.scss'],
+	standalone: true,
+	imports: [IonContent, PageHeaderComponent, IonCard, IonCardContent, IonRow, IonCol, IonLabel, NgxDatatableModule],
 })
 export class ContactsViewComponent {
 	rows = [
