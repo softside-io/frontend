@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
 		const registered = this.router.getCurrentNavigation()?.extras.state?.['registered'];
 		const verified = this.router.getCurrentNavigation()?.extras.state?.['verified'];
 		const resetted = this.router.getCurrentNavigation()?.extras.state?.['resetted'];
+		const changedPassword = this.router.getCurrentNavigation()?.extras.state?.['changedPassword'];
 
 		if (registered) {
 			this._appToast.createToast(
@@ -90,6 +91,13 @@ export class LoginComponent implements OnInit {
 				size: 'medium',
 			});
 		}
+
+		if (changedPassword) {
+			this._appToast.createToast(`Your password has been successfully updated!`, 5000, {
+				color: 'success',
+				size: 'medium',
+			});
+		}
 	}
 
 	submitRecord(): void {
@@ -100,7 +108,7 @@ export class LoginComponent implements OnInit {
 		const { email, password } = this.form.getRawValue();
 
 		this.login$ = this.sessionService.followup(
-			this.sessionService.loginWithEmailAndPassword(email, password),
+			this.sessionService.loginWithEmailAndPassword({ email, password }),
 			undefined,
 			this.destroyRef,
 		);

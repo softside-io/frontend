@@ -68,7 +68,7 @@ export class ConfirmEmailComponent implements OnInit {
 
 		if (hash) {
 			this.confirmEmail$ = this.sessionService.followup(
-				this.sessionService.confirmEmail(hash),
+				this.sessionService.confirmEmail({ hash }),
 				undefined,
 				this.destroyRef,
 			);

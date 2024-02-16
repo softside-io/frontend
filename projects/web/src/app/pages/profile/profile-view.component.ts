@@ -39,7 +39,7 @@ import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgLetModule } from 'ng-let';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
@@ -96,11 +96,11 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 		PageHeaderComponent,
 		NgLetModule,
 		AsyncPipe,
+		NgIf,
 	],
 })
 export class ProfileViewComponent implements OnDestroy {
 	@ViewChild('modalChangePassword') modalChangePassword!: IonModal;
-	@ViewChild('modalVerifyEmail') modalValidatePassword!: IonModal;
 	@ViewChild('modalImageCrop') modalImageCrop!: IonModal;
 	@ViewChild('inputField') inputField!: ElementRef<HTMLInputElement>;
 
@@ -115,8 +115,7 @@ export class ProfileViewComponent implements OnDestroy {
 
 	saveProfile$: Subscription | null = null;
 	deleteUser$: Subscription | null = null;
-	modifyPassword$: Subscription | null = null;
-	validatePassword$: Subscription | null = null;
+	changePassword$: Subscription | null = null;
 	uploadingImage$: Subscription | null = null;
 
 	imageChangedEvent: Event | null = null;
@@ -148,15 +147,11 @@ export class ProfileViewComponent implements OnDestroy {
 		phone: FB.string(),
 	});
 
-	formChangePassword: ConvertToForm<PasswordGroup> = FB.group({
+	formChangePassword: ConvertToForm<ChangePassword> = FB.group({
 		confirmPasswordGroup: FB.group({
 			password: FB.string(),
 			confirmPassword: FB.string(),
 		}),
-	});
-
-	formValidatePassword: ConvertToForm<{ password: string; }> = FB.group({
-		password: FB.string(),
 	});
 
 	user$ = this.sessionService.loggedInUser$.pipe(
@@ -169,9 +164,13 @@ export class ProfileViewComponent implements OnDestroy {
 					phone: user?.phone,
 					address: user?.address,
 				});
+
+				if (this.sessionService.loggedInWithPassword()) {
+					this.formChangePassword.addControl('oldPassword', FB.string());
+				}
 			},
 		}),
-	);;
+	);
 
 	constructor() {
 		addIcons({
@@ -180,16 +179,16 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	uploadFile(): void {
-
 		// Now you have a File object with a custom name that you can use for uploads, etc.
 		this.uploadingImage$ = this.fileService
 			.uploadFile({
-				file: new File([this.imageCropped?.blob as Blob], this.imageCroppedName, { type: this.imageCropped?.blob?.type }),
+				file: new File([this.imageCropped?.blob as Blob], this.imageCroppedName, {
+					type: this.imageCropped?.blob?.type,
+				}),
 			})
 			.pipe(
 				take(1),
 				switchMap((file: FileType) => {
-
 					return this.sessionService.updateUserProfileImage(file);
 				}),
 			)
@@ -198,12 +197,6 @@ export class ProfileViewComponent implements OnDestroy {
 					this.modalImageCrop.dismiss();
 					this._appToast.createToast('Your profile image has been updated successfully', 0, {
 						color: 'success',
-						size: 'medium',
-					});
-				},
-				error: (_error: Error) => {
-					this._appToast.createToast('Check file size. Limit: 2mb. Try resizing or choose another image', 5000, {
-						color: 'danger',
 						size: 'medium',
 					});
 				},
@@ -231,21 +224,16 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	deleteUser(): void {
-		// this.deleteUser$ = this.sessionService
-		// 	.userProvider((user: AuthUser): Observable<void> => {
-		// 		if (!user) {
-		// 			return of(undefined);
-		// 		}
-		// 		return this.sessionService.deleteUser(user);
-		// 	})
-		// 	.subscribe({
-		// 		next: () => {
-		// 			this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		// 		},
-		// 		error: (_error: Error) => {
-		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-		// 		},
-		// 	});
+		this.deleteUser$ = this.sessionService.followup(
+			this.sessionService.deleteUser(),
+			() => {
+				this._appToast.createToast('Your account has been successfully deleted', 0, {
+					color: 'warning',
+					size: 'small',
+				});
+			},
+			this.destroyRef,
+		);
 	}
 
 	setResult(event: Event): void {
@@ -258,72 +246,29 @@ export class ProfileViewComponent implements OnDestroy {
 		}
 
 		const {
+			oldPassword,
 			confirmPasswordGroup: { password },
 		} = this.formChangePassword.getRawValue();
 
 		if (this.sessionService.loggedInWithGoogle() && !this.sessionService.loggedInWithPassword()) {
-			this.linkAccount(password);
+			// this.linkAccount(password);
 		} else {
-			this.updatePassword(password);
+			this.updatePassword(password, oldPassword);
 		}
 	}
 
-	modifyPassword(): void {
-		this.sessionService.loggedInWithPassword()
-			? this.modalValidatePassword.present()
-			: this.modalChangePassword.present();
+	changePassword(): void {
+		this.modalChangePassword.present();
 	}
 
-	confirmValidatePassword(): void {
-		if (this.formValidatePassword.invalid) {
-			return;
-		}
-
-		const { password } = this.formValidatePassword.getRawValue();
-		console.log(password);
-
-		// this.validatePassword$ = this.sessionService
-		// 	.userProvider((user: AuthUser) => {
-		// 		if (!user) {
-		// 			return of(undefined);
-		// 		}
-
-		// 		return this.sessionService.validatePassword(user, password);
-		// 	})
-		// 	.subscribe({
-		// 		next: () => {
-		// 			this.modalValidatePassword.dismiss();
-		// 			this.modalChangePassword.present();
-		// 		},
-		// 		error: (_error: Error) => {
-		// 			this._appToast.createToast('Opps! Incorrect password.', 2000, { color: 'danger', size: 'small' });
-		// 		},
-		// 	});
-	}
-
-	private updatePassword(_currentPassword: string): void {
-		// this.modifyPassword$ = this.sessionService
-		// 	.userProvider((user: AuthUser) => {
-		// 		if (!user) {
-		// 			return of(undefined);
-		// 		}
-		// 		return this.sessionService.updatePassword(user, currentPassword);
-		// 	})
-		// 	.subscribe({
-		// 		next: () => {
-		// 			this._appToast.createToast('Your password has been successfully updated!', 2000, {
-		// 				color: 'success',
-		// 				size: 'medium',
-		// 			});
-		// 			this.modalChangePassword.dismiss();
-		// 			// this.sessionService.logout().subscribe((): void => {
-		// 			// 	this.router.navigateByUrl('auth/login', { replaceUrl: true });
-		// 			// });
-		// 		},
-		// 		error: (_error: Error) => {
-		// 			this._appToast.createToast('Opps! Please try gain later.', 2000, { color: 'danger', size: 'small' });
-		// 		},
-		// 	});
+	private updatePassword(password: string, oldPassword?: string): void {
+		this.changePassword$ = this.sessionService.followup(
+			this.sessionService.changePassword({ password, oldPassword }),
+			() => {
+				this.modalChangePassword.dismiss();
+			},
+			this.destroyRef,
+		);
 	}
 
 	private linkAccount(_password: string): void {
@@ -393,8 +338,7 @@ export class ProfileViewComponent implements OnDestroy {
 	ngOnDestroy(): void {
 		this.saveProfile$?.unsubscribe();
 		this.deleteUser$?.unsubscribe();
-		this.modifyPassword$?.unsubscribe();
-		this.validatePassword$?.unsubscribe();
+		this.changePassword$?.unsubscribe();
 		this.uploadingImage$?.unsubscribe();
 	}
 }
@@ -407,7 +351,8 @@ type Profile = {
 	address: string;
 };
 
-type PasswordGroup = {
+type ChangePassword = {
+	oldPassword?: string;
 	confirmPasswordGroup: {
 		password: string;
 		confirmPassword: string;

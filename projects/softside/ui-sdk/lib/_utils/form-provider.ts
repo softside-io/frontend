@@ -36,7 +36,9 @@ export class FormProviderBaseComponent implements OnInit {
 		this.currentFormGroup = this.directParentGroup ? this.directParentGroup : this.parentFormGroup;
 
 		if (!this.groupName && (!this.label || !this.controlKey)) {
-			console.error(`All inputs inside ${this.formGroupDirective.name ?? 'a form'} should have a label and controlKey inputs`);
+			console.error(
+				`All inputs inside ${this.formGroupDirective.name ?? 'a form'} should have a label and controlKey inputs`,
+			);
 
 			return;
 		}
@@ -62,9 +64,11 @@ export class FormProviderBaseComponent implements OnInit {
 		}
 
 		if (!this.groupName) {
-			this.currentFormGroup.controls[this.controlKey].valueChanges.pipe(takeUntil(this._destroy$)).subscribe(() => {
-				this.cdr.detectChanges();
-			});
+			this.currentFormGroup.controls[this.controlKey].valueChanges
+				.pipe(takeUntil(this._destroy$))
+				.subscribe(() => {
+					this.cdr.detectChanges();
+				});
 		}
 	}
 

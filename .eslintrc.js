@@ -85,10 +85,16 @@ module.exports = {
 						allow: ['arrowFunctions', 'constructors'],
 					},
 				],
-				'@typescript-eslint/no-explicit-any': ['error', { fixToUnknown: false, ignoreRestArgs: false }],
+				'@typescript-eslint/no-explicit-any': [
+					'error',
+					{ fixToUnknown: false, ignoreRestArgs: false },
+				],
 				'@typescript-eslint/ban-types': 'off',
 				'@typescript-eslint/explicit-function-return-type': 'error',
-				'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', args: 'all' }],
+				'@typescript-eslint/no-unused-vars': [
+					'error',
+					{ argsIgnorePattern: '^_', args: 'all' },
+				],
 				'@typescript-eslint/no-inferrable-types': [
 					'off',
 					{
@@ -139,16 +145,22 @@ module.exports = {
 					'error',
 					{
 						'newlines-between': 'always',
-						groups: ['external', 'internal', ['parent', 'sibling', 'index']],
+						groups: [
+							'external',
+							'internal',
+							['parent', 'sibling', 'index'],
+						],
 						pathGroups: [],
 					},
 				],
 				'import/first': 'error',
-				'import/no-deprecated': 'warn',
 				'import/newline-after-import': 'error',
 				'import/named': 'error',
 				'import/no-unresolved': ['error'],
-				'no-restricted-imports': ['error', { paths: ['@example/example-library'] }],
+				'no-restricted-imports': [
+					'error',
+					{ paths: ['@example/example-library'] },
+				],
 				'unused-imports/no-unused-imports': 'error',
 				'no-var': 'error',
 				'@angular-eslint/directive-selector': [
@@ -201,7 +213,11 @@ module.exports = {
 					'error',
 					{
 						'newlines-between': 'always',
-						groups: ['external', 'internal', ['parent', 'sibling', 'index']],
+						groups: [
+							'external',
+							'internal',
+							['parent', 'sibling', 'index'],
+						],
 						pathGroups: [],
 					},
 				],

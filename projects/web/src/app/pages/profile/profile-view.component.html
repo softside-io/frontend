@@ -2,7 +2,9 @@
 	<app-page-header [title]="'Profile'"></app-page-header>
 	<ion-card>
 		<ion-card-content class="ion-no-padding">
-			<ion-list [inset]="true">
+			<ion-list
+				[inset]="true"
+				*ngLet="(user$ | async) as user">
 				<ion-item>
 					<ion-grid>
 						<ion-row class="ion-justify-content-start">
@@ -19,126 +21,124 @@
 								class="ion-no-padding"
 								size-md="9">
 								<ion-row>
-									<ng-container *ngLet="(user$ | async) as user">
-										<ion-col
-											size="12"
-											size-md="6"
-											push-md="6"
-											size-lg="7"
-											push-lg="5">
-											<div class="profile-pic relative ion-padding-horizontal">
-												<ion-avatar class="m-auto">
-													<img
-														width="300"
-														height="300"
-														class="margin-top mat-elevation-z1"
-														[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-												</ion-avatar>
-												<ion-fab
-													slot="fixed"
-													vertical="bottom"
-													horizontal="center"
-													class="bottom-[-25px]"
-													(click)="inputField.click()">
-													<ion-fab-button size="small">
-														<ion-icon
-															name="camera"
-															class="camera-icon"></ion-icon>
-													</ion-fab-button>
-												</ion-fab>
-											</div>
-											<input
-												#inputField
-												hidden
-												accept=".png, .jpg, .jpeg"
-												type="file"
-												(input)="fileChangeEvent($event)" />
-										</ion-col>
-										<ion-modal
-											#modalImageCrop
-											(ionModalWillDismiss)="clearImageData()">
-											<ng-template>
-												<ion-header>
-													<ion-toolbar>
-														<ion-buttons slot="start">
-															<ion-button (click)="modalImageCrop.dismiss()">Cancel</ion-button>
-														</ion-buttons>
-														<ion-title>Preview profile picture</ion-title>
-														<ion-buttons slot="end">
-															<ion-button
-																[appAsyncRef]="uploadingImage$"
-																[disabled]="!canSave()"
-																(click)="uploadFile()"
-																[strong]="true">
-																Save
-															</ion-button>
-														</ion-buttons>
-													</ion-toolbar>
-												</ion-header>
-												<ion-content>
-													<ion-row
-														class="h-full w-full items-center"
-														slot="fixed">
-														<image-cropper
-															class="!p-0"
-															backgroundColor="transparent"
-															[imageChangedEvent]="imageChangedEvent"
-															[maintainAspectRatio]="true"
-															[aspectRatio]="1/1"
-															[roundCropper]="true"
-															[cropperMinHeight]="200"
-															[cropperMinWidth]="200"
-															(imageCropped)="onImageCropped($event)"
-															(imageLoaded)="onImageLoaded()"
-															(loadImageFailed)="onLoadImageFailed()"></image-cropper>
-													</ion-row>
-												</ion-content>
-											</ng-template>
-										</ion-modal>
-										<ion-col
-											size-md="6"
-											pull-md="6"
-											size-lg="5"
-											pull-lg="7">
-											<form
-												[formGroup]="profileForm"
-												(ngSubmit)="submitRecord(user!)">
-												<ss-text
-													controlKey="firstName"
-													label="First Name"
-													[required]="true"></ss-text>
+									<ion-col
+										size="12"
+										size-md="6"
+										push-md="6"
+										size-lg="7"
+										push-lg="5">
+										<div class="profile-pic relative ion-padding-horizontal">
+											<ion-avatar class="m-auto">
+												<img
+													width="300"
+													height="300"
+													class="margin-top mat-elevation-z1"
+													[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+											</ion-avatar>
+											<ion-fab
+												slot="fixed"
+												vertical="bottom"
+												horizontal="center"
+												class="bottom-[-25px]"
+												(click)="inputField.click()">
+												<ion-fab-button size="small">
+													<ion-icon
+														name="camera"
+														class="camera-icon"></ion-icon>
+												</ion-fab-button>
+											</ion-fab>
+										</div>
+										<input
+											#inputField
+											hidden
+											accept=".png, .jpg, .jpeg"
+											type="file"
+											(input)="fileChangeEvent($event)" />
+									</ion-col>
+									<ion-modal
+										#modalImageCrop
+										(ionModalWillDismiss)="clearImageData()">
+										<ng-template>
+											<ion-header>
+												<ion-toolbar>
+													<ion-buttons slot="start">
+														<ion-button (click)="modalImageCrop.dismiss()">Cancel</ion-button>
+													</ion-buttons>
+													<ion-title>Preview profile picture</ion-title>
+													<ion-buttons slot="end">
+														<ion-button
+															[appAsyncRef]="uploadingImage$"
+															[disabled]="!canSave()"
+															(click)="uploadFile()"
+															[strong]="true">
+															Save
+														</ion-button>
+													</ion-buttons>
+												</ion-toolbar>
+											</ion-header>
+											<ion-content>
+												<ion-row
+													class="h-full w-full items-center"
+													slot="fixed">
+													<image-cropper
+														class="!p-0"
+														backgroundColor="transparent"
+														[imageChangedEvent]="imageChangedEvent"
+														[maintainAspectRatio]="true"
+														[aspectRatio]="1/1"
+														[roundCropper]="true"
+														[cropperMinHeight]="200"
+														[cropperMinWidth]="200"
+														(imageCropped)="onImageCropped($event)"
+														(imageLoaded)="onImageLoaded()"
+														(loadImageFailed)="onLoadImageFailed()"></image-cropper>
+												</ion-row>
+											</ion-content>
+										</ng-template>
+									</ion-modal>
+									<ion-col
+										size-md="6"
+										pull-md="6"
+										size-lg="5"
+										pull-lg="7">
+										<form
+											[formGroup]="profileForm"
+											(ngSubmit)="submitRecord(user!)">
+											<ss-text
+												controlKey="firstName"
+												label="First Name"
+												[required]="true"></ss-text>
 
-												<ss-text
-													controlKey="lastName"
-													label="Last Name"
-													[required]="true"></ss-text>
+											<ss-text
+												controlKey="lastName"
+												label="Last Name"
+												[required]="true"></ss-text>
 
-												<ss-email
-													controlKey="email"
-													label="Enter"
-													[disabled]="true"></ss-email>
+											<ss-email
+												controlKey="email"
+												label="Enter"
+												[disabled]="true"></ss-email>
 
-												<ss-text
-													controlKey="phone"
-													label="Phone"></ss-text>
+											<ss-text
+												controlKey="phone"
+												label="Phone"></ss-text>
 
-												<ss-textarea
-													controlKey="address"
-													label="Address"></ss-textarea>
+											<ss-textarea
+												controlKey="address"
+												label="Address"></ss-textarea>
 
-												<ion-button
-													class="ion-margin-vertical"
-													expand="fill"
-													[disabled]="!profileForm.dirty || profileForm.invalid"
-													size="small"
-													color="primary"
-													[appAsyncRef]="saveProfile$"
-													type="submit">
-													Save
-												</ion-button>
-											</form>
-										</ion-col>
-									</ng-container>
+											<ion-button
+												class="ion-margin-vertical"
+												expand="fill"
+												[disabled]="!profileForm.dirty || profileForm.invalid"
+												size="small"
+												color="primary"
+												[appAsyncRef]="saveProfile$"
+												type="submit">
+												Save
+											</ion-button>
+										</form>
+									</ion-col>
 								</ion-row>
 							</ion-col>
 						</ion-row>
@@ -169,7 +169,7 @@
 											class="ion-margin-vertical flex-initial"
 											size="small"
 											color="primary"
-											(click)="modifyPassword()"
+											(click)="changePassword()"
 											type="button">
 											{{sessionService.loggedInWithPassword()?'Change':'Set'}} Password
 										</ion-button>
@@ -182,11 +182,11 @@
 														<ion-buttons slot="start">
 															<ion-button (click)="modalChangePassword.dismiss()">Cancel</ion-button>
 														</ion-buttons>
-														<ion-title>Set new password</ion-title>
+														<ion-title>Change password</ion-title>
 														<ion-buttons slot="end">
 															<ion-button
 																(click)="confirmChangePassword()"
-																[appAsyncRef]="modifyPassword$"
+																[appAsyncRef]="changePassword$"
 																[disabled]="!formChangePassword.touched || (formChangePassword.touched && formChangePassword.invalid)"
 																[strong]="true">
 																Confirm
@@ -200,45 +200,10 @@
 															<form
 																class="p-6"
 																[formGroup]="formChangePassword">
+																<ss-password
+																	*ngIf="sessionService.loggedInWithPassword()"
+																	label="Old password"></ss-password>
 																<ss-password-confirm-group groupName="confirmPasswordGroup"></ss-password-confirm-group>
-																<ss-submit-button></ss-submit-button>
-															</form>
-														</ion-col>
-													</ion-row>
-												</ion-content>
-											</ng-template>
-										</ion-modal>
-										<ion-modal
-											#modalVerifyEmail
-											(keyup.enter)="confirmValidatePassword()">
-											<ng-template>
-												<ion-header>
-													<ion-toolbar>
-														<ion-buttons slot="start">
-															<ion-button (click)="modalVerifyEmail.dismiss()">Cancel</ion-button>
-														</ion-buttons>
-														<ion-title>Verify password</ion-title>
-														<ion-buttons slot="end">
-															<ion-button
-																(click)="confirmValidatePassword()"
-																[appAsyncRef]="validatePassword$"
-																[disabled]="!formValidatePassword.touched 
-																|| (formValidatePassword.touched && formValidatePassword.invalid)"
-																[strong]="true">
-																Confirm
-															</ion-button>
-														</ion-buttons>
-													</ion-toolbar>
-												</ion-header>
-												<ion-content>
-													<ion-row>
-														<ion-col>
-															<form [formGroup]="formValidatePassword">
-																<ion-list
-																	lines="none"
-																	class="p-6">
-																	<ss-password></ss-password>
-																</ion-list>
 															</form>
 														</ion-col>
 													</ion-row>

@@ -73,7 +73,7 @@ export class RegisterComponent {
 		} = this.form.getRawValue();
 
 		this.register$ = this.sessionService.followup(
-			this.sessionService.registerNewAccount(email, password),
+			this.sessionService.registerNewAccount({ email, password }),
 			undefined,
 			this.destroyRef,
 		);
