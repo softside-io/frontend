@@ -13,6 +13,7 @@ import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared';
 			[fill]="fill()"
 			[shape]="shape()"
 			[size]="size()"
+			[color]="color()"
 			[disabled]="disabled()"
 			[strong]="strong()"
 			[type]="type()"
@@ -20,11 +21,15 @@ import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared';
 			(click)="clickOutput.emit($event)"
 		>
 			<ng-container *ngIf="prefixIconName()">
-				<ng-container *ngTemplateOutlet="icon; context: { size: iconSize(), slot: 'start', name: prefixIconName() }"></ng-container>
+				<ng-container
+					*ngTemplateOutlet="icon; context: { size: iconSize(), slot: 'start', name: prefixIconName() }"
+				></ng-container>
 			</ng-container>
 			<ion-label>{{ label() }}</ion-label>
 			<ng-container *ngIf="suffixIconName()">
-				<ng-container *ngTemplateOutlet="icon; context: { size: iconSize(), slot: 'end', name: suffixIconName() }"></ng-container>
+				<ng-container
+					*ngTemplateOutlet="icon; context: { size: iconSize(), slot: 'end', name: suffixIconName() }"
+				></ng-container>
 			</ng-container>
 		</ion-button>
 
@@ -58,6 +63,7 @@ export class SSButtonComponent {
 	suffixIconName = input<string>('');
 	label = input<string>('');
 	loading = input<Subscription | null>(null);
+	color = input<'primary' | 'secondary'>('primary');
 
 	@Output() clickOutput = new EventEmitter<Event>();
 }

@@ -1,15 +1,12 @@
+$imageWidth: 200px;
+
 ion-avatar {
 	--border-radius: 50%;
-	width: 164px;
-	height: 164px;
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-	}
+	width: $imageWidth;
+	height: $imageWidth;
 
 	img {
-		width: 164px;
-		height: 164px;
+		width: $imageWidth;
+		height: $imageWidth;
 	}
 }

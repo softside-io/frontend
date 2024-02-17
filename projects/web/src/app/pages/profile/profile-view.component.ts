@@ -34,10 +34,11 @@ import {
 	IonTitle,
 	IonToggle,
 	IonAlert,
+	IonSplitPane,
 } from '@ionic/angular/standalone';
 import { ImageCroppedEvent, ImageCropperModule } from 'ngx-image-cropper';
 import { addIcons } from 'ionicons';
-import { camera } from 'ionicons/icons';
+import { camera, warning } from 'ionicons/icons';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgLetModule } from 'ng-let';
 import { AsyncPipe, NgIf } from '@angular/common';
@@ -47,10 +48,10 @@ import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.
 import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 import { AuthService, AuthUpdateDto, FileType, FilesService, User } from 'projects/api';
 import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
+import { SSButtonComponent } from '@softside/ui-sdk/lib/elements';
 
 import { ThemeService } from '../../core/services/theme.service';
 import { SSPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
-import { SSSubmitButtonComponent } from '../../../../../softside/ui-sdk/lib/components/buttons/submit/submit.component';
 import { SSConfirmPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/composed/confirm-password/confirm-password.component';
 import { SSTextareaComponent } from '../../../../../softside/ui-sdk/lib/elements/keyin/textarea/textarea.component';
 import { SSEmailComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
@@ -70,7 +71,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 		SSTextareaComponent,
 		SSPasswordComponent,
 		SSConfirmPasswordComponent,
-		SSSubmitButtonComponent,
+		SSButtonComponent,
 		IonContent,
 		IonCard,
 		IonCardContent,
@@ -99,6 +100,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 		NgLetModule,
 		AsyncPipe,
 		NgIf,
+		IonSplitPane,
 	],
 })
 export class ProfileViewComponent implements OnDestroy {
@@ -177,6 +179,7 @@ export class ProfileViewComponent implements OnDestroy {
 	constructor() {
 		addIcons({
 			camera,
+			warning,
 		});
 	}
 

@@ -1,289 +1,229 @@
 <ion-content *ngLet="(user$ | async) as user">
 	<app-page-header [title]="'Profile'"></app-page-header>
-	<ion-card>
-		<ion-card-header>
-			<h2>Personal Info</h2>
-		</ion-card-header>
-		<ion-card-content>
-			<ion-grid>
-				<ion-row class="ion-justify-content-start">
-					<ion-col
-						size="12"
-						class="ion-no-padding"
-						size-md="9">
-						<ion-row>
-							<ion-col
-								size="12"
-								size-md="6"
-								push-md="6"
-								size-lg="7"
-								push-lg="5">
-								<div class="profile-pic relative ion-padding-horizontal">
-									<ion-avatar class="m-auto">
-										<img
-											width="300"
-											height="300"
-											class="margin-top mat-elevation-z1"
-											[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-									</ion-avatar>
-									<ion-fab
-										slot="fixed"
-										vertical="bottom"
-										horizontal="center"
-										class="bottom-[-25px]"
-										(click)="inputField.click()">
-										<ion-fab-button size="small">
-											<ion-icon
-												name="camera"
-												class="camera-icon"></ion-icon>
-										</ion-fab-button>
-									</ion-fab>
-								</div>
-								<input
-									#inputField
-									hidden
-									accept=".png, .jpg, .jpeg"
-									type="file"
-									(input)="fileChangeEvent($event)" />
-							</ion-col>
-							<ion-modal
-								#modalImageCrop
-								(ionModalWillDismiss)="clearImageData()">
-								<ng-template>
-									<ion-header>
-										<ion-toolbar>
-											<ion-buttons slot="start">
-												<ion-button (click)="modalImageCrop.dismiss()">Cancel</ion-button>
-											</ion-buttons>
-											<ion-title>Preview profile picture</ion-title>
-											<ion-buttons slot="end">
-												<ion-button
-													[appAsyncRef]="uploadingImage$"
-													[disabled]="!canSave()"
-													(click)="uploadFile()"
-													[strong]="true">
-													Save
-												</ion-button>
-											</ion-buttons>
-										</ion-toolbar>
-									</ion-header>
-									<ion-content>
-										<ion-row
-											class="h-full w-full items-center"
-											slot="fixed">
-											<image-cropper
-												class="!p-0"
-												backgroundColor="transparent"
-												[imageChangedEvent]="imageChangedEvent"
-												[maintainAspectRatio]="true"
-												[aspectRatio]="1/1"
-												[roundCropper]="true"
-												[cropperMinHeight]="200"
-												[cropperMinWidth]="200"
-												(imageCropped)="onImageCropped($event)"
-												(imageLoaded)="onImageLoaded()"
-												(loadImageFailed)="onLoadImageFailed()"></image-cropper>
-										</ion-row>
-									</ion-content>
-								</ng-template>
-							</ion-modal>
-							<ion-col
-								size-md="6"
-								pull-md="6"
-								size-lg="5"
-								pull-lg="7">
-								<form
-									[formGroup]="profileForm"
-									(ngSubmit)="submitRecord(user!)">
-									<ss-text
-										controlKey="firstName"
-										label="First Name"
-										[required]="true"></ss-text>
-
-									<ss-text
-										controlKey="lastName"
-										label="Last Name"
-										[required]="true"></ss-text>
-
-									<ss-email
-										controlKey="email"
-										label="Enter"
-										[disabled]="true"></ss-email>
-
-									<ss-text
-										controlKey="phone"
-										label="Phone"></ss-text>
-
-									<ss-textarea
-										controlKey="address"
-										label="Address"></ss-textarea>
-
+	<div class="flex gap-5 mb-5">
+		<ion-card class="basis-3/12 pt-10 shrink-0">
+			<div class="profile-pic relative ion-padding-horizontal">
+				<ion-avatar class="m-auto">
+					<img
+						width="200"
+						height="200"
+						class="margin-top mat-elevation-z1"
+						[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+				</ion-avatar>
+				<ion-fab
+					slot="fixed"
+					vertical="bottom"
+					horizontal="center"
+					class="bottom-[-25px]"
+					(click)="inputField.click()">
+					<ion-fab-button size="small">
+						<ion-icon
+							name="camera"
+							class="camera-icon"></ion-icon>
+					</ion-fab-button>
+				</ion-fab>
+			</div>
+			<input
+				#inputField
+				hidden
+				accept=".png, .jpg, .jpeg"
+				type="file"
+				(input)="fileChangeEvent($event)" />
+			<ion-modal
+				#modalImageCrop
+				(ionModalWillDismiss)="clearImageData()">
+				<ng-template>
+					<ion-header>
+						<ion-toolbar>
+							<ion-buttons slot="start">
+								<ion-button (click)="modalImageCrop.dismiss()">Cancel</ion-button>
+							</ion-buttons>
+							<ion-title>Preview profile picture</ion-title>
+							<ion-buttons slot="end">
+								<ion-button
+									[appAsyncRef]="uploadingImage$"
+									[disabled]="!canSave()"
+									(click)="uploadFile()"
+									[strong]="true">
+									Save
+								</ion-button>
+							</ion-buttons>
+						</ion-toolbar>
+					</ion-header>
+					<ion-content>
+						<ion-row
+							class="h-full w-full items-center"
+							slot="fixed">
+							<image-cropper
+								class="!p-0"
+								backgroundColor="transparent"
+								[imageChangedEvent]="imageChangedEvent"
+								[maintainAspectRatio]="true"
+								[aspectRatio]="1/1"
+								[roundCropper]="true"
+								[cropperMinHeight]="200"
+								[cropperMinWidth]="200"
+								(imageCropped)="onImageCropped($event)"
+								(imageLoaded)="onImageLoaded()"
+								(loadImageFailed)="onLoadImageFailed()"></image-cropper>
+						</ion-row>
+					</ion-content>
+				</ng-template>
+			</ion-modal>
+			<h2 class="text-center mt-10">{{sessionService.getUserDisplay(user!)}}</h2>
+			<ion-text
+				color="medium"
+				class="text-center block">
+				{{user!.address}}
+			</ion-text>
+			<ion-text
+				color="medium"
+				class="text-center block mt-2">
+				{{user!.phone}}
+			</ion-text>
+			<div class="text-center mt-10">
+				<ion-button
+					class="ion-margin-vertical"
+					size="small"
+					color="primary"
+					(click)="changePassword()"
+					type="button">
+					{{sessionService.loggedInWithPassword()?'Change':'Set'}} Password
+				</ion-button>
+				<ion-modal
+					#modalChangePassword
+					(keyup.enter)="confirmChangePassword()">
+					<ng-template>
+						<ion-header>
+							<ion-toolbar>
+								<ion-buttons slot="start">
+									<ion-button (click)="modalChangePassword.dismiss()">Cancel</ion-button>
+								</ion-buttons>
+								<ion-title>Change password</ion-title>
+								<ion-buttons slot="end">
 									<ion-button
-										class="ion-margin-vertical"
-										expand="fill"
-										[disabled]="!profileForm.dirty || profileForm.invalid"
-										size="small"
-										color="primary"
-										[appAsyncRef]="saveProfile$"
-										type="submit">
-										Save
+										(click)="confirmChangePassword()"
+										[appAsyncRef]="changePassword$"
+										[disabled]="!formChangePassword.touched || (formChangePassword.touched && formChangePassword.invalid)"
+										[strong]="true">
+										Confirm
 									</ion-button>
-								</form>
-							</ion-col>
-						</ion-row>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-		</ion-card-content>
-	</ion-card>
-	<ion-card>
-		<ion-card-content>
-			<ion-grid class="ion-padding-vertical">
-				<ion-row class="flex justify-start">
-					<ion-col
-						size="12"
-						size-md="3">
-						<ion-text>
-							<h2>Password</h2>
-						</ion-text>
-					</ion-col>
-					<ion-col
-						size-md="9"
-						class="ion-no-padding">
-						<ion-row>
-							<ion-col
-								size="12"
-								start="true">
-								<ion-text class="block">
-									{{sessionService.loggedInWithPassword()?'Change':'Set'}} your password
-								</ion-text>
+								</ion-buttons>
+							</ion-toolbar>
+						</ion-header>
+						<ion-content>
+							<ion-row>
+								<ion-col>
+									<form
+										class="p-6"
+										[formGroup]="formChangePassword">
+										<ss-password
+											*ngIf="sessionService.loggedInWithPassword()"
+											label="Old password"></ss-password>
+										<ss-password-confirm-group groupName="confirmPasswordGroup"></ss-password-confirm-group>
+									</form>
+								</ion-col>
+							</ion-row>
+						</ion-content>
+					</ng-template>
+				</ion-modal>
+				<div class="flex justify-center">
+					<ion-toggle
+						class="flex h-16 ion-focusable"
+						justify="center"
+						[checked]="theme.isDarkMode()"
+						(ionChange)="theme.toggleChange($event)">
+						{{theme.isDarkMode()?'Dark mode':'Light mode'}}
+					</ion-toggle>
+				</div>
+			</div>
+		</ion-card>
+		<div class="flex-grow">
+			<ion-card>
+				<ion-card-header>
+					<h2 class="mt-2 mb-4">Personal Info</h2>
+				</ion-card-header>
+				<ion-card-content>
+					<form
+						class="grid grid-cols-2 gap-x-10"
+						[formGroup]="profileForm"
+						(ngSubmit)="submitRecord(user!)">
+						<ss-text
+							controlKey="firstName"
+							label="First Name"
+							[required]="true"></ss-text>
 
-								<ion-button
-									class="ion-margin-vertical flex-initial"
-									size="small"
-									color="primary"
-									(click)="changePassword()"
-									type="button">
-									{{sessionService.loggedInWithPassword()?'Change':'Set'}} Password
-								</ion-button>
-								<ion-modal
-									#modalChangePassword
-									(keyup.enter)="confirmChangePassword()">
-									<ng-template>
-										<ion-header>
-											<ion-toolbar>
-												<ion-buttons slot="start">
-													<ion-button (click)="modalChangePassword.dismiss()">Cancel</ion-button>
-												</ion-buttons>
-												<ion-title>Change password</ion-title>
-												<ion-buttons slot="end">
-													<ion-button
-														(click)="confirmChangePassword()"
-														[appAsyncRef]="changePassword$"
-														[disabled]="!formChangePassword.touched || (formChangePassword.touched && formChangePassword.invalid)"
-														[strong]="true">
-														Confirm
-													</ion-button>
-												</ion-buttons>
-											</ion-toolbar>
-										</ion-header>
-										<ion-content>
-											<ion-row>
-												<ion-col>
-													<form
-														class="p-6"
-														[formGroup]="formChangePassword">
-														<ss-password
-															*ngIf="sessionService.loggedInWithPassword()"
-															label="Old password"></ss-password>
-														<ss-password-confirm-group groupName="confirmPasswordGroup"></ss-password-confirm-group>
-													</form>
-												</ion-col>
-											</ion-row>
-										</ion-content>
-									</ng-template>
-								</ion-modal>
-							</ion-col>
-						</ion-row>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-		</ion-card-content>
-	</ion-card>
-	<ion-card>
-		<ion-card-content>
-			<ion-grid class="ion-padding-vertical">
-				<ion-row class="flex justify-start">
-					<ion-col
-						size="12"
-						size-md="3">
-						<ion-text>
-							<h2>Personalize</h2>
-						</ion-text>
-					</ion-col>
-					<ion-col
-						size-md="9"
-						class="ion-no-padding">
-						<ion-row>
-							<ion-col size="12">
-								<ion-text class="block">Change Theme</ion-text>
-								<ion-toggle
-									class="h-16 ion-focusable"
-									justify="start"
-									[checked]="theme.isDarkMode()"
-									(ionChange)="theme.toggleChange($event)">
-									{{theme.isDarkMode()?'Dark mode':'Light mode'}}
-								</ion-toggle>
-							</ion-col>
-						</ion-row>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-		</ion-card-content>
-	</ion-card>
-	<ion-card>
-		<ion-card-content>
-			<ion-grid class="ion-padding-vertical">
-				<ion-row class="flex justify-start">
-					<ion-col
-						size="12"
-						size-md="3">
-						<ion-text>
-							<h2>Account</h2>
-						</ion-text>
-					</ion-col>
-					<ion-col
-						class="ion-no-padding"
-						size-md="9">
-						<ion-row>
-							<ion-col
-								size="12"
-								start="true">
-								<ion-text class="block">Deactivate your account</ion-text>
+						<ss-text
+							controlKey="lastName"
+							label="Last Name"
+							[required]="true"></ss-text>
 
-								<ion-button
-									id="present-alert"
-									class="ion-margin-vertical flex-initial"
-									size="small"
-									color="danger"
-									[appAsyncRef]="deleteUser$"
-									type="button">
-									Delete Account
-								</ion-button>
+						<ss-email
+							controlKey="email"
+							label="Enter"
+							[disabled]="true"></ss-email>
 
-								<ion-alert
-									trigger="present-alert"
-									header="Alert"
-									subHeader="Delete Account"
-									message="Deleting your account cannot be undone. Any personal identifiable information will
-												 be deleted and any in-progress data will be lost."
-									[buttons]="alertButtons"
-									(didDismiss)="setResult($event)"></ion-alert>
-							</ion-col>
+						<ss-text
+							controlKey="phone"
+							label="Phone"></ss-text>
+
+						<ss-textarea
+							controlKey="address"
+							label="Address"></ss-textarea>
+
+						<ion-row class="col-span-2 justify-end mt-5">
+							<ss-button
+								class="w-24"
+								label="Save"
+								[expand]="'block'"
+								[disabled]="!profileForm.dirty || profileForm.invalid"
+								[loading]="saveProfile$"
+								type="submit"></ss-button>
 						</ion-row>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-		</ion-card-content>
-	</ion-card>
+					</form>
+				</ion-card-content>
+			</ion-card>
+			<ion-card>
+				<ion-card-header>
+					<h2 class="mt-2 mb-4">Account</h2>
+				</ion-card-header>
+				<ion-card-content>
+					<ion-text class="block !text-lg">
+						<ion-icon
+							size="medium"
+							class="mb-[-0.15rem]"
+							name="warning"
+							color="danger"></ion-icon>
+						Deactivate your account
+					</ion-text>
+					<ion-text class="block my-3">
+						<strong><i>Caution:</i></strong>
+						This action is irreversible. By clicking on the "Delete Account" button, you will permanently remove your
+						account and all associated data. This includes your personal settings, and any content you've created.
+						Please be certain before proceeding, as this action cannot be undone. If you have any concerns or need
+						further assistance, consider contacting our support team before making this decision.
+					</ion-text>
+
+					<ion-button
+						id="present-alert"
+						class="ion-margin-vertical flex-initial"
+						size="small"
+						color="danger"
+						[appAsyncRef]="deleteUser$"
+						type="button">
+						Delete Account
+					</ion-button>
+
+					<ion-alert
+						trigger="present-alert"
+						header="Alert"
+						subHeader="Delete Account"
+						message="Deleting your account cannot be undone. Any personal identifiable information will
+													 be deleted and any in-progress data will be lost."
+						[buttons]="alertButtons"
+						(didDismiss)="setResult($event)"></ion-alert>
+				</ion-card-content>
+			</ion-card>
+		</div>
+	</div>
 </ion-content>

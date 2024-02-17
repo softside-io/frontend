@@ -148,7 +148,7 @@ body.dark {
 	/* card */
 
 	--ion-card-background: #1e1e1e;
-	--ion-card-background-rgb: 30, 30, 30;
+	--ion-card-background-rgb: 30 30 30;
 }
 
 /*
@@ -298,74 +298,74 @@ body.light {
 	/* card */
 
 	--ion-card-background: #fff;
-	--ion-card-background-rgb: 255, 255, 255;
-}
+	--ion-card-background-rgb: 255 255 255;
 
-/* iOS Light Theme */
+	/* iOS Light Theme */
 
-.ios body.light {
-	/* background */
+	.ios body.light {
+		/* background */
 
-	--ion-background-color: #fff;
-	--ion-background-color-rgb: 255, 255, 255;
+		--ion-background-color: #fff;
+		--ion-background-color-rgb: 255, 255, 255;
 
-	/* text */
+		/* text */
 
-	--ion-text-color: #000;
-	--ion-text-color-rgb: 0, 0, 0;
+		--ion-text-color: #000;
+		--ion-text-color-rgb: 0, 0, 0;
 
-	/* step */
+		/* step */
 
-	--ion-color-step-50: #f5f5f5;
-	--ion-color-step-100: #ececec;
+		--ion-color-step-50: #f5f5f5;
+		--ion-color-step-100: #ececec;
 
-	/* ... (continue with the rest of the steps) ... */
+		/* ... (continue with the rest of the steps) ... */
 
-	/* item */
+		/* item */
 
-	--ion-menu-background: #f5f5f5;
-	--ion-item-background: #fff;
+		--ion-menu-background: #f5f5f5;
+		--ion-item-background: #fff;
 
-	/* card */
+		/* card */
 
-	--ion-card-background: #fff;
-}
+		--ion-card-background: #fff;
+	}
 
-/* Material Design Light Theme */
+	/* Material Design Light Theme */
 
-.md body.light {
-	--ion-background-color: #f5f5f5;
-	--ion-background-color-rgb: 245, 245, 245;
+	.md body.light {
+		--ion-background-color: #f5f5f5;
+		--ion-background-color-rgb: 245, 245, 245;
 
-	/* text */
+		/* text */
 
-	--ion-text-color: #000;
-	--ion-text-color-rgb: 0, 0, 0;
+		--ion-text-color: #000;
+		--ion-text-color-rgb: 0, 0, 0;
 
-	/* border */
+		/* border */
 
-	--ion-border-color: #ddd;
+		--ion-border-color: #ddd;
 
-	/* step */
+		/* step */
 
-	--ion-color-step-50: #fafafa;
-	--ion-color-step-100: #f0f0f0;
+		--ion-color-step-50: #fafafa;
+		--ion-color-step-100: #f0f0f0;
 
-	/* ... (continue with the rest of the steps) ... */
+		/* ... (continue with the rest of the steps) ... */
 
-	/* item */
-	--ion-menu-background: #f5f5f5;
-	--ion-item-background: #fff;
+		/* item */
+		--ion-menu-background: #f5f5f5;
+		--ion-item-background: #fff;
 
-	/* toolbar */
+		/* toolbar */
 
-	--ion-toolbar-background: #f5f5f5;
+		--ion-toolbar-background: #f5f5f5;
 
-	/* tab-bar */
+		/* tab-bar */
 
-	--ion-tab-bar-background: #f5f5f5;
+		--ion-tab-bar-background: #f5f5f5;
 
-	/* card */
+		/* card */
 
-	--ion-card-background: #fff;
+		--ion-card-background: #fff;
+	}
 }

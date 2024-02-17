@@ -1,6 +1,6 @@
 image-cropper {
-	--cropper-outline-color: var(--ion-card-background);
-	--cropper-overlay-color: var(--ion-card-background);
+	--cropper-outline-color: rgb(var(--ion-card-background-rgb) / 80%);
+	--cropper-overlay-color: rgb(var(--ion-card-background-rgb) / 80%);
 
 	.ngx-ic-cropper {
 		.ngx-ic-resize {
