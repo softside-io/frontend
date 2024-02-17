@@ -15,7 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
-import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
+import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { SSButtonComponent } from '../../../../../../softside/ui-sdk/lib/elements/action/button/button.component';
@@ -107,7 +107,7 @@ export class LoginComponent implements OnInit {
 
 		const { email, password } = this.form.getRawValue();
 
-		this.login$ = this.sessionService.followup(
+		this.login$ = Helpers.takeOne(
 			this.sessionService.loginWithEmailAndPassword({ email, password }),
 			undefined,
 			this.destroyRef,

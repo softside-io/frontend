@@ -18,6 +18,8 @@ import {
 } from '@ionic/angular/standalone';
 import { NgIf } from '@angular/common';
 
+import { Helpers } from '@softside/ui-sdk/lib/_utils';
+
 import { SessionService } from '../../services/session.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
 import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
@@ -67,7 +69,7 @@ export class ConfirmEmailComponent implements OnInit {
 		const hash = this.activatedRoute.snapshot.queryParams['hash'];
 
 		if (hash) {
-			this.confirmEmail$ = this.sessionService.followup(
+			this.confirmEmail$ = Helpers.takeOne(
 				this.sessionService.confirmEmail({ hash }),
 				undefined,
 				this.destroyRef,
@@ -76,11 +78,7 @@ export class ConfirmEmailComponent implements OnInit {
 	}
 
 	resendEmail(): void {
-		this.resendEmail$ = this.sessionService.followup(
-			this.sessionService.resendEmail(),
-			this.onSuccess,
-			this.destroyRef,
-		);
+		this.resendEmail$ = Helpers.takeOne(this.sessionService.resendEmail(), this.onSuccess, this.destroyRef);
 	}
 
 	onSuccess = (): void => {
@@ -95,6 +93,6 @@ export class ConfirmEmailComponent implements OnInit {
 	};
 
 	logout(): void {
-		this.signOut$ = this.sessionService.followup(this.sessionService.logout(), undefined, this.destroyRef);
+		this.signOut$ = Helpers.takeOne(this.sessionService.logout(), undefined, this.destroyRef);
 	}
 }

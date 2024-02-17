@@ -43,7 +43,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
-import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
+import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 import { AuthService, AuthUpdateDto, FileType, FilesService, User } from 'projects/api';
 import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
 
@@ -211,7 +211,7 @@ export class ProfileViewComponent implements OnDestroy {
 		const { firstName, lastName, phone, address } = this.profileForm.getRawValue();
 		const updatedUser: AuthUpdateDto = { ...user, firstName, lastName, phone, address };
 
-		this.saveProfile$ = this.sessionService.followup(
+		this.saveProfile$ = Helpers.takeOne(
 			this.sessionService.updateUserProfile(updatedUser),
 			() => {
 				this._appToast.createToast('Your profile has been successfully saved', 0, {
@@ -224,7 +224,7 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	deleteUser(): void {
-		this.deleteUser$ = this.sessionService.followup(
+		this.deleteUser$ = Helpers.takeOne(
 			this.sessionService.deleteUser(),
 			() => {
 				this._appToast.createToast('Your account has been successfully deleted', 0, {
@@ -262,7 +262,7 @@ export class ProfileViewComponent implements OnDestroy {
 	}
 
 	private updatePassword(password: string, oldPassword?: string): void {
-		this.changePassword$ = this.sessionService.followup(
+		this.changePassword$ = Helpers.takeOne(
 			this.sessionService.changePassword({ password, oldPassword }),
 			() => {
 				this.modalChangePassword.dismiss();

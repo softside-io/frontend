@@ -80,7 +80,7 @@ export class BroadcastService {
 	 * @param message The message to be sent.
 	 * @param selfTrigger If true, the message will also be emitted to the subject of the channel.
 	 */
-	public sendMessage(channelName: BroadcastChannels, message: BroadcastMessage, selfTrigger = true): void {
+	public sendMessage<T>(channelName: BroadcastChannels, message: BroadcastMessage<T>, selfTrigger = true): void {
 		const channel = this.channels.get(channelName);
 
 		if (!channel) {

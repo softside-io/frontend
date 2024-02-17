@@ -5,7 +5,7 @@
 
 import type { User } from './User';
 
-export type LoginResponseType = {
+export type SessionType = {
     user: User;
     refreshToken: string;
     token: string;

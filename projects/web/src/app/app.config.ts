@@ -10,6 +10,7 @@ import { authInterceptor } from './core/interceptors/http.interceptor';
 import { modules } from './app.modules';
 import { SessionService } from './core/services/session.service';
 import { environment } from '../environments/environment';
+import { ThemeService } from './core/services/theme.service';
 
 const animationDuration = 150;
 
@@ -42,7 +43,7 @@ export const appConfig: ApplicationConfig = {
 		{
 			provide: APP_INITIALIZER,
 			useFactory: initializeApplicationConfig,
-			deps: [SessionService],
+			deps: [SessionService, ThemeService],
 			multi: true,
 		},
 	],
@@ -51,24 +52,25 @@ export const appConfig: ApplicationConfig = {
 export function initializeApplicationConfig(sessionService: SessionService) {
 	// returning promise so that getting this file is blocking to the UI
 	return (): Promise<void> =>
-
 		new Promise((resolve, _reject) => {
-			OpenAPI.BASE = environment.openAPIBase;
-			OpenAPI.TOKEN = (): Promise<string> => {
-				const session = sessionService.getSession();
-				const checkSession = !!session && typeof session !== 'string';
+			sessionService.getSessionFromStorage().add(() => {
+				OpenAPI.BASE = environment.openAPIBase;
+				OpenAPI.TOKEN = (): Promise<string> => {
+					const auth = sessionService.auth;
+					const checkSession = !!auth && typeof auth !== 'string';
 
-				if (!checkSession) {
-					return Promise.resolve('');
-				}
+					if (!checkSession) {
+						return Promise.resolve('');
+					}
 
-				if (new Date(session.tokenExpires).getTime() < Date.now()) {
-					return Promise.resolve(session.refreshToken);
-				} else {
-					return Promise.resolve(session.token);
-				}
-			};
+					if (new Date(auth.tokenExpires).getTime() < Date.now()) {
+						return Promise.resolve(auth.refreshToken);
+					} else {
+						return Promise.resolve(auth.token);
+					}
+				};
 
-			resolve();
+				resolve();
+			});
 		});
 }

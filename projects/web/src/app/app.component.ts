@@ -5,11 +5,10 @@ import { informationCircleOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { BroadcastChannels, BroadcastEventEnum, BroadcastMessage, BroadcastService } from '@softside/ui-sdk/lib/shared';
-import { LoginResponseType } from 'projects/api';
+import { SessionType } from 'projects/api';
 
 import { ThemeService } from './core/services/theme.service';
 import { SessionService } from './core/services/session.service';
-import { StorageAccessorService } from './shared/services/storage-accessor.service';
 
 @Component({
 	selector: 'app-root',
@@ -20,7 +19,6 @@ import { StorageAccessorService } from './shared/services/storage-accessor.servi
 })
 export class AppComponent {
 	broadcastService = inject(BroadcastService);
-	storage = inject(StorageAccessorService);
 	router = inject(Router);
 	activatedRoute = inject(ActivatedRoute);
 	sessionService = inject(SessionService);
@@ -36,19 +34,21 @@ export class AppComponent {
 			next: (message: BroadcastMessage) => {
 				switch (message.action) {
 					case BroadcastEventEnum.LOGOUT:
-						this.storage.removeLocalStorageKey('session');
 						this.router.navigate(['/auth']);
+						this.sessionService.updateSession(null);
 						break;
-					case BroadcastEventEnum.LOGIN:
-						this.sessionService.setSession(message.data?.session as LoginResponseType);
+					case BroadcastEventEnum.LOGIN: {
+						const session = message.data?.session as SessionType;
+						this.sessionService.updateSession(session);
 						const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/home';
 						this.router.navigateByUrl(returnUrl, { replaceUrl: true });
 						break;
-					case BroadcastEventEnum.SESSION:
-						const session = message.data?.session as LoginResponseType;
-						this.storage.setLocalStorage('session', session, true);
-						this.sessionService.updateLoggedInUser(session.user);
+					}
+					case BroadcastEventEnum.SESSION: {
+						const session = message.data?.session as SessionType;
+						this.sessionService.updateSession(session);
 						break;
+					}
 					default:
 						break;
 				}

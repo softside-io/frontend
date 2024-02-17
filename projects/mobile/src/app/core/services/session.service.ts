@@ -3,8 +3,8 @@ import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
-import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
+import { AppSettingsService } from 'projects/mobile/src/app/shared/services/app-settings.service';
+import { StorageAccessorService } from 'projects/mobile/src/app/shared/services/storage-accessor.service';
 import {
 	AuthConfirmEmailDto,
 	AuthEmailLoginDto,
@@ -15,7 +15,7 @@ import {
 	AuthService,
 	AuthUpdateDto,
 	FileType,
-	LoginResponseType,
+	SessionType,
 	StatusEnum,
 	User,
 } from 'projects/api';
@@ -137,7 +137,7 @@ export class SessionService {
 	// 	return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
 	// }
 
-	loginWithEmailAndPassword(loginDto: AuthEmailLoginDto): Observable<LoginResponseType> {
+	loginWithEmailAndPassword(loginDto: AuthEmailLoginDto): Observable<SessionType> {
 		return this.authService.login(loginDto).pipe(
 			tap({
 				next: (session) => {
@@ -149,21 +149,18 @@ export class SessionService {
 		);
 	}
 
-	refreshToken(): Observable<Omit<LoginResponseType, 'user'>> {
+	refreshToken(): Observable<Omit<SessionType, 'user'>> {
 		return this.authService.refresh().pipe(
 			tap({
 				next: (session) => {
-					const currentSession = this.storage.getLocalStorage<LoginResponseType>(
-						'session',
-						true,
-					) as LoginResponseType;
+					const currentSession = this.storage.getLocalStorage<SessionType>('session', true) as SessionType;
 					this.storage.setLocalStorage('session', { ...currentSession, ...session }, true);
 				},
 			}),
 		);
 	}
 
-	setSession(session: LoginResponseType): void {
+	setSession(session: SessionType): void {
 		this.storage.setLocalStorage('session', session, true);
 
 		this.loggedInUserSubject.next(session.user);
@@ -207,8 +204,8 @@ export class SessionService {
 		return session !== null;
 	}
 
-	getSession(): LoginResponseType {
-		const session = this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+	getSession(): SessionType {
+		const session = this.storage.getLocalStorage<SessionType>('session', true) as SessionType;
 
 		if (session) {
 			this.loggedInUserSubject.next(session.user);

@@ -1,10 +1,8 @@
-import { DestroyRef, Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
-import { StorageAccessorService } from 'projects/web/src/app/shared/services/storage-accessor.service';
 import {
 	AuthConfirmEmailDto,
 	AuthEmailLoginDto,
@@ -15,17 +13,25 @@ import {
 	AuthService,
 	AuthUpdateDto,
 	FileType,
-	LoginResponseType,
+	SessionType,
 	StatusEnum,
 	User,
 } from 'projects/api';
-import { BroadcastChannels, BroadcastEventEnum, BroadcastService } from '@softside/ui-sdk/lib/shared';
+import {
+	BroadcastChannels,
+	BroadcastEventEnum,
+	BroadcastService,
+	SecureStorageService,
+} from '@softside/ui-sdk/lib/shared';
+import { Helpers } from '@softside/ui-sdk/lib/_utils';
+
+type Auth = Omit<SessionType, 'user'>;
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SessionService {
-	storage = inject(StorageAccessorService);
+	storage = inject(SecureStorageService);
 	authService = inject(AuthService);
 	broadcastService = inject(BroadcastService);
 	appSettings = inject(AppSettingsService);
@@ -36,13 +42,15 @@ export class SessionService {
 	loggedInWithPassword = signal(true);
 	private loggedInUserSubject = new BehaviorSubject<User | null>(null);
 	loggedInUser$ = this.loggedInUserSubject.asObservable();
+	private authSubject = new BehaviorSubject<Auth | null>(null);
+	authSubject$ = this.authSubject.asObservable();
 
 	get currentUser(): User | null {
 		return this.loggedInUserSubject.value;
 	}
 
-	constructor() {
-		this.getSession();
+	get auth(): Auth | null {
+		return this.authSubject.value;
 	}
 
 	// populateUser(): IUser {
@@ -114,12 +122,10 @@ export class SessionService {
 			tap({
 				next: () => {
 					if (this.isLoggedIn()) {
-						const session = this.getSession();
-
 						this.setSession({
-							...session,
+							...this.auth!,
 							user: {
-								...session.user,
+								...this.currentUser!,
 								status: {
 									id: StatusEnum.ACTIVE,
 								},
@@ -139,10 +145,11 @@ export class SessionService {
 	// 	return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
 	// }
 
-	loginWithEmailAndPassword(loginDto: AuthEmailLoginDto): Observable<LoginResponseType> {
+	loginWithEmailAndPassword(loginDto: AuthEmailLoginDto): Observable<SessionType> {
 		return this.authService.login(loginDto).pipe(
 			tap({
 				next: (session) => {
+					this.setSessionInStorage(session);
 					this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
 						action: BroadcastEventEnum.LOGIN,
 						data: { session },
@@ -152,28 +159,41 @@ export class SessionService {
 		);
 	}
 
-	refreshToken(): Observable<Omit<LoginResponseType, 'user'>> {
-		return this.authService.refresh().pipe(
-			tap({
-				next: (session) => {
-					const currentSession = this.storage.getLocalStorage<LoginResponseType>(
-						'session',
-						true,
-					) as LoginResponseType;
-					this.storage.setLocalStorage('session', { ...currentSession, ...session }, true);
-				},
-			}),
-		);
+	refreshToken(): Observable<Auth> {
+		return this.authService.refresh();
 	}
 
-	setSession(session: LoginResponseType): void {
+	setSession(session: SessionType): void {
 		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
 			action: BroadcastEventEnum.SESSION,
 			data: { session },
 		});
+
+		this.setSessionInStorage(session);
 	}
 
-	updateLoggedInUser(user: User): void {
+	updateSession(session: SessionType | null): void {
+		if (session == null) {
+			this.updateAuth(null);
+			this.updateLoggedInUser(null);
+
+			return;
+		}
+
+		this.updateAuth({
+			token: session.token,
+			refreshToken: session.refreshToken,
+			tokenExpires: session.tokenExpires,
+		});
+
+		this.updateLoggedInUser(session.user);
+	}
+
+	updateAuth(auth: Auth | null): void {
+		this.authSubject.next(auth);
+	}
+
+	updateLoggedInUser(user: User | null): void {
 		this.loggedInUserSubject.next(user);
 	}
 
@@ -182,7 +202,7 @@ export class SessionService {
 			tap({
 				next: () => {
 					this.setSession({
-						...this.getSession(),
+						...this.auth!,
 						user: {
 							...this.currentUser!,
 							photo,
@@ -198,7 +218,7 @@ export class SessionService {
 			tap({
 				next: () => {
 					this.setSession({
-						...this.getSession(),
+						...this.auth!,
 						user: {
 							...this.currentUser!,
 							...user,
@@ -210,29 +230,25 @@ export class SessionService {
 	}
 
 	isLoggedIn(): boolean {
-		const session = this.getSession();
-
-		return session !== null;
+		return !!this.auth?.token;
 	}
 
-	getSession(): LoginResponseType {
-		const session = this.storage.getLocalStorage<LoginResponseType>('session', true) as LoginResponseType;
+	getSessionFromStorage(): Subscription {
+		return Helpers.takeOne(this.storage.get<SessionType>('session'), (session: SessionType | null) => {
+			if (!session) {
+				return;
+			}
 
-		if (session) {
-			this.loggedInUserSubject.next(session.user);
-		}
+			this.updateSession(session);
+		});
+	}
 
-		return session;
+	setSessionInStorage(session: SessionType): void {
+		Helpers.takeOne(this.storage.set('session', session));
 	}
 
 	isVerified(): boolean {
-		const session = this.getSession();
-
-		if (!session.user) {
-			return false;
-		}
-
-		return session.user.status.id == StatusEnum.ACTIVE;
+		return this.currentUser?.status.id === StatusEnum.ACTIVE;
 	}
 
 	forgetPassword(dto: AuthForgotPasswordDto): Observable<void> {
@@ -260,6 +276,7 @@ export class SessionService {
 	}
 
 	clearSession(): void {
+		Helpers.takeOne(this.storage.clear());
 		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, { action: BroadcastEventEnum.LOGOUT });
 	}
 
@@ -289,16 +306,5 @@ export class SessionService {
 				},
 			}),
 		);
-	}
-
-	// TODO: Refactor components
-	followup<T>(
-		observable: Observable<T>,
-		next: ((value: T) => void) | undefined,
-		destroy: DestroyRef,
-	): Subscription | null {
-		return observable.pipe(takeUntilDestroyed(destroy)).subscribe({
-			next,
-		});
 	}
 }

@@ -16,7 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
-import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
+import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { AsyncRefDirective } from '../../../shared/directives/async-ref.directive';
@@ -72,7 +72,7 @@ export class RegisterComponent {
 			confirmPasswordGroup: { password },
 		} = this.form.getRawValue();
 
-		this.register$ = this.sessionService.followup(
+		this.register$ = Helpers.takeOne(
 			this.sessionService.registerNewAccount({ email, password }),
 			undefined,
 			this.destroyRef,

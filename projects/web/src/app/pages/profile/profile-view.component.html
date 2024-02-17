@@ -230,15 +230,14 @@
 								size-md="9"
 								class="ion-no-padding">
 								<ion-row>
-									<ion-col
-										size="12"
-										start="true">
+									<ion-col size="12">
 										<ion-text class="block">Change Theme</ion-text>
 										<ion-toggle
+											class="h-16"
 											justify="start"
-											[checked]="theme.isDarkMode"
+											[checked]="theme.isDarkMode()"
 											(ionChange)="theme.toggleChange($event)">
-											{{theme.isDarkMode?'Dark mode':'Light mode'}}
+											{{theme.isDarkMode()?'Dark mode':'Light mode'}}
 										</ion-toggle>
 									</ion-col>
 								</ion-row>

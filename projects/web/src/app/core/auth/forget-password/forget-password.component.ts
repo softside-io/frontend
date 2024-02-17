@@ -16,7 +16,7 @@ import {
 	IonText,
 } from '@ionic/angular/standalone';
 
-import { ConvertToForm, FB } from '@softside/ui-sdk/lib/_utils';
+import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../services/session.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
@@ -75,6 +75,6 @@ export class ForgetPasswordComponent {
 
 		const { email } = this.form.getRawValue();
 
-		this.sessionService.followup(this.sessionService.forgetPassword({ email }), undefined, this.destroyRef);
+		Helpers.takeOne(this.sessionService.forgetPassword({ email }), undefined, this.destroyRef);
 	}
 }

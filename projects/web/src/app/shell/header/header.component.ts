@@ -22,6 +22,7 @@ import {
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { User } from 'projects/api';
+import { Helpers } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../core/services/session.service';
 import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell-loading-bar.component';
@@ -76,7 +77,7 @@ export class HeaderComponent {
 	}
 
 	logout(): void {
-		this.sessionService.followup(this.sessionService.logout(), undefined, this.destroyRef);
+		Helpers.takeOne(this.sessionService.logout(), undefined, this.destroyRef);
 	}
 
 	getUserDisplay(user: User): string {
