@@ -197,32 +197,26 @@ export class SessionService {
 		this.loggedInUserSubject.next(user);
 	}
 
-	updateUserProfileImage(photo: FileType): Observable<void> {
+	updateUserProfileImage(photo: FileType): Observable<User> {
 		return this.authService.update({ photo }).pipe(
 			tap({
-				next: () => {
+				next: (user: User) => {
 					this.setSession({
 						...this.auth!,
-						user: {
-							...this.currentUser!,
-							photo,
-						},
+						user,
 					});
 				},
 			}),
 		);
 	}
 
-	updateUserProfile(user: AuthUpdateDto): Observable<void> {
+	updateUserProfile(user: AuthUpdateDto): Observable<User> {
 		return this.authService.update(user).pipe(
 			tap({
-				next: () => {
+				next: (user: User) => {
 					this.setSession({
 						...this.auth!,
-						user: {
-							...this.currentUser!,
-							...user,
-						},
+						user,
 					});
 				},
 			}),
@@ -286,7 +280,7 @@ export class SessionService {
 	// 	return from(linkWithCredential(user, creds));
 	// }
 
-	changePassword(changePasswordDto: Pick<AuthUpdateDto, 'password' | 'oldPassword'>): Observable<void> {
+	changePassword(changePasswordDto: Pick<AuthUpdateDto, 'password' | 'oldPassword'>): Observable<User> {
 		return this.authService.update(changePasswordDto).pipe(
 			tap({
 				next: () => {

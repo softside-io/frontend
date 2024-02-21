@@ -194,6 +194,8 @@ export class ProfileViewComponent implements OnDestroy {
 			.pipe(
 				take(1),
 				switchMap((file: FileType) => {
+					console.log(file);
+
 					return this.sessionService.updateUserProfileImage(file);
 				}),
 			)
