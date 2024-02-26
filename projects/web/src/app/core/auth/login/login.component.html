@@ -25,13 +25,19 @@
 									type="submit">
 									Login
 								</ion-button>
-								<ss-button
+								<asl-google-signin-button
+									type="standard"
+									[shape]="'rectangular'"
+									[width]="400"
+									size="large"
+									[theme]="'filled_black'"></asl-google-signin-button>
+								<!-- <ss-button
 									class="ion-margin-vertical"
 									label="Sign in With Google"
 									iconName="logo-google"
 									[loading]="loginWithGoogle$"
 									(clickOutput)="loginWithGoogle()"
-									type="button"></ss-button>
+									type="button"></ss-button> -->
 							</div>
 						</form>
 					</ion-col>

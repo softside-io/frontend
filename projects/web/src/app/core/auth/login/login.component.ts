@@ -13,6 +13,7 @@ import {
 	IonButton,
 	IonButtons,
 } from '@ionic/angular/standalone';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
@@ -45,6 +46,7 @@ import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/componen
 		SSButtonComponent,
 		IonButtons,
 		RouterLink,
+		GoogleSigninButtonModule,
 	],
 })
 export class LoginComponent implements OnInit {
@@ -112,14 +114,6 @@ export class LoginComponent implements OnInit {
 			undefined,
 			this.destroyRef,
 		);
-	}
-
-	loginWithGoogle(): void {
-		// this.loginWithGoogle$ = this.sessionService.followup(
-		// 	this.sessionService.loginWithGoogle(),
-		// 	undefined,
-		// 	this.destroyRef,
-		// );
 	}
 }
 
