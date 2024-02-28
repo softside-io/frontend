@@ -3,6 +3,8 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { NgLetModule } from 'ng-let';
 
 import { BroadcastChannels, BroadcastEventEnum, BroadcastMessage, BroadcastService } from '@softside/ui-sdk/lib/shared';
 import { SessionType } from 'projects/api';
@@ -13,7 +15,7 @@ import { SessionService } from './core/services/session.service';
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [IonApp, IonRouterOutlet],
+	imports: [IonApp, IonRouterOutlet, NgLetModule, AsyncPipe, NgClass],
 	templateUrl: 'app.component.html',
 	styleUrls: ['app.component.scss'],
 })
@@ -22,6 +24,8 @@ export class AppComponent {
 	router = inject(Router);
 	activatedRoute = inject(ActivatedRoute);
 	sessionService = inject(SessionService);
+
+	user$ = this.sessionService.loggedInUser$;
 
 	constructor() {
 		addIcons({

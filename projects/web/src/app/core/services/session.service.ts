@@ -8,6 +8,7 @@ import {
 	AuthConfirmEmailDto,
 	AuthEmailLoginDto,
 	AuthForgotPasswordDto,
+	AuthGoogleLoginDto,
 	AuthRegisterLoginDto,
 	AuthResendEmailDto,
 	AuthResetPasswordDto,
@@ -53,12 +54,6 @@ export class SessionService {
 
 	get auth(): Auth | null {
 		return this.authSubject.value;
-	}
-
-	constructor() {
-		this.socialAuthService.authState.subscribe((user) => {
-			console.log(user);
-		});
 	}
 
 	// populateUser(): IUser {
@@ -149,22 +144,28 @@ export class SessionService {
 		);
 	}
 
-	// loginWithGoogle(): Observable<UserCredential> {
-	// 	return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
-	// }
+	loginWithGoogle(googleDto: AuthGoogleLoginDto): Observable<SessionType> {
+		return this.authService.login2(googleDto).pipe(
+			tap({
+				next: (session) => this.onLogin(session),
+			}),
+		);
+	}
 
 	loginWithEmailAndPassword(loginDto: AuthEmailLoginDto): Observable<SessionType> {
 		return this.authService.login(loginDto).pipe(
 			tap({
-				next: (session) => {
-					this.setSessionInStorage(session);
-					this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
-						action: BroadcastEventEnum.LOGIN,
-						data: { session },
-					});
-				},
+				next: (session) => this.onLogin(session),
 			}),
 		);
+	}
+
+	onLogin(session: SessionType): void {
+		this.setSessionInStorage(session);
+		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, {
+			action: BroadcastEventEnum.LOGIN,
+			data: { session },
+		});
 	}
 
 	refreshToken(): Observable<Auth> {
@@ -279,6 +280,7 @@ export class SessionService {
 
 	clearSession(): void {
 		Helpers.takeOne(this.storage.clear());
+		this.socialAuthService.signOut();
 		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, { action: BroadcastEventEnum.LOGOUT });
 	}
 

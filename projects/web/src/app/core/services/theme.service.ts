@@ -13,6 +13,7 @@ export class ThemeService {
 	storage = inject(SecureStorageService);
 	isDarkMode = signal(false);
 	authService = inject(SessionService);
+	initialColors = this.getRandomColor();
 
 	constructor() {
 		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -44,5 +45,21 @@ export class ThemeService {
 			document.body.classList.remove('dark');
 			document.body.classList.add('light');
 		}
+	}
+
+	getInitials(name: string): string {
+		return name
+			.split(' ')
+			.map((n) => n[0])
+			.join('')
+			.toUpperCase();
+	}
+
+	private getRandomColor(): { backgroundColor: string; textColor: string } {
+		const hue = Math.floor(Math.random() * 360);
+		const backgroundColor = `hsl(${hue}, 85%, 65%)`; // Light background color
+		const textColor = `hsl(${hue}, 85%, 28%)`; // Darker text color
+
+		return { backgroundColor, textColor };
 	}
 }

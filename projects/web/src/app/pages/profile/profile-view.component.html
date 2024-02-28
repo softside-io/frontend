@@ -5,10 +5,19 @@
 			<div class="profile-pic relative ion-padding-horizontal">
 				<ion-avatar class="m-auto">
 					<img
+						*ngIf="user?.photo"
 						width="200"
 						height="200"
 						class="margin-top mat-elevation-z1"
-						[src]="user?.photo ? user?.photo?.path :'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+						[src]="user?.photo" />
+					<div
+						[ngStyle]="{
+							'backgroundColor': theme.initialColors.backgroundColor,
+							'color': theme.initialColors.textColor,
+						}"
+						class="h-full flex flex-col justify-center text-center">
+						<ion-text class="text-7xl">{{ theme.getInitials(sessionService.getUserDisplay(user!)) }}</ion-text>
+					</div>
 				</ion-avatar>
 				<ion-fab
 					slot="fixed"

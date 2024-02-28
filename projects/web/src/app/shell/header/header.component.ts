@@ -2,7 +2,7 @@ import { Component, DestroyRef, EventEmitter, Output, inject } from '@angular/co
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { code, personCircleOutline, idCardOutline, logOutOutline } from 'ionicons/icons';
-import { AsyncPipe, NgStyle } from '@angular/common';
+import { AsyncPipe, NgIf, NgStyle } from '@angular/common';
 import { NgLetModule } from 'ng-let';
 import {
 	IonToolbar,
@@ -18,6 +18,7 @@ import {
 	IonPopover,
 	IonList,
 	IonItem,
+	IonText,
 } from '@ionic/angular/standalone';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
@@ -26,6 +27,7 @@ import { Helpers } from '@softside/ui-sdk/lib/_utils';
 
 import { SessionService } from '../../core/services/session.service';
 import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell-loading-bar.component';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
 	selector: 'app-header',
@@ -51,6 +53,8 @@ import { ShellLoadingBarComponent } from '../_components/shell-loading-bar/shell
 		IonList,
 		IonItem,
 		AsyncPipe,
+		IonText,
+		NgIf,
 	],
 })
 export class HeaderComponent {
@@ -58,6 +62,7 @@ export class HeaderComponent {
 	router = inject(Router);
 	_appToast = inject(AppToastService);
 	destroyRef = inject(DestroyRef);
+	theme = inject(ThemeService);
 
 	@Output() toggleDrawer = new EventEmitter();
 
@@ -78,13 +83,5 @@ export class HeaderComponent {
 
 	logout(): void {
 		Helpers.takeOne(this.sessionService.logout(), undefined, this.destroyRef);
-	}
-
-	getUserDisplay(user: User): string {
-		if (!user) {
-			return '';
-		}
-
-		return this.sessionService.getUserDisplay(user);
 	}
 }

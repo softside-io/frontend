@@ -55,7 +55,7 @@ export const appConfig: ApplicationConfig = {
 					{
 						id: GoogleLoginProvider.PROVIDER_ID,
 						provider: new GoogleLoginProvider(environment.googleClientId, {
-							// scopes: ['profile', 'email', 'displayName'],
+							prompt_parent_id: 'googleLoginWrapper',
 						}),
 					},
 				],

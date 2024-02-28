@@ -208,12 +208,12 @@ requestBody: AuthFacebookLoginDto,
 
     /**
      * @param requestBody 
-     * @returns any 
+     * @returns SessionType 
      * @throws ApiError
      */
     public login2(
 requestBody: AuthGoogleLoginDto,
-): Observable<any> {
+): Observable<SessionType> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/google/login',

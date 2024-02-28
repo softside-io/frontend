@@ -23,10 +23,21 @@
 				<ion-chip>
 					<ion-avatar>
 						<img
+							*ngIf="user?.photo"
 							alt="Profile pic"
-							[src]="user?.photo ? user?.photo?.path :'assets/icon/pp.jpg'" />
+							[src]="user?.photo" />
+						<div
+							[ngStyle]="{
+							'backgroundColor': theme.initialColors.backgroundColor,
+							'color': theme.initialColors.textColor,
+						}"
+							class="h-full flex flex-col justify-center text-center">
+							<ion-text class="text-1xl font-bold">
+								{{ theme.getInitials(sessionService.getUserDisplay(user!)) }}
+							</ion-text>
+						</div>
 					</ion-avatar>
-					<ion-label class="ion-text-capitalize">{{getUserDisplay(user!)}}</ion-label>
+					<ion-label class="ion-text-capitalize">{{sessionService.getUserDisplay(user!)}}</ion-label>
 				</ion-chip>
 			</ion-button>
 			<ion-popover

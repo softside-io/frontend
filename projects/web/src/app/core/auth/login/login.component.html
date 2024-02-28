@@ -14,7 +14,9 @@
 								controlKey="email"
 								label="Email"></ss-email>
 							<ss-password></ss-password>
-							<div class="ion-margin-vertical">
+							<div
+								id="loginButtons"
+								class="ion-margin-vertical">
 								<ion-button
 									class="ion-margin-vertical"
 									expand="fill"
@@ -25,19 +27,15 @@
 									type="submit">
 									Login
 								</ion-button>
+								<div class="text-center"><ion-text>OR</ion-text></div>
 								<asl-google-signin-button
+									class="flex justify-center mt-3"
 									type="standard"
 									[shape]="'rectangular'"
-									[width]="400"
+									[width]="230"
+									text="continue_with"
 									size="large"
 									[theme]="'filled_black'"></asl-google-signin-button>
-								<!-- <ss-button
-									class="ion-margin-vertical"
-									label="Sign in With Google"
-									iconName="logo-google"
-									[loading]="loginWithGoogle$"
-									(clickOutput)="loginWithGoogle()"
-									type="button"></ss-button> -->
 							</div>
 						</form>
 					</ion-col>

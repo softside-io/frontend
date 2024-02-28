@@ -12,8 +12,9 @@ import {
 	IonCol,
 	IonButton,
 	IonButtons,
+	IonText,
 } from '@ionic/angular/standalone';
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
@@ -47,6 +48,7 @@ import { SSEmailComponent } from '../../../../../../softside/ui-sdk/lib/componen
 		IonButtons,
 		RouterLink,
 		GoogleSigninButtonModule,
+		IonText,
 	],
 })
 export class LoginComponent implements OnInit {
@@ -54,6 +56,7 @@ export class LoginComponent implements OnInit {
 	private sessionService = inject(SessionService);
 	private _appToast = inject(AppToastService);
 	private destroyRef = inject(DestroyRef);
+	public socialAuthState = inject(SocialAuthService);
 
 	form: LoginForm = FB.group({
 		email: FB.string(),
@@ -100,6 +103,34 @@ export class LoginComponent implements OnInit {
 				size: 'medium',
 			});
 		}
+
+		this.listenForGoogleSignIn();
+	}
+
+	listenForGoogleSignIn(): void {
+		Helpers.takeOne(
+			this.socialAuthState.authState,
+			(user: SocialUser) => {
+				if (!user) {
+					return;
+				}
+
+				this.invokeLogin(user);
+			},
+			this.destroyRef,
+		);
+	}
+
+	invokeLogin(user: SocialUser | { email: string; password: string }): void {
+		if (user instanceof SocialUser) {
+			this.login$ = Helpers.takeOne(this.sessionService.loginWithGoogle(user), undefined, this.destroyRef);
+		} else {
+			this.login$ = Helpers.takeOne(
+				this.sessionService.loginWithEmailAndPassword(user),
+				undefined,
+				this.destroyRef,
+			);
+		}
 	}
 
 	submitRecord(): void {
@@ -109,11 +140,7 @@ export class LoginComponent implements OnInit {
 
 		const { email, password } = this.form.getRawValue();
 
-		this.login$ = Helpers.takeOne(
-			this.sessionService.loginWithEmailAndPassword({ email, password }),
-			undefined,
-			this.destroyRef,
-		);
+		this.invokeLogin({ email, password });
 	}
 }
 

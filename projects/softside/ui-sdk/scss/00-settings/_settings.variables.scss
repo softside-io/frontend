@@ -98,8 +98,8 @@
 }
 
 body.dark {
-	--ion-background-color: #121212;
-	--ion-background-color-rgb: 18, 18, 18;
+	--ion-background-color: #181818;
+	--ion-background-color-rgb: 24, 24, 24;
 
 	/* text */
 
@@ -112,7 +112,7 @@ body.dark {
 
 	/* step */
 
-	--ion-color-step-50: #1e1e1e;
+	--ion-color-step-50: #202124;
 	--ion-color-step-100: #2a2a2a;
 	--ion-color-step-150: #363636;
 	--ion-color-step-200: #414141;
@@ -134,21 +134,21 @@ body.dark {
 
 	/* item */
 
-	--ion-menu-background: rgb(30 30 30);
-	--ion-item-background: #1e1e1e;
+	--ion-menu-background: rgb(32 33 36);
+	--ion-item-background: #202124;
 
 	/* toolbar */
 
-	--ion-toolbar-background: #1f1f1f;
+	--ion-toolbar-background: #202124;
 
 	/* tab-bar */
 
-	--ion-tab-bar-background: #1f1f1f;
+	--ion-tab-bar-background: #202124;
 
 	/* card */
 
-	--ion-card-background: #1e1e1e;
-	--ion-card-background-rgb: 30 30 30;
+	--ion-card-background: #202124;
+	--ion-card-background-rgb: 32 33 36;
 }
 
 /*
@@ -191,7 +191,7 @@ body.dark {
 
 	/* item */
 
-	--ion-menu-background: rgb(30 30 30);
+	--ion-menu-background: rgb(32 33 36);
 	--ion-item-background: #000;
 
 	/* card */
@@ -211,8 +211,8 @@ body.dark {
    */
 
 .md body.dark {
-	--ion-background-color: #121212;
-	--ion-background-color-rgb: 18, 18, 18;
+	--ion-background-color: #181818;
+	--ion-background-color-rgb: 24, 24, 24;
 
 	/* text */
 
@@ -225,7 +225,7 @@ body.dark {
 
 	/* step */
 
-	--ion-color-step-50: #1e1e1e;
+	--ion-color-step-50: #202124;
 	--ion-color-step-100: #2a2a2a;
 	--ion-color-step-150: #363636;
 	--ion-color-step-200: #414141;
@@ -247,20 +247,20 @@ body.dark {
 
 	/* item */
 
-	--ion-menu-background: rgb(30 30 30);
-	--ion-item-background: #1e1e1e00;
+	--ion-menu-background: rgb(32 33 36);
+	--ion-item-background: #20212400;
 
 	/* toolbar */
 
-	--ion-toolbar-background: #1f1f1f;
+	--ion-toolbar-background: #202124;
 
 	/* tab-bar */
 
-	--ion-tab-bar-background: #1f1f1f;
+	--ion-tab-bar-background: #202124;
 
 	/* card */
 
-	--ion-card-background: #1e1e1e;
+	--ion-card-background: #202124;
 }
 
 body.light {

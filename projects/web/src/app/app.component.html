@@ -1,3 +1,10 @@
 <ion-app>
 	<ion-router-outlet></ion-router-outlet>
 </ion-app>
+
+<ng-container *ngLet="(user$ | async) as user">
+	<div
+		[ngClass]="{'!block': !user}"
+		class="absolute right-5 top-5 hidden"
+		id="googleLoginWrapper"></div>
+</ng-container>

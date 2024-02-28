@@ -41,7 +41,7 @@ import { addIcons } from 'ionicons';
 import { camera, warning } from 'ionicons/icons';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgLetModule } from 'ng-let';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf, NgStyle } from '@angular/common';
 
 import { SessionService } from 'projects/web/src/app/core/services/session.service';
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
@@ -101,6 +101,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 		AsyncPipe,
 		NgIf,
 		IonSplitPane,
+		NgStyle,
 	],
 })
 export class ProfileViewComponent implements OnDestroy {
