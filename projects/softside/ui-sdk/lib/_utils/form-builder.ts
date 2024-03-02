@@ -1,7 +1,9 @@
 import { AbstractControl, FormGroup, FormControl } from '@angular/forms';
 
 export class FB {
-	static group<T extends { [K in keyof T]: AbstractControl<T[K]['value'], T[K]['value']> }>(controls: T): FormGroup<T> {
+	static group<T extends { [K in keyof T]: AbstractControl<T[K]['value'], T[K]['value']> }>(
+		controls: T = {} as T,
+	): FormGroup<T> {
 		return new FormGroup<T>(controls);
 	}
 
@@ -21,12 +23,12 @@ export class FB {
 export type ConvertToForm<T> = T extends object
 	? FormGroup<{
 			[K in keyof T]: ConvertToForm<T[K]>;
-	  }>
+		}>
 	: T extends string
-	? FormControl<string>
-	: T extends number
-	? FormControl<number>
-	: T extends boolean
-	? FormControl<boolean>
-	: never;
+		? FormControl<string>
+		: T extends number
+			? FormControl<number>
+			: T extends boolean
+				? FormControl<boolean>
+				: never;
 // Example usage type ProfileForm = ConvertToForm<JSONResponseType>;

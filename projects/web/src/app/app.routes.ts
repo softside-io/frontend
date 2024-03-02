@@ -6,6 +6,7 @@ import { authenticationGuard } from './core/guards/auth.guard';
 import { ProfileViewComponent } from './pages/profile/profile-view.component';
 import { HomeViewComponent } from './pages/home/home-view.component';
 import { ContactsViewComponent } from './pages/contacts/contacts-view/contacts-view.component';
+import { FormlyShowcaseComponent } from './pages/formly-showcase/formly-showcase.component';
 
 export const routes: Routes = [
 	{
@@ -29,6 +30,10 @@ export const routes: Routes = [
 			{
 				path: 'contacts',
 				loadComponent: () => ContactsViewComponent,
+			},
+			{
+				path: 'formly-showcase',
+				loadComponent: () => FormlyShowcaseComponent,
 			},
 		],
 	},

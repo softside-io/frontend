@@ -18,6 +18,11 @@ export const appPages: Array<IMenuItem> = [
 		icon: 'people',
 	},
 	{
+		title: 'Formly Showcase',
+		url: '/formly-showcase',
+		icon: 'book-sharp',
+	},
+	{
 		title: 'Settings',
 		icon: 'settings',
 		children: [

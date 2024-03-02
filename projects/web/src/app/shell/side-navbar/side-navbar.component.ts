@@ -11,6 +11,7 @@ import {
 	archive,
 	chevronForwardOutline,
 	chevronDownOutline,
+	bookSharp,
 } from 'ionicons/icons';
 import { IonMenuToggle, IonItem, IonIcon, IonLabel, IonList } from '@ionic/angular/standalone';
 import { NgFor, NgIf } from '@angular/common';
@@ -39,6 +40,7 @@ export class SideNavbarComponent {
 			archive,
 			chevronForwardOutline,
 			chevronDownOutline,
+			bookSharp,
 		});
 	}
 

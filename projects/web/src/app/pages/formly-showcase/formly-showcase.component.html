@@ -1,0 +1,20 @@
+<ion-content>
+	<app-page-header [title]="'Formly Showcase'"></app-page-header>
+	<ion-card>
+		<ion-card-content>
+			<form
+				[formGroup]="form"
+				(ngSubmit)="submit()">
+				<formly-form
+					[fields]="config"
+					[form]="form"></formly-form>
+				<ss-button
+					class="flex justify-end mt-5"
+					label="Save"
+					[expand]="'block'"
+					[disabled]="!form.dirty || form.invalid"
+					type="submit"></ss-button>
+			</form>
+		</ion-card-content>
+	</ion-card>
+</ion-content>
