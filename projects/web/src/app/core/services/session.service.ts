@@ -1,7 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 import { AppSettingsService } from 'projects/web/src/app/shared/services/app-settings.service';
 import {
@@ -46,7 +45,7 @@ export class SessionService {
 	loggedInUser$ = this.loggedInUserSubject.asObservable();
 	private authSubject = new BehaviorSubject<Auth | null>(null);
 	authSubject$ = this.authSubject.asObservable();
-	private socialAuthService = inject(SocialAuthService);
+	// private socialAuthService = inject(SocialAuthService);
 
 	get currentUser(): User | null {
 		return this.loggedInUserSubject.value;
@@ -280,7 +279,7 @@ export class SessionService {
 
 	clearSession(): void {
 		Helpers.takeOne(this.storage.clear());
-		this.socialAuthService.signOut();
+		// this.socialAuthService.signOut();
 		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, { action: BroadcastEventEnum.LOGOUT });
 	}
 

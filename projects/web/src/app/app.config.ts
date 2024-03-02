@@ -2,7 +2,6 @@ import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angula
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { IonicRouteStrategy, createAnimation, provideIonicAngular } from '@ionic/angular/standalone';
-import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 
 import { OpenAPI } from 'projects/api';
 
@@ -46,23 +45,6 @@ export const appConfig: ApplicationConfig = {
 			useFactory: initializeApplicationConfig,
 			deps: [SessionService, ThemeService],
 			multi: true,
-		},
-		{
-			provide: 'SocialAuthServiceConfig',
-			useValue: {
-				autoLogin: false,
-				providers: [
-					{
-						id: GoogleLoginProvider.PROVIDER_ID,
-						provider: new GoogleLoginProvider(environment.googleClientId, {
-							prompt_parent_id: 'googleLoginWrapper',
-						}),
-					},
-				],
-				onError: (err) => {
-					console.error(err);
-				},
-			} as SocialAuthServiceConfig,
 		},
 	],
 };

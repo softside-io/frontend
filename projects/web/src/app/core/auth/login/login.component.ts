@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, from } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -108,6 +108,16 @@ export class LoginComponent implements OnInit {
 	}
 
 	listenForGoogleSignIn(): void {
+		// Since the social module is now only being loaded in the auth module, we make sure to logout an old session if it exists with the below so that
+		// the library works as expected. we also suppress the errors in case we're not logged in while trying to sign out.
+		Helpers.takeOne(
+			this.socialAuthState.initState,
+			() => {
+				Helpers.takeOne(from(this.socialAuthState.signOut()), undefined, this.destroyRef, true);
+			},
+			this.destroyRef,
+		);
+
 		Helpers.takeOne(
 			this.socialAuthState.authState,
 			(user: SocialUser) => {

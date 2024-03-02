@@ -1,6 +1,6 @@
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, Subscription, take } from 'rxjs';
+import { EMPTY, Observable, Subscription, catchError, take, throwError } from 'rxjs';
 
 export class Helpers {
 	public static camelize(text: string): string {
@@ -15,13 +15,36 @@ export class Helpers {
 		observable: Observable<T>,
 		next?: ((value: T) => void) | undefined,
 		destroy?: DestroyRef,
+		suppressError?: boolean,
 	): Subscription {
 		if (destroy === undefined) {
-			return observable.pipe(take(1)).subscribe({ next });
+			return observable
+				.pipe(
+					take(1),
+					catchError((error) => {
+						if (suppressError) {
+							return EMPTY;
+						} else {
+							return throwError(() => error);
+						}
+					}),
+				)
+				.subscribe({ next });
 		} else {
-			return observable.pipe(takeUntilDestroyed(destroy)).subscribe({
-				next,
-			});
+			return observable
+				.pipe(
+					takeUntilDestroyed(destroy),
+					catchError((error) => {
+						if (suppressError) {
+							return EMPTY;
+						} else {
+							return throwError(() => error);
+						}
+					}),
+				)
+				.subscribe({
+					next,
+				});
 		}
 	}
 }

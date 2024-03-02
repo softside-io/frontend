@@ -25,8 +25,6 @@ export class AppComponent {
 	activatedRoute = inject(ActivatedRoute);
 	sessionService = inject(SessionService);
 
-	user$ = this.sessionService.loggedInUser$;
-
 	constructor() {
 		addIcons({
 			informationCircleOutline,
