@@ -1,6 +1,8 @@
 import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
 
+import { SSFormlyConfigModule } from '@softside/ui-sdk/lib/modules/formly/config';
+
 // Import providers here
 export const modules = [
 	IonicStorageModule.forRoot({
@@ -8,4 +10,5 @@ export const modules = [
 		name: 'SoftsideDB',
 		storeName: 'Session',
 	}),
+	SSFormlyConfigModule,
 ];

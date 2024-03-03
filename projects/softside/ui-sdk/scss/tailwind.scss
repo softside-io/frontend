@@ -98,12 +98,24 @@
   --tw-backdrop-sepia:  
 }
 
+.static {
+  position: static
+}
+
 .absolute {
   position: absolute
 }
 
+.\!bottom-\[1\.4rem\] {
+  bottom: 1.4rem !important
+}
+
 .\!right-\[2rem\] {
   right: 2rem !important
+}
+
+.bottom-0 {
+  bottom: 0px
 }
 
 .right-0 {
@@ -126,8 +138,16 @@
   display: block
 }
 
+.hidden {
+  display: none
+}
+
 .h-6 {
   height: 1.5rem
+}
+
+.h-\[29px\] {
+  height: 29px
 }
 
 .\!w-\[70\%\] {
@@ -138,12 +158,20 @@
   width: 1.75rem
 }
 
+.w-\[29px\] {
+  width: 29px
+}
+
 .\!flex-none {
   flex: none !important
 }
 
 .cursor-pointer {
   cursor: pointer
+}
+
+.text-center {
+  text-align: center
 }
 
 .text-lg {
