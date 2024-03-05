@@ -7,7 +7,12 @@
 			"glob": "**/*.scss",
 			"output": "scss"
 		},
-		{ "input": "assets", "glob": "**/*.*", "output": "assets" }
+		{ "input": "assets", "glob": "**/*.*", "output": "assets" },
+		{
+			"input": "scss",
+			"glob": "~node_modules/flag-icon-css/sass/flag-icon.scss",
+			"output": "scss"
+		}
 	],
 	"lib": {
 		"entryFile": "./public-api.ts"

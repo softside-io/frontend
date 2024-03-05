@@ -1,11 +1,9 @@
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FB, PresetField, TextField } from '@softside/ui-sdk/lib/_utils';
 
-import { FB } from '@softside/ui-sdk/lib/_utils';
-
-const formlyConfig: FormlyFieldConfig[] = [
-	FB.fieldPresets({ field: 'email' }),
-	FB.fieldPresets({ field: 'password' }),
-	FB.fieldPresets({ field: 'text', opts: { label: 'custom text' } }),
-];
+const formlyConfig = FB.create([
+	FB.fields<PresetField>({ field: 'email' }),
+	FB.fields<PresetField>({ field: 'password' }),
+	FB.fields<TextField>({ field: 'text', opts: { label: 'custom text' } }),
+]);
 
 export default formlyConfig;

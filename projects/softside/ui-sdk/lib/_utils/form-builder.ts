@@ -1,5 +1,7 @@
 import { AbstractControl, FormGroup, FormControl, Validators } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyFieldProps } from '@ngx-formly/core';
+
+import { Helpers } from './helpers';
 
 export class FB {
 	// to be fixed (remove parameters)
@@ -24,7 +26,7 @@ export class FB {
 		return new FormControl(defaultValue, { nonNullable: true });
 	}
 
-	static fieldPresets(presets: FieldConfig): FormlyFieldConfig {
+	static fields<T extends PresetField | TextField | FormlySSFieldConfig>(presets: T): FormlySSFieldConfig {
 		switch (presets.field) {
 			case 'email':
 				return {
@@ -73,47 +75,62 @@ export class FB {
 						},
 					},
 				};
+			case 'text':
+				const textConfig = { ...presets } as TextField;
+
+				return {
+					key: Helpers.camelize(textConfig.opts?.label),
+					type: 'ssTextInput',
+					props: {
+						label: textConfig.opts?.label,
+						placeholder: `Enter your ${textConfig.opts?.label}`,
+						required: true,
+						type: 'text',
+						minLength: 1,
+						maxLength: 100,
+						counter: true,
+					},
+					validation: {
+						messages: {
+							required: `${textConfig.opts?.label} is required`,
+						},
+					},
+				};
 			default: {
-				if (presets.opts?.label) {
-					return {
-						key: presets.opts?.label,
-						type: 'ssTextInput',
-						props: {
-							label: presets.opts?.label,
-							placeholder: `Enter your ${presets.opts?.label}`,
-							required: true,
-							type: 'text',
-							minLength: 1,
-							maxLength: 100,
-							counter: true,
-						},
-						validation: {
-							messages: {
-								required: `${presets.opts?.label} is required`,
-							},
-						},
-					};
-				} else {
-					return {};
-				}
+				return presets;
 			}
 		}
 	}
-}
 
-type BaseField = {
+	static create<T = FormlySSFieldConfig>(formlyFieldConfig: T[]): FormlyFieldConfig[] {
+		return formlyFieldConfig as FormlyFieldConfig[];
+	}
+}
+export type PresetField = {
 	field: 'email' | 'password';
 };
-
-type CustomField = {
+export type TextField = {
 	field: 'text';
 	opts: {
 		label: string;
 	};
 };
 
-type FieldConfig = BaseField | CustomField;
+type FormlySSFieldConfig = FormlyFieldProps & Partial<ExtraProps>;
 
+type ExtraProps = {
+	key?: string | number | (string | number)[];
+	counter: boolean;
+	conceal: {
+		showToggle: boolean;
+		default: boolean;
+	};
+	props: FormlySSFieldConfig;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[additionalProperties: string]: any;
+};
+
+//
 // to be removed
 export type ConvertToForm<T> = T extends object
 	? FormGroup<{

@@ -25,7 +25,7 @@
 						<img
 							*ngIf="user?.photo"
 							alt="Profile pic"
-							[src]="user?.photo" />
+							[src]="user?.photo?.path" />
 						<div
 							[ngStyle]="{
 							'backgroundColor': theme.initialColors.backgroundColor,
