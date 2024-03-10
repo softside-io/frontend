@@ -26,7 +26,9 @@ export class FB {
 		return new FormControl(defaultValue, { nonNullable: true });
 	}
 
-	static fields<T extends PresetField | TextField | FormlySSFieldConfig>(presets: T): FormlySSFieldConfig {
+	static fields<T extends PresetField | TextField | FormlySSFieldConfig | PresetGroup>(
+		presets: T,
+	): FormlySSFieldConfig {
 		switch (presets.field) {
 			case 'email':
 				return {
@@ -52,12 +54,15 @@ export class FB {
 					},
 				};
 			case 'password':
+				const passwordConfig = { ...presets } as PresetField;
+				const label = passwordConfig?.opts?.label || 'Password';
+
 				return {
-					key: 'password',
+					key: Helpers.camelize(label),
 					type: 'ssTextInput',
 					props: {
-						label: 'Password',
-						placeholder: 'Enter your password',
+						label: label,
+						placeholder: `Enter your ${label}`,
 						required: true,
 						conceal: {
 							showToggle: true,
@@ -70,7 +75,7 @@ export class FB {
 					},
 					validation: {
 						messages: {
-							required: 'Password is required',
+							required: `${label} is required`,
 							minlength: 'Password must be at least 6 characters long',
 						},
 					},
@@ -96,6 +101,29 @@ export class FB {
 						},
 					},
 				};
+			case 'confirmPassword':
+				const password = 'Password';
+				const confirmPassword = 'Confirm Password';
+
+				return {
+					validators: {
+						validation: [
+							{
+								name: 'fieldMatch',
+								options: {
+									errorPath: Helpers.camelize(confirmPassword),
+									keys: [Helpers.camelize(password), Helpers.camelize(confirmPassword)],
+									message: `${password}s should match`,
+								},
+							},
+						],
+					},
+					key: 'confirmPasswordGroup',
+					fieldGroup: [
+						FB.fields<PresetField>({ field: 'password', opts: { label: password } }),
+						FB.fields<PresetField>({ field: 'password', opts: { label: confirmPassword } }),
+					],
+				};
 			default: {
 				return presets;
 			}
@@ -108,12 +136,18 @@ export class FB {
 }
 export type PresetField = {
 	field: 'email' | 'password';
+	opts?: {
+		label?: string;
+	};
 };
 export type TextField = {
 	field: 'text';
 	opts: {
 		label: string;
 	};
+};
+export type PresetGroup = {
+	field: 'confirmPassword';
 };
 
 type FormlySSFieldConfig = FormlyFieldProps & Partial<ExtraProps>;
