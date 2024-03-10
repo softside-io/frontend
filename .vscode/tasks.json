@@ -33,35 +33,6 @@
 			}
 		},
 		{
-			"label": "Start Library",
-			"type": "shell",
-			"command": "npm",
-			"args": ["run", "start:lib"],
-			"isBackground": true,
-			"problemMatcher": {
-				"owner": "typescript",
-				"pattern": {
-					"regexp": "^\\s+(.*)$",
-					"file": 1,
-					"location": 2,
-					"message": 3
-				},
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "^.*Building tailwind for library*$",
-					"endsPattern": "^.*Compilation complete. Watching for file changes...*$"
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"runOptions": {
-				"runOn": "folderOpen"
-			},
-			"dependsOn": ["Initial Task"]
-		},
-		{
 			"label": "Start Web Application",
 			"type": "shell",
 			"command": "npm",
@@ -88,7 +59,7 @@
 			"runOptions": {
 				"runOn": "folderOpen"
 			},
-			"dependsOn": ["Start Library"]
+			"dependsOn": ["Initial Task"]
 		},
 		{
 			"label": "Build Library",

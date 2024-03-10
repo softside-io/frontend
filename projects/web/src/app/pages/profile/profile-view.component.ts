@@ -47,16 +47,15 @@ import { SessionService } from 'projects/web/src/app/core/services/session.servi
 import { AppToastService } from 'projects/web/src/app/shared/services/app-toast.service';
 import { ConvertToForm, FB, Helpers } from '@softside/ui-sdk/lib/_utils';
 import { AuthService, AuthUpdateDto, FileType, FilesService, User } from 'projects/api';
-import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared/directives/async-ref/async-ref.directive';
-import { SSButtonComponent } from '@softside/ui-sdk/lib/elements';
+import { SSButtonComponent, SSTextareaComponent } from '@softside/ui-sdk/lib/elements';
+import { SSConfirmPasswordComponent } from '@softside/ui-sdk/lib/components/composed/confirm-password';
+import { SSEmailComponent } from '@softside/ui-sdk/lib/components/inputs/email';
+import { SSPasswordComponent } from '@softside/ui-sdk/lib/components/inputs/password';
+import { SSTextComponent } from '@softside/ui-sdk/lib/components/inputs/text';
+import { AsyncRefDirective } from '@softside/ui-sdk/lib/shared';
 
-import { ThemeService } from '../../core/services/theme.service';
-import { SSPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/password/password.component';
-import { SSConfirmPasswordComponent } from '../../../../../softside/ui-sdk/lib/components/composed/confirm-password/confirm-password.component';
-import { SSTextareaComponent } from '../../../../../softside/ui-sdk/lib/elements/keyin/textarea/textarea.component';
-import { SSEmailComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/email/email.component';
-import { SSTextComponent } from '../../../../../softside/ui-sdk/lib/components/inputs/text/text.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
 	selector: 'app-profile-view',

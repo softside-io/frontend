@@ -1,18 +1,13 @@
 {
 	"$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
-	"dest": "../../../dist/softside/ui-sdk",
+	"dest": "../../../public/softside/ui-sdk",
 	"assets": [
 		{
 			"input": "scss",
 			"glob": "**/*.scss",
 			"output": "scss"
 		},
-		{ "input": "assets", "glob": "**/*.*", "output": "assets" },
-		{
-			"input": "scss",
-			"glob": "~node_modules/flag-icon-css/sass/flag-icon.scss",
-			"output": "scss"
-		}
+		{ "input": "assets", "glob": "**/*.*", "output": "assets" }
 	],
 	"lib": {
 		"entryFile": "./public-api.ts"
