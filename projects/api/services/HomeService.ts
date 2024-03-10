@@ -5,19 +5,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class HomeService {
-
     constructor(public readonly http: HttpClient) {}
-
     /**
-     * @returns any 
+     * @returns any
      * @throws ApiError
      */
     public appInfo(): Observable<any> {
@@ -26,5 +22,4 @@ export class HomeService {
             url: '/',
         });
     }
-
 }

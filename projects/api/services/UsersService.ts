@@ -5,29 +5,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-
 import type { CreateUserDto } from '../models/CreateUserDto';
 import type { UpdateUserDto } from '../models/UpdateUserDto';
 import type { User } from '../models/User';
-
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class UsersService {
-
     constructor(public readonly http: HttpClient) {}
-
     /**
-     * @param requestBody 
-     * @returns User 
+     * @param requestBody
+     * @returns User
      * @throws ApiError
      */
     public create(
-requestBody: CreateUserDto,
-): Observable<User> {
+        requestBody: CreateUserDto,
+    ): Observable<User> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/users',
@@ -35,21 +30,20 @@ requestBody: CreateUserDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param page 
-     * @param limit 
-     * @param filters 
-     * @param sort 
-     * @returns any 
+     * @param page
+     * @param limit
+     * @param filters
+     * @param sort
+     * @returns any
      * @throws ApiError
      */
     public findAll(
-page?: number,
-limit?: number,
-filters?: string,
-sort?: string,
-): Observable<any> {
+        page?: number,
+        limit?: number,
+        filters?: string,
+        sort?: string,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'GET',
             url: '/api/v1/users',
@@ -61,15 +55,14 @@ sort?: string,
             },
         });
     }
-
     /**
-     * @param id 
-     * @returns any 
+     * @param id
+     * @returns any
      * @throws ApiError
      */
     public findOne(
-id: string,
-): Observable<any> {
+        id: string,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'GET',
             url: '/api/v1/users/{id}',
@@ -78,17 +71,16 @@ id: string,
             },
         });
     }
-
     /**
-     * @param id 
-     * @param requestBody 
-     * @returns any 
+     * @param id
+     * @param requestBody
+     * @returns any
      * @throws ApiError
      */
     public update(
-id: string,
-requestBody: UpdateUserDto,
-): Observable<any> {
+        id: string,
+        requestBody: UpdateUserDto,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'PATCH',
             url: '/api/v1/users/{id}',
@@ -99,15 +91,14 @@ requestBody: UpdateUserDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param id 
-     * @returns void 
+     * @param id
+     * @returns void
      * @throws ApiError
      */
     public remove(
-id: string,
-): Observable<void> {
+        id: string,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'DELETE',
             url: '/api/v1/users/{id}',
@@ -116,5 +107,4 @@ id: string,
             },
         });
     }
-
 }

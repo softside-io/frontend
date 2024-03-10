@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { FileDto } from './FileDto';
-
 export type AuthUpdateDto = {
     photo?: FileDto;
     firstName?: string;
@@ -14,3 +12,4 @@ export type AuthUpdateDto = {
     password?: string;
     oldPassword?: string;
 };
+

@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { FileType } from './FileType';
 import type { Role } from './Role';
 import type { Status } from './Status';
-
 export type User = {
     id: string;
     email: string;
@@ -25,3 +23,4 @@ export type User = {
     updatedAt: string;
     deletedAt?: string;
 };
+

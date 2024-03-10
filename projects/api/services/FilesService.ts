@@ -5,29 +5,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-
 import type { FileType } from '../models/FileType';
-
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class FilesService {
-
     constructor(public readonly http: HttpClient) {}
-
     /**
-     * @param formData 
-     * @returns FileType 
+     * @param formData
+     * @returns FileType
      * @throws ApiError
      */
     public uploadFile(
-formData: {
-file?: Blob;
-},
-): Observable<FileType> {
+        formData: {
+            file?: Blob;
+        },
+    ): Observable<FileType> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/files/upload',
@@ -35,15 +30,14 @@ file?: Blob;
             mediaType: 'multipart/form-data',
         });
     }
-
     /**
-     * @param path 
-     * @returns any 
+     * @param path
+     * @returns any
      * @throws ApiError
      */
     public download(
-path: string,
-): Observable<any> {
+        path: string,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'GET',
             url: '/api/v1/files/{path}',
@@ -52,5 +46,4 @@ path: string,
             },
         });
     }
-
 }

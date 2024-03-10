@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { RoleEnum } from './RoleEnum';
-
 export type RoleDto = {
     id: RoleEnum;
 };
+

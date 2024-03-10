@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type AuthEmailLoginDto = {
     email: string;
     password: string;
 };
+

@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { FileDto } from './FileDto';
 import type { RoleDto } from './RoleDto';
 import type { StatusDto } from './StatusDto';
-
 export type CreateUserDto = {
     email: Record<string, any>;
     password: string;
@@ -18,3 +16,4 @@ export type CreateUserDto = {
     phone: string;
     address: string;
 };
+

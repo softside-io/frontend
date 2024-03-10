@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type FileType = {
     id: string;
     path: string;
 };
+

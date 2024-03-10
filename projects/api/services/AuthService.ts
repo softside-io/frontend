@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-
 import type { AuthAppleLoginDto } from '../models/AuthAppleLoginDto';
 import type { AuthConfirmEmailDto } from '../models/AuthConfirmEmailDto';
 import type { AuthEmailLoginDto } from '../models/AuthEmailLoginDto';
@@ -19,25 +18,21 @@ import type { AuthTwitterLoginDto } from '../models/AuthTwitterLoginDto';
 import type { AuthUpdateDto } from '../models/AuthUpdateDto';
 import type { SessionType } from '../models/SessionType';
 import type { User } from '../models/User';
-
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class AuthService {
-
     constructor(public readonly http: HttpClient) {}
-
     /**
-     * @param requestBody 
-     * @returns SessionType 
+     * @param requestBody
+     * @returns SessionType
      * @throws ApiError
      */
     public login(
-requestBody: AuthEmailLoginDto,
-): Observable<SessionType> {
+        requestBody: AuthEmailLoginDto,
+    ): Observable<SessionType> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/email/login',
@@ -45,15 +40,14 @@ requestBody: AuthEmailLoginDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns void 
+     * @param requestBody
+     * @returns void
      * @throws ApiError
      */
     public register(
-requestBody: AuthRegisterLoginDto,
-): Observable<void> {
+        requestBody: AuthRegisterLoginDto,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/email/register',
@@ -61,15 +55,14 @@ requestBody: AuthRegisterLoginDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns void 
+     * @param requestBody
+     * @returns void
      * @throws ApiError
      */
     public confirmEmail(
-requestBody: AuthConfirmEmailDto,
-): Observable<void> {
+        requestBody: AuthConfirmEmailDto,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/email/confirm',
@@ -77,15 +70,14 @@ requestBody: AuthConfirmEmailDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns void 
+     * @param requestBody
+     * @returns void
      * @throws ApiError
      */
     public sendVerificationEmail(
-requestBody: AuthResendEmailDto,
-): Observable<void> {
+        requestBody: AuthResendEmailDto,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/email/resend',
@@ -93,15 +85,14 @@ requestBody: AuthResendEmailDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns void 
+     * @param requestBody
+     * @returns void
      * @throws ApiError
      */
     public forgotPassword(
-requestBody: AuthForgotPasswordDto,
-): Observable<void> {
+        requestBody: AuthForgotPasswordDto,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/forgot/password',
@@ -109,15 +100,14 @@ requestBody: AuthForgotPasswordDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns void 
+     * @param requestBody
+     * @returns void
      * @throws ApiError
      */
     public resetPassword(
-requestBody: AuthResetPasswordDto,
-): Observable<void> {
+        requestBody: AuthResetPasswordDto,
+    ): Observable<void> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/reset/password',
@@ -125,9 +115,8 @@ requestBody: AuthResetPasswordDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @returns User 
+     * @returns User
      * @throws ApiError
      */
     public me(): Observable<User> {
@@ -136,15 +125,14 @@ requestBody: AuthResetPasswordDto,
             url: '/api/v1/auth/me',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns User 
+     * @param requestBody
+     * @returns User
      * @throws ApiError
      */
     public update(
-requestBody: AuthUpdateDto,
-): Observable<User> {
+        requestBody: AuthUpdateDto,
+    ): Observable<User> {
         return __request(OpenAPI, this.http, {
             method: 'PATCH',
             url: '/api/v1/auth/me',
@@ -152,9 +140,8 @@ requestBody: AuthUpdateDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @returns void 
+     * @returns void
      * @throws ApiError
      */
     public delete(): Observable<void> {
@@ -163,24 +150,32 @@ requestBody: AuthUpdateDto,
             url: '/api/v1/auth/me',
         });
     }
-
     /**
-     * @returns any 
+     * @returns boolean
+     * @throws ApiError
+     */
+    public check(): Observable<boolean> {
+        return __request(OpenAPI, this.http, {
+            method: 'GET',
+            url: '/api/v1/auth/check',
+        });
+    }
+    /**
+     * @returns any
      * @throws ApiError
      */
     public refresh(): Observable<{
-token: string;
-refreshToken: string;
-tokenExpires: number;
-}> {
+        token: string;
+        refreshToken: string;
+        tokenExpires: number;
+    }> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/refresh',
         });
     }
-
     /**
-     * @returns void 
+     * @returns void
      * @throws ApiError
      */
     public logout(): Observable<void> {
@@ -189,15 +184,14 @@ tokenExpires: number;
             url: '/api/v1/auth/logout',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns any 
+     * @param requestBody
+     * @returns any
      * @throws ApiError
      */
     public login1(
-requestBody: AuthFacebookLoginDto,
-): Observable<any> {
+        requestBody: AuthFacebookLoginDto,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/facebook/login',
@@ -205,15 +199,14 @@ requestBody: AuthFacebookLoginDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns SessionType 
+     * @param requestBody
+     * @returns SessionType
      * @throws ApiError
      */
     public login2(
-requestBody: AuthGoogleLoginDto,
-): Observable<SessionType> {
+        requestBody: AuthGoogleLoginDto,
+    ): Observable<SessionType> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/google/login',
@@ -221,15 +214,14 @@ requestBody: AuthGoogleLoginDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns any 
+     * @param requestBody
+     * @returns any
      * @throws ApiError
      */
     public login3(
-requestBody: AuthTwitterLoginDto,
-): Observable<any> {
+        requestBody: AuthTwitterLoginDto,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/twitter/login',
@@ -237,15 +229,14 @@ requestBody: AuthTwitterLoginDto,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * @param requestBody 
-     * @returns any 
+     * @param requestBody
+     * @returns any
      * @throws ApiError
      */
     public login4(
-requestBody: AuthAppleLoginDto,
-): Observable<any> {
+        requestBody: AuthAppleLoginDto,
+    ): Observable<any> {
         return __request(OpenAPI, this.http, {
             method: 'POST',
             url: '/api/v1/auth/apple/login',
@@ -253,5 +244,4 @@ requestBody: AuthAppleLoginDto,
             mediaType: 'application/json',
         });
     }
-
 }
