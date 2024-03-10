@@ -72,6 +72,12 @@
 			"options": {
 				"printWidth": 100
 			}
+		},
+		{
+			"files": "*.js",
+			"options": {
+				"printWidth": 100
+			}
 		}
 	]
 }
