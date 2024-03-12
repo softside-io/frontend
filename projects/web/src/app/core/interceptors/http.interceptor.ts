@@ -35,7 +35,15 @@ export const authInterceptor: HttpInterceptorFn = (
 				if (error.status === 401) {
 					return handle401Error(request, next);
 				} else {
-					toast(error);
+					if (error) {
+						toast(error);
+					}
+
+					// move to error handling service
+					if (request.url.includes('logout')) {
+						sessionService.clearSession();
+					}
+
 					// this._errorHandlingService.handleHttpError(error);
 					throw new Error(error.message);
 				}

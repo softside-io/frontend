@@ -56,7 +56,7 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 			const startTime = Date.now();
 			const loader = document.querySelector('.loader') as HTMLElement;
 			let progress = 0;
-			const minimumDelayTime = 1000;
+			const minimumDelayTime = 750;
 			let progressValue = 1;
 			let loaded = false;
 
@@ -82,8 +82,9 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 				const delayTime = elapsedTime < 0 ? 0 : elapsedTime;
 
 				resolve();
-				setTimeout(() => {
+				const delayTimeout = setTimeout(() => {
 					loaded = true;
+					clearTimeout(delayTimeout);
 				}, delayTime);
 			});
 
@@ -97,9 +98,14 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 				if (progress >= 100) {
 					progress = 100;
 					clearInterval(interval);
-					setTimeout(() => {
+
+					const delayFadeOut = setTimeout(() => {
 						loader.parentElement?.classList.add('transition-opacity', 'duration-500', 'opacity-0');
-						setTimeout(() => loader.parentElement?.remove(), 500);
+						clearTimeout(delayFadeOut);
+						const fadeOutTimeout = setTimeout(() => {
+							loader.parentElement?.remove();
+							clearTimeout(fadeOutTimeout);
+						}, 500);
 					}, 100);
 				}
 
@@ -111,5 +117,6 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 					progressValue = 20;
 				}
 			}, 50);
+			// Here 50 should be the same as the transition speed on loader::before (projects\softside\ui-sdk\scss\02-generic\_generic.scss)
 		});
 }

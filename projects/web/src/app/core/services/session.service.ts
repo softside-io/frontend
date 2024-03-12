@@ -278,8 +278,7 @@ export class SessionService {
 	}
 
 	clearSession(): void {
-		Helpers.takeOne(this.storage.clear());
-		// this.socialAuthService.signOut();
+		Helpers.takeOne(this.storage.remove('session'));
 		this.broadcastService.sendMessage(BroadcastChannels.AUTH_CHANNEL, { action: BroadcastEventEnum.LOGOUT });
 	}
 
