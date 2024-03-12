@@ -53,6 +53,13 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 	// returning promise so that getting this file is blocking to the UI
 	return (): Promise<void> =>
 		new Promise((resolve, _reject) => {
+			const startTime = Date.now();
+			const loader = document.querySelector('.loader') as HTMLElement;
+			let progress = 0;
+			const minimumDelayTime = 1000;
+			let progressValue = 1;
+			let loaded = false;
+
 			sessionService.getSessionFromStorage().add(() => {
 				OpenAPI.BASE = environment.openAPIBase;
 				OpenAPI.TOKEN = (): Promise<string> => {
@@ -70,7 +77,39 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 					}
 				};
 
+				const endTime = Date.now();
+				const elapsedTime = minimumDelayTime - (endTime - startTime);
+				const delayTime = elapsedTime < 0 ? 0 : elapsedTime;
+
 				resolve();
+				setTimeout(() => {
+					loaded = true;
+				}, delayTime);
 			});
+
+			const interval = setInterval(() => {
+				progress += progressValue;
+
+				if (progress > 60) {
+					progressValue = 0.05;
+				}
+
+				if (progress >= 100) {
+					progress = 100;
+					clearInterval(interval);
+					setTimeout(() => {
+						loader.parentElement?.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+						setTimeout(() => loader.parentElement?.remove(), 500);
+					}, 100);
+				}
+
+				if (loader) {
+					loader.style.setProperty('--width', progress + '%');
+				}
+
+				if (loaded) {
+					progressValue = 20;
+				}
+			}, 50);
 		});
 }
