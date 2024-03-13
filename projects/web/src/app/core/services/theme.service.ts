@@ -1,16 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ToggleCustomEvent } from '@ionic/angular/standalone';
 
-import { SecureStorageService } from '@softside/ui-sdk/lib/shared';
-import { Helpers } from '@softside/ui-sdk/lib/_utils';
-
 import { SessionService } from './session.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ThemeService {
-	storage = inject(SecureStorageService);
 	isDarkMode = signal(false);
 	authService = inject(SessionService);
 	initialColors = this.getRandomColor();
@@ -19,15 +15,15 @@ export class ThemeService {
 		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 		prefersDark.addEventListener('change', (mediaQuery) => this.toggleDarkTheme(mediaQuery.matches));
 
-		Helpers.takeOne(this.storage.get<boolean>('theme'), (theme) => {
-			if (theme === null) {
-				this.toggleDarkTheme(prefersDark.matches);
+		const theme = localStorage.getItem('theme');
 
-				return;
-			}
+		if (theme === null) {
+			this.toggleDarkTheme(prefersDark.matches);
 
-			this.toggleDarkTheme(theme);
-		});
+			return;
+		}
+
+		this.toggleDarkTheme(theme === 'true');
 	}
 
 	toggleChange(ev: Event): void {
@@ -36,7 +32,7 @@ export class ThemeService {
 
 	toggleDarkTheme(isDark: boolean): void {
 		this.isDarkMode.set(isDark);
-		Helpers.takeOne(this.storage.set('theme', isDark));
+		localStorage.setItem('theme', isDark + '');
 
 		if (isDark) {
 			document.body.classList.remove('light');

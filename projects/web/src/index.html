@@ -31,16 +31,19 @@
 	</head>
 
 	<body>
-		<div id="splash">
+		<div
+			id="splash"
+			class="fixed inset-0 w-full h-full z-10 flex justify-center items-center flex-col">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="ionicon"
+				class="w-[200px] h-[200px] mt-4"
 				viewBox="0 0 512 512">
 				<path
 					d="M160 389a20.91 20.91 0 01-13.82-5.2l-128-112a21 21 0 010-31.6l128-112a21 21 0 0127.66 31.61L63.89 256l109.94 96.19A21 21 0 01160 389zM352 389a21 21 0 01-13.84-36.81L448.11 256l-109.94-96.19a21 21 0 0127.66-31.61l128 112a21 21 0 010 31.6l-128 112A20.89 20.89 0 01352 389z"></path>
 			</svg>
-			<h1>SoftSide</h1>
-			<div class="loader"></div>
+			<p class="mb-20 text-6xl -mt-6">SoftSide</p>
+			<div
+				class="loader relative block w-[250px] h-[6px] rounded-3xl bg-black bg-opacity-20 before:absolute before:inset-0 before:h-full before:rounded-3xl before:transition-width before:duration-50 before:ease-out before:content-['']"></div>
 		</div>
 		<app-root></app-root>
 	</body>

@@ -23,7 +23,14 @@ if (process.env.NODE_ENV && process.env.NODE_ENV.includes('production')) {
 module.exports = {
 	content: [content],
 	theme: {
-		extend: {},
+		extend: {
+			transitionProperty: {
+				width: 'width',
+			},
+			transitionDuration: {
+				50: '50ms',
+			},
+		},
 	},
 	plugins: [],
 	corePlugins: {

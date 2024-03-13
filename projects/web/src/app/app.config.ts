@@ -53,12 +53,12 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 	// returning promise so that getting this file is blocking to the UI
 	return (): Promise<void> =>
 		new Promise((resolve, _reject) => {
-			const startTime = Date.now();
-			const loader = document.querySelector('#splash .loader') as HTMLElement;
 			let progress = 0;
-			const minimumDelayTime = 750;
 			let progressValue = 1;
 			let loaded = false;
+			const startTime = Date.now();
+			const loader = document.querySelector('#splash .loader') as HTMLElement;
+			const minimumDelayTime = 750;
 
 			sessionService.getSessionFromStorage().add(() => {
 				OpenAPI.BASE = environment.openAPIBase;
@@ -82,6 +82,7 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 				const delayTime = elapsedTime < 0 ? 0 : elapsedTime;
 
 				resolve();
+
 				const delayTimeout = setTimeout(() => {
 					loaded = true;
 					clearTimeout(delayTimeout);
