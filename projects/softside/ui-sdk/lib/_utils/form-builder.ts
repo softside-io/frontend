@@ -26,7 +26,7 @@ export class FB {
 		return new FormControl(defaultValue, { nonNullable: true });
 	}
 
-	static fields<T extends PresetField | TextField | FormlySSFieldConfig | PresetGroup>(
+	static fields<T extends PresetField | TextFields | FormlySSFieldConfig | PresetGroup>(
 		presets: T,
 	): FormlySSFieldConfig {
 		switch (presets.field) {
@@ -81,7 +81,7 @@ export class FB {
 					},
 				};
 			case 'text':
-				const textConfig = { ...presets } as TextField;
+				const textConfig = { ...presets } as TextFields;
 
 				return {
 					key: Helpers.camelize(textConfig.opts?.label),
@@ -99,6 +99,19 @@ export class FB {
 						messages: {
 							required: `${textConfig.opts?.label} is required`,
 						},
+					},
+				};
+			case 'textArea':
+				const textAreaConfig = { ...presets } as TextFields;
+
+				return {
+					key: Helpers.camelize(textAreaConfig.opts?.label),
+					type: 'ssTextAreaInput',
+					props: {
+						label: textAreaConfig.opts?.label,
+						placeholder: `Enter your ${textAreaConfig.opts?.label}`,
+						required: false,
+						maxLength: 300,
 					},
 				};
 			case 'confirmPassword':
@@ -140,8 +153,8 @@ export type PresetField = {
 		label?: string;
 	};
 };
-export type TextField = {
-	field: 'text';
+export type TextFields = {
+	field: 'text' | 'textArea';
 	opts: {
 		label: string;
 	};

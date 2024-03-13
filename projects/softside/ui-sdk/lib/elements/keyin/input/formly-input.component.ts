@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, signal } from '@angular/core';
-import { IonInput, IonItem, IonIcon, IonNote } from '@ionic/angular/standalone';
+import { IonInput, IonItem, IonIcon } from '@ionic/angular/standalone';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { addIcons } from 'ionicons';
@@ -53,7 +53,7 @@ import { SSFormlyDepsModule } from '@softside/ui-sdk/lib/modules/formly/deps';
 			</div>
 		</ion-item>
 	`,
-	imports: [NgIf, IonItem, IonIcon, IonInput, IonNote, SSFormlyDepsModule, NgClass, NgLetModule, AsyncPipe],
+	imports: [NgIf, IonItem, IonIcon, IonInput, SSFormlyDepsModule, NgClass, NgLetModule, AsyncPipe],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,7 +1,10 @@
 import { FormlyModule } from '@ngx-formly/core';
 import { NgModule } from '@angular/core';
 
-import { SSInputFormlyComponent } from '@softside/ui-sdk/lib/elements';
+import {
+	SSInputFormlyComponent,
+	SSTextAreaFormlyComponent,
+} from '@softside/ui-sdk/lib/elements';
 import { fieldMatchValidator } from '@softside/ui-sdk/lib/_utils';
 
 @NgModule({
@@ -20,6 +23,11 @@ import { fieldMatchValidator } from '@softside/ui-sdk/lib/_utils';
 					name: 'ssTextInput',
 					component:
 						SSInputFormlyComponent,
+				},
+				{
+					name: 'ssTextAreaInput',
+					component:
+						SSTextAreaFormlyComponent,
 				},
 			],
 			// Add any other global configurations here
