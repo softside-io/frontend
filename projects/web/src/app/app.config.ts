@@ -54,7 +54,7 @@ export function initializeApplicationConfig(sessionService: SessionService) {
 	return (): Promise<void> =>
 		new Promise((resolve, _reject) => {
 			const startTime = Date.now();
-			const loader = document.querySelector('.loader') as HTMLElement;
+			const loader = document.querySelector('#splash .loader') as HTMLElement;
 			let progress = 0;
 			const minimumDelayTime = 750;
 			let progressValue = 1;
