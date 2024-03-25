@@ -2,15 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { IonCard, IonCardContent, IonContent } from '@ionic/angular/standalone';
 
 import { SSButtonComponent } from '@softside/ui-sdk/lib/elements';
-import { SSFormlyDepsModule } from '@softside/ui-sdk/lib/modules/formly/deps';
 import { FormBase } from '@softside/ui-sdk/lib/_utils';
+import { SSFormComponent } from '@softside/ui-sdk/lib/components/composed/form';
 
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import formlyConfig from './formly.config';
+import { myForm } from './formly.config';
 
 type FormlyShowcase = {
 	email: string;
-	password: string;
 };
 
 @Component({
@@ -18,19 +17,18 @@ type FormlyShowcase = {
 	templateUrl: './formly-showcase.component.html',
 	styleUrls: ['./formly-showcase.component.scss'],
 	standalone: true,
-	imports: [PageHeaderComponent, IonContent, IonCard, IonCardContent, SSButtonComponent, SSFormlyDepsModule],
+	imports: [PageHeaderComponent, IonContent, IonCard, IonCardContent, SSButtonComponent, SSFormComponent],
 })
 export class FormlyShowcaseComponent extends FormBase<FormlyShowcase> implements OnInit {
 	ngOnInit(): void {
 		this.formInitialValue = {
 			email: 'example@test.com',
-			password: 'test123',
 		};
 
-		this.config.set(formlyConfig);
+		this.formConfig = myForm;
 	}
 
 	override submit(): void {
-		console.log(this.formValue?.email);
+		console.log(this.formValue);
 	}
 }

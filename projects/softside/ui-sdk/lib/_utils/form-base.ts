@@ -1,12 +1,10 @@
-import { WritableSignal, signal } from '@angular/core';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-
 import { FB } from './form-builder';
+import { CustomFormlyFieldConfig } from './formly-form';
 
 export class FormBase<T> {
 	formInitialValue: T | null = null;
 	form = FB.group();
-	config: WritableSignal<FormlyFieldConfig[]> = signal([]);
+	formConfig: Array<CustomFormlyFieldConfig> = [];
 	get formValue(): T {
 		return this.form.getRawValue() as T;
 	}

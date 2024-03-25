@@ -1,7 +1,7 @@
-import { AbstractControl, FormGroup, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, FormControl } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFieldProps } from '@ngx-formly/core';
 
-import { Helpers } from './helpers';
+import { CustomFormlyFieldConfig } from './formly-form';
 
 export class FB {
 	// to be fixed (remove parameters)
@@ -26,148 +26,18 @@ export class FB {
 		return new FormControl(defaultValue, { nonNullable: true });
 	}
 
-	static fields<T extends PresetField | TextFields | FormlySSFieldConfig | PresetGroup>(
-		presets: T,
-	): FormlySSFieldConfig {
-		switch (presets.field) {
-			case 'email':
-				return {
-					key: 'email',
-					type: 'ssTextInput',
-					props: {
-						label: 'Email address',
-						placeholder: 'Enter your email address',
-						required: true,
-						type: 'email',
-						minLength: 1,
-						maxLength: 50,
-						counter: true,
-					},
-					validation: {
-						messages: {
-							required: 'First Name is required',
-							email: 'Email must follow a valid format',
-						},
-					},
-					validators: {
-						validation: [Validators.email],
-					},
-				};
-			case 'password':
-				const passwordConfig = { ...presets } as PresetField;
-				const label = passwordConfig?.opts?.label || 'Password';
-
-				return {
-					key: Helpers.camelize(label),
-					type: 'ssTextInput',
-					props: {
-						label: label,
-						placeholder: `Enter your ${label}`,
-						required: true,
-						conceal: {
-							showToggle: true,
-							default: true,
-						},
-						type: 'password',
-						minLength: 6,
-						maxLength: 50,
-						counter: true,
-					},
-					validation: {
-						messages: {
-							required: `${label} is required`,
-							minlength: 'Password must be at least 6 characters long',
-						},
-					},
-				};
-			case 'text':
-				const textConfig = { ...presets } as TextFields;
-
-				return {
-					key: Helpers.camelize(textConfig.opts?.label),
-					type: 'ssTextInput',
-					props: {
-						label: textConfig.opts?.label,
-						placeholder: `Enter your ${textConfig.opts?.label}`,
-						required: true,
-						type: 'text',
-						minLength: 1,
-						maxLength: 100,
-						counter: true,
-					},
-					validation: {
-						messages: {
-							required: `${textConfig.opts?.label} is required`,
-						},
-					},
-				};
-			case 'textArea':
-				const textAreaConfig = { ...presets } as TextFields;
-
-				return {
-					key: Helpers.camelize(textAreaConfig.opts?.label),
-					type: 'ssTextAreaInput',
-					props: {
-						label: textAreaConfig.opts?.label,
-						placeholder: `Enter your ${textAreaConfig.opts?.label}`,
-						required: false,
-						maxLength: 300,
-					},
-				};
-			case 'confirmPassword':
-				const password = 'Password';
-				const confirmPassword = 'Confirm Password';
-
-				return {
-					validators: {
-						validation: [
-							{
-								name: 'fieldMatch',
-								options: {
-									errorPath: Helpers.camelize(confirmPassword),
-									keys: [Helpers.camelize(password), Helpers.camelize(confirmPassword)],
-									message: `${password}s should match`,
-								},
-							},
-						],
-					},
-					key: 'confirmPasswordGroup',
-					fieldGroup: [
-						FB.fields<PresetField>({ field: 'password', opts: { label: password } }),
-						FB.fields<PresetField>({ field: 'password', opts: { label: confirmPassword } }),
-					],
-				};
-			default: {
-				return presets;
-			}
-		}
-	}
-
-	static create<T = FormlySSFieldConfig>(formlyFieldConfig: T[]): FormlyFieldConfig[] {
-		return formlyFieldConfig as FormlyFieldConfig[];
+	static field(preset?: Presets, field?: Readonly<FormlyFieldConfig>): CustomFormlyFieldConfig {
+		return new CustomFormlyFieldConfig(preset, field as FormlySSFieldConfig);
 	}
 }
-export type PresetField = {
-	field: 'email' | 'password';
-	opts?: {
-		label?: string;
-	};
-};
-export type TextFields = {
-	field: 'text' | 'textArea';
-	opts: {
-		label: string;
-	};
-};
-export type PresetGroup = {
-	field: 'confirmPassword';
-};
+export type FormlySSFieldConfig = FormlyFieldProps & Partial<ExtraProps>;
 
-type FormlySSFieldConfig = FormlyFieldProps & Partial<ExtraProps>;
+type Presets = 'email' | 'password' | 'text' | 'textArea' | 'confirmPassword';
 
 type ExtraProps = {
-	key?: string | number | (string | number)[];
+	key: string;
 	counter: boolean;
+	defaultValue: number | string | boolean;
 	conceal: {
 		showToggle: boolean;
 		default: boolean;
