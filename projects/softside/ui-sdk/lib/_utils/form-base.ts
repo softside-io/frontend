@@ -2,7 +2,7 @@ import { FB } from './form-builder';
 import { CustomFormlyFieldConfig } from './formly-form';
 
 export class FormBase<T> {
-	formInitialValue: T | null = null;
+	formInitialValue: Partial<T> | null = null;
 	form = FB.group();
 	formConfig: Array<CustomFormlyFieldConfig> = [];
 	get formValue(): T {

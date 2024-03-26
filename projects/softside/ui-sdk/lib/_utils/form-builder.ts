@@ -26,13 +26,17 @@ export class FB {
 		return new FormControl(defaultValue, { nonNullable: true });
 	}
 
-	static field(preset?: Presets, field?: Readonly<FormlyFieldConfig>): CustomFormlyFieldConfig {
+	static field(preset?: FieldPresets, field?: Readonly<FormlyFieldConfig>): CustomFormlyFieldConfig {
+		return new CustomFormlyFieldConfig(preset, field as FormlySSFieldConfig);
+	}
+
+	static fieldGroup(preset?: GroupPresets, field?: Readonly<FormlyFieldConfig>): CustomFormlyFieldConfig {
 		return new CustomFormlyFieldConfig(preset, field as FormlySSFieldConfig);
 	}
 }
 export type FormlySSFieldConfig = FormlyFieldProps & Partial<ExtraProps>;
-
-type Presets = 'email' | 'password' | 'text' | 'textArea' | 'confirmPassword';
+export type FieldPresets = 'email' | 'password' | 'text' | 'textArea' | 'number';
+export type GroupPresets = 'confirmPassword';
 
 type ExtraProps = {
 	key: string;

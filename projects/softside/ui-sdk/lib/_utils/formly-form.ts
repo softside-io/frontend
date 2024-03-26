@@ -1,12 +1,12 @@
 import { Validators } from '@angular/forms';
 
-import { FB, FormlySSFieldConfig } from './form-builder';
+import { FB, FieldPresets, FormlySSFieldConfig, GroupPresets } from './form-builder';
 import { Helpers } from './helpers';
 
 export class CustomFormlyFieldConfig {
 	private _field: FormlySSFieldConfig;
 
-	constructor(preset?: 'text' | 'email' | 'password' | 'textArea' | 'confirmPassword', field?: FormlySSFieldConfig) {
+	constructor(preset?: FieldPresets | GroupPresets, field?: FormlySSFieldConfig) {
 		if (field) {
 			this._field = field;
 
@@ -122,6 +122,18 @@ export class CustomFormlyFieldConfig {
 				};
 
 				break;
+			case 'number':
+				this._field = {
+					key: 'number',
+					type: 'checkbox',
+					defaultValue: false,
+					props: {
+						label: 'Checkbox',
+						options: ['checkbox'],
+					},
+				};
+
+				break;
 			default: {
 				this._field = {};
 
@@ -134,11 +146,6 @@ export class CustomFormlyFieldConfig {
 		this._field.props && (this._field.props.label = label);
 
 		return this;
-	}
-
-	get type(): string {
-		// Test with checkbox field (type should be boolean)
-		return typeof this._field.props?.type;
 	}
 
 	key(key: string): CustomFormlyFieldConfig {

@@ -6,11 +6,7 @@ import { FormBase } from '@softside/ui-sdk/lib/_utils';
 import { SSFormComponent } from '@softside/ui-sdk/lib/components/composed/form';
 
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { myForm } from './formly.config';
-
-type FormlyShowcase = {
-	email: string;
-};
+import { FormlyShowcase, myForm } from './formly.config';
 
 @Component({
 	selector: 'app-formly-showcase',
